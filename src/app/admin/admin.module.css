@@ -1,0 +1,6 @@
+.adminRoot {
+  min-height: 100svh;
+  background: #0A0908;
+  color: var(--cream);
+  font-family: var(--font-ui);
+}

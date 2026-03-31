@@ -1,0 +1,169 @@
+.about {
+  background: var(--ink);
+  overflow: hidden;
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 5rem;
+  align-items: center;
+}
+
+/* Story col */
+.storyCol {}
+
+.body {
+  font-family: var(--font-body);
+  font-size: 1.15rem;
+  color: var(--muted);
+  line-height: 1.9;
+}
+
+/* Pillars */
+.pillars {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  margin-top: 2.5rem;
+}
+
+.pillar {
+  display: flex;
+  align-items: flex-start;
+  gap: 1rem;
+  padding: 1rem 1.25rem;
+}
+
+.pillarIcon {
+  flex-shrink: 0;
+  width: 40px; height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 8px;
+  background: rgba(201,168,76,0.1);
+  color: var(--gold);
+}
+
+.pillarTitle {
+  font-family: var(--font-ui);
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: var(--cream);
+  margin-bottom: 0.2rem;
+}
+
+.pillarDesc {
+  font-family: var(--font-body);
+  font-size: 0.95rem;
+  color: var(--muted);
+  line-height: 1.5;
+}
+
+/* Image col */
+.imageCol {
+  position: relative;
+}
+
+.imageWrap {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 3/4;
+  border-radius: 24px;
+  overflow: hidden;
+  border: 1px solid rgba(201,168,76,0.15);
+  box-shadow: 0 24px 60px rgba(0,0,0,0.55);
+}
+
+.chefImg {
+  object-fit: cover;
+  object-position: top center;
+}
+
+.imgOverlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(0deg, rgba(13,11,8,0.7) 0%, transparent 50%);
+}
+
+/* Quote card */
+.quoteCard {
+  position: absolute;
+  bottom: -2rem; left: -2rem;
+  max-width: 280px;
+  padding: 1.5rem;
+}
+
+.quoteMarks {
+  font-family: var(--font-display);
+  font-size: 3.5rem;
+  line-height: 0.5;
+  color: var(--gold);
+  margin-bottom: 0.75rem;
+}
+
+.quoteText {
+  font-family: var(--font-body);
+  font-size: 1rem;
+  font-style: italic;
+  color: var(--cream);
+  line-height: 1.6;
+  margin-bottom: 1rem;
+}
+
+.quoteAuthor {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  font-family: var(--font-ui);
+  font-size: 0.75rem;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--gold);
+}
+
+.quoteDot {
+  width: 5px; height: 5px;
+  border-radius: 50%;
+  background: var(--gold);
+  flex-shrink: 0;
+}
+
+/* Experience badge */
+.expBadge {
+  position: absolute;
+  top: 2rem; right: -1.5rem;
+  background: var(--gold);
+  color: var(--ink);
+  border-radius: 16px;
+  padding: 1rem 1.25rem;
+  display: flex;
+  align-items: baseline;
+  gap: 0.5rem;
+  box-shadow: var(--shadow-gold);
+}
+
+.expNum {
+  font-family: var(--font-display);
+  font-size: 2.25rem;
+  font-weight: 900;
+  line-height: 1;
+}
+
+.expLabel {
+  font-family: var(--font-ui);
+  font-size: 0.65rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  line-height: 1.4;
+}
+
+@media (max-width: 900px) {
+  .grid { grid-template-columns: 1fr; gap: 3rem; }
+  .imageCol { order: -1; }
+  .quoteCard { left: 0; bottom: -3rem; max-width: 90%; }
+  .expBadge { right: 0.5rem; }
+}
