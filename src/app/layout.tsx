@@ -1,32 +1,26 @@
-import type { Metadata, Viewport } from "next";
-import "./globals.css";
+import type { Metadata, Viewport } from 'next';
+import './globals.css';
 
 export const metadata: Metadata = {
-  title: "Raj's Cafe — Luxury Dining Experience",
-  description:
-    "Experience the finest cafe dining at Raj's Cafe. Artisanal coffee, gourmet cuisine, and an unforgettable atmosphere. Book your table today.",
-  keywords: ["Raj's Cafe", "luxury cafe", "fine dining", "artisan coffee", "gourmet food", "restaurant"],
+  title: "Raj's Cafe — The Perfect Blend of Aroma & Ambiance",
+  description: "Experience artisan coffee, gourmet food, and warm hospitality at Raj's Cafe, New Delhi. Award-winning café since 2010.",
+  keywords: "Raj's Cafe, artisan coffee, café New Delhi, specialty coffee, gourmet breakfast",
   openGraph: {
-    title: "Raj's Cafe — Luxury Dining Experience",
-    description: "Experience the finest cafe dining. Artisanal coffee, gourmet cuisine, unforgettable atmosphere.",
-    type: "website",
+    title: "Raj's Cafe",
+    description: "The Perfect Blend of Aroma & Ambiance",
+    type: 'website',
   },
 };
 
 export const viewport: Viewport = {
-  width: "device-width",
+  width: 'device-width',
   initialScale: 1,
 };
 
-export default function RootLayout({
-  children,
-}: Readonly<{ children: React.ReactNode }>) {
+export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="en">
-      <body>
-        <div className="grain-overlay" aria-hidden="true" />
-        {children}
-      </body>
+    <html lang="en" suppressHydrationWarning>
+      <body>{children}</body>
     </html>
   );
 }

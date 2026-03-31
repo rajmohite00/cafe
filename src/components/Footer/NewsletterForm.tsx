@@ -12,7 +12,7 @@ export default function NewsletterForm() {
         required
         aria-label="Email for newsletter"
       />
-      <button type="submit" className="btn-primary" style={{ padding: '0.75rem 1.25rem', fontSize: '0.78rem' }}>
+      <button type="submit" className={styles.newsletterBtn}>
         Subscribe
       </button>
     </form>

@@ -1,90 +1,67 @@
 import Image from 'next/image';
-import { Award, Clock, Leaf } from 'lucide-react';
+import { Droplets, Coffee, Users, Heart } from 'lucide-react';
 import styles from './About.module.css';
 
-const pillars = [
-  { icon: Award,  title: 'Award-Winning',   desc: 'Recognized by TimeOut Delhi & Indian Cafe Awards 2023.' },
-  { icon: Clock,  title: 'Est. 2010',        desc: 'Over 15 years crafting memorable dining experiences.' },
-  { icon: Leaf,   title: 'Farm-to-Table',    desc: 'Seasonal ingredients sourced from local organic farmers.' },
+const features = [
+  { icon: Droplets, title: 'Cozy Atmosphere',       desc: 'We are committed to eco-friendly practice, from using biodegradable materials to sourcing locally.' },
+  { icon: Coffee,   title: 'Artisanal Coffee',      desc: 'Our coffee is sourced from the finest regions around the world and roasted to perfection.' },
+  { icon: Users,    title: 'Community Engagement',  desc: 'We believe in giving back to our community through events, and local collaboration.' },
+  { icon: Heart,    title: 'Exceptional Service',   desc: 'Our friendly and knowledgeable staff are dedicated to providing you with the best service.' },
 ];
 
 export default function About() {
   return (
-    <section id="about" className={`section-pad ${styles.about}`}>
-      <div className="container">
-        <div className={styles.grid}>
+    <>
+      {/* Top wave */}
+      <div className={styles.waveTop} aria-hidden="true">
+        <svg viewBox="0 0 1440 80" preserveAspectRatio="none">
+          <path d="M0,40 C180,80 360,0 540,40 C720,80 900,0 1080,40 C1260,80 1380,20 1440,40 L1440,80 L0,80 Z" fill="var(--cream)"/>
+        </svg>
+      </div>
 
-          {/* Left — Story */}
-          <div className={styles.storyCol}>
-            <span className="section-label">Our Story</span>
-            <h2 className="section-title">
-              A Cafe Born From<br /><em>Passion & Heritage</em>
-            </h2>
-            <div className="gold-divider" />
-            <p className={styles.body}>
-              In 2010, Chef Raj Sharma opened a small corner cafe in Connaught Place 
-              with a singular dream — to merge the warmth of an Indian home kitchen with 
-              the precision of European culinary technique.
-            </p>
-            <p className={styles.body} style={{ marginTop: '1.25rem' }}>
-              Today, Raj&apos;s Cafe has grown into one of Delhi&apos;s most beloved dining 
-              destinations — celebrated for its handcrafted, seasonal menus, single-origin 
-              coffee program, and an atmosphere that makes every guest feel like family.
-            </p>
+      <section id="sustainability" className={`section-pad ${styles.section}`}>
+        <div className="container">
+          <h2 className={`section-title ${styles.title}`}>Our Commitment to Sustainability</h2>
 
-            {/* Pillars */}
-            <div className={styles.pillars}>
-              {pillars.map(({ icon: Icon, title, desc }) => (
-                <div key={title} className={`${styles.pillar} glass-card`}>
-                  <div className={styles.pillarIcon}>
-                    <Icon size={20} strokeWidth={1.5} />
+          <div className={styles.grid}>
+            {/* Left image */}
+            <div className={styles.imgCol}>
+              <div className={styles.imgWrap}>
+                <Image
+                  src="/chef.png"
+                  alt="Raj's Cafe team crafting coffee with care"
+                  fill
+                  sizes="(max-width: 768px) 90vw, 45vw"
+                  className={styles.img}
+                />
+                <div className={styles.imgOverlay} />
+              </div>
+            </div>
+
+            {/* Right feature grid */}
+            <div className={styles.featuresGrid}>
+              {features.map(({ icon: Icon, title, desc }) => (
+                <div key={title} className={styles.featureCard}>
+                  <div className={styles.featureIcon}>
+                    <Icon size={22} strokeWidth={1.5} />
                   </div>
                   <div>
-                    <h3 className={styles.pillarTitle}>{title}</h3>
-                    <p className={styles.pillarDesc}>{desc}</p>
+                    <h3 className={styles.featureTitle}>{title}</h3>
+                    <p className={styles.featureDesc}>{desc}</p>
                   </div>
                 </div>
               ))}
             </div>
-
-            <a href="#menu" className="btn-primary" style={{ display: 'inline-flex', marginTop: '2.5rem' }}>
-              Explore Our Menu
-            </a>
-          </div>
-
-          {/* Right — Chef image + decorative elements */}
-          <div className={styles.imageCol}>
-            <div className={styles.imageWrap}>
-              <Image
-                src="/chef.png"
-                alt="Chef Raj Sharma — founder and head chef of Raj's Cafe"
-                fill
-                sizes="(max-width: 768px) 100vw, 45vw"
-                className={styles.chefImg}
-              />
-              <div className={styles.imgOverlay} />
-            </div>
-
-            {/* Quote card */}
-            <div className={`${styles.quoteCard} glass-card`}>
-              <div className={styles.quoteMarks}>&ldquo;</div>
-              <p className={styles.quoteText}>
-                Cooking is my love letter to every guest who walks through our door.
-              </p>
-              <div className={styles.quoteAuthor}>
-                <div className={styles.quoteDot} />
-                <span>Chef Raj Sharma</span>
-              </div>
-            </div>
-
-            {/* Experience badge */}
-            <div className={styles.expBadge}>
-              <span className={styles.expNum}>15</span>
-              <span className={styles.expLabel}>Years<br />Experience</span>
-            </div>
           </div>
         </div>
+      </section>
+
+      {/* Bottom wave */}
+      <div className={styles.waveBottom} aria-hidden="true">
+        <svg viewBox="0 0 1440 80" preserveAspectRatio="none">
+          <path d="M0,40 C180,0 360,80 540,40 C720,0 900,80 1080,40 C1260,0 1380,60 1440,40 L1440,80 L0,80 Z" fill="var(--cream-dark)"/>
+        </svg>
       </div>
-    </section>
+    </>
   );
 }

@@ -1,97 +1,71 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import Link from 'next/link';
-import { Menu, X } from 'lucide-react';
+import { Search, ShoppingBag, Menu, X } from 'lucide-react';
 import styles from './Navbar.module.css';
 
 const navLinks = [
-  { href: '#about',        label: 'About'        },
-  { href: '#menu',         label: 'Menu'          },
-  { href: '#chef',         label: 'Chef'          },
-  { href: '#testimonials', label: 'Reviews'       },
-  { href: '#location',     label: 'Location'      },
-  { href: '#faq',          label: 'FAQ'           },
+  { label: 'Our Menu',     href: '#menu'         },
+  { label: 'Chef\'s Story', href: '#about'        },
+  { label: 'Testimonials', href: '#testimonials'  },
+  { label: 'About',        href: '#sustainability' },
 ];
 
 export default function Navbar() {
   const [scrolled, setScrolled] = useState(false);
   const [open, setOpen]         = useState(false);
-  const [active, setActive]     = useState('');
 
   useEffect(() => {
-    const onScroll = () => setScrolled(window.scrollY > 60);
+    const onScroll = () => setScrolled(window.scrollY > 30);
     window.addEventListener('scroll', onScroll, { passive: true });
     return () => window.removeEventListener('scroll', onScroll);
   }, []);
 
-  useEffect(() => {
-    const observer = new IntersectionObserver(
-      (entries) => {
-        entries.forEach(e => { if (e.isIntersecting) setActive('#' + e.target.id); });
-      },
-      { threshold: 0.3 }
-    );
-    navLinks.forEach(({ href }) => {
-      const el = document.querySelector(href);
-      if (el) observer.observe(el);
-    });
-    return () => observer.disconnect();
-  }, []);
-
-  const close = () => setOpen(false);
-
   return (
-    <header className={`${styles.nav} ${scrolled ? styles.scrolled : ''}`}>
+    <header className={`${styles.header} ${scrolled ? styles.scrolled : ''}`}>
       <div className={`container ${styles.inner}`}>
+        
         {/* Logo */}
-        <Link href="/" className={styles.logo} onClick={close}>
-          <span className={styles.logoAccent}>✦</span>
-          <span className={styles.logoText}>Raj<em>&apos;s</em> Cafe</span>
-        </Link>
+        <a href="/" className={styles.logo}>
+          <span className={styles.logoIcon}>
+            <svg width="28" height="28" viewBox="0 0 28 28" fill="none">
+              <ellipse cx="14" cy="18" rx="10" ry="7" fill="#E8941A" opacity="0.15"/>
+              <path d="M7 14 Q14 7 21 14" stroke="#E8941A" strokeWidth="1.5" fill="none" strokeLinecap="round"/>
+              <path d="M5 14 Q14 6 23 14 L22 22 Q14 28 6 22 Z" fill="none" stroke="#2C1506" strokeWidth="1.5"/>
+              <path d="M22 14 Q26 14 26 18 Q26 22 22 22" stroke="#2C1506" strokeWidth="1.5" fill="none" strokeLinecap="round"/>
+              <ellipse cx="14" cy="13" rx="5" ry="3" fill="#E8941A" opacity="0.3"/>
+            </svg>
+          </span>
+          <span className={styles.logoText}>Raj&apos;s Cafe</span>
+        </a>
 
-        {/* Desktop links */}
-        <nav className={styles.links} aria-label="Main navigation">
-          {navLinks.map(({ href, label }) => (
-            <a
-              key={href}
-              href={href}
-              className={`${styles.link} ${active === href ? styles.linkActive : ''}`}
-            >
-              {label}
-            </a>
+        {/* Desktop nav */}
+        <nav className={styles.nav}>
+          {navLinks.map(l => (
+            <a key={l.href} href={l.href} className={styles.navLink}>{l.label}</a>
           ))}
         </nav>
 
-        {/* CTA */}
-        <a href="#reservation" className={`btn-primary ${styles.navCta}`}>
-          Book a Table
-        </a>
-
-        {/* Mobile toggle */}
-        <button
-          className={styles.hamburger}
-          onClick={() => setOpen(o => !o)}
-          aria-label="Toggle menu"
-          aria-expanded={open}
-        >
-          {open ? <X size={22} /> : <Menu size={22} />}
-        </button>
+        {/* Actions */}
+        <div className={styles.actions}>
+          <button className={styles.iconBtn} aria-label="Search"><Search size={18} strokeWidth={1.8}/></button>
+          <button className={styles.iconBtn} aria-label="Cart"><ShoppingBag size={18} strokeWidth={1.8}/></button>
+          <a href="#reservation" className={styles.bookBtn}>Book a Table</a>
+          <button className={styles.mobileMenu} aria-label="Menu" onClick={() => setOpen(!open)}>
+            {open ? <X size={20}/> : <Menu size={20}/>}
+          </button>
+        </div>
       </div>
 
       {/* Mobile drawer */}
-      <div className={`${styles.drawer} ${open ? styles.drawerOpen : ''}`}>
-        <nav className={styles.drawerLinks}>
-          {navLinks.map(({ href, label }) => (
-            <a key={href} href={href} className={styles.drawerLink} onClick={close}>
-              {label}
-            </a>
+      {open && (
+        <div className={styles.drawer}>
+          {navLinks.map(l => (
+            <a key={l.href} href={l.href} className={styles.drawerLink} onClick={() => setOpen(false)}>{l.label}</a>
           ))}
-          <a href="#reservation" className={`btn-primary ${styles.drawerCta}`} onClick={close}>
-            Book a Table
-          </a>
-        </nav>
-      </div>
+          <a href="#reservation" className="btn-primary" onClick={() => setOpen(false)}>Book a Table</a>
+        </div>
+      )}
     </header>
   );
 }
