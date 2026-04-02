@@ -64,7 +64,8 @@
   border-color: var(--amber);
   color: var(--amber);
 }
-.filterActive {
+.filterActive,
+.filterBtn.filterActive:hover {
   background: var(--amber);
   border-color: var(--amber);
   color: white;
