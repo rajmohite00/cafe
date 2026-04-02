@@ -193,3 +193,71 @@ button { cursor: pointer; font-family: inherit; border: none; background: none; 
   from { opacity: 0; transform: scale(0.92); }
   to   { opacity: 1; transform: scale(1); }
 }
+
+/* ── Form Inputs & Components ── */
+.form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+  margin-bottom: 1.25rem;
+}
+
+.form-label {
+  font-family: var(--font-ui);
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  color: var(--brown);
+  text-transform: uppercase;
+}
+
+.form-input, .form-select, .form-textarea {
+  width: 100%;
+  padding: 0.75rem 1rem;
+  border-radius: var(--radius-sm);
+  border: 1.5px solid rgba(44,21,6,0.18);
+  background: rgba(255,253,249,0.85);
+  color: var(--brown);
+  font-family: var(--font-ui);
+  font-size: 0.95rem;
+  font-weight: 500;
+  outline: none;
+  transition: all 0.2s var(--ease);
+  box-shadow: 0 1px 4px rgba(44,21,6,0.06);
+}
+
+.form-input::placeholder, .form-textarea::placeholder {
+  color: var(--muted);
+  font-weight: 400;
+}
+
+.form-input:hover, .form-select:hover, .form-textarea:hover {
+  border-color: var(--amber);
+}
+
+.form-input:focus, .form-select:focus, .form-textarea:focus {
+  border-color: var(--amber);
+  box-shadow: 0 0 0 3px rgba(232,148,26,0.15);
+}
+
+.form-textarea {
+  resize: vertical;
+  min-height: 100px;
+}
+
+.glass-card {
+  background: var(--card);
+  border: 1px solid rgba(255,255,255,0.6);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-card);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+}
+
+.gold-divider {
+  width: 60px;
+  height: 2px;
+  background: var(--amber);
+  margin-block: 1rem 1.5rem;
+}
+

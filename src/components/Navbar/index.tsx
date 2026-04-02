@@ -1,19 +1,22 @@
 'use client';
 
 import { useState, useEffect } from 'react';
+import Link from 'next/link';
 import { Search, ShoppingBag, Menu, X } from 'lucide-react';
+import { useCart } from '@/context/CartContext';
 import styles from './Navbar.module.css';
 
 const navLinks = [
-  { label: 'Our Menu',     href: '#menu'         },
-  { label: 'Chef\'s Story', href: '#about'        },
-  { label: 'Testimonials', href: '#testimonials'  },
-  { label: 'About',        href: '#sustainability' },
+  { label: 'Our Menu',      href: '/#menu'         },
+  { label: "Chef's Story",  href: '/#about'        },
+  { label: 'Testimonials',  href: '/#testimonials' },
+  { label: 'Reservations',  href: '/#reservation'  },
 ];
 
 export default function Navbar() {
   const [scrolled, setScrolled] = useState(false);
   const [open, setOpen]         = useState(false);
+  const { totalItems }          = useCart();
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 30);
@@ -24,9 +27,9 @@ export default function Navbar() {
   return (
     <header className={`${styles.header} ${scrolled ? styles.scrolled : ''}`}>
       <div className={`container ${styles.inner}`}>
-        
+
         {/* Logo */}
-        <a href="/" className={styles.logo}>
+        <Link href="/" className={styles.logo}>
           <span className={styles.logoIcon}>
             <svg width="28" height="28" viewBox="0 0 28 28" fill="none">
               <ellipse cx="14" cy="18" rx="10" ry="7" fill="#E8941A" opacity="0.15"/>
@@ -37,20 +40,29 @@ export default function Navbar() {
             </svg>
           </span>
           <span className={styles.logoText}>Raj&apos;s Cafe</span>
-        </a>
+        </Link>
 
         {/* Desktop nav */}
         <nav className={styles.nav}>
           {navLinks.map(l => (
-            <a key={l.href} href={l.href} className={styles.navLink}>{l.label}</a>
+            <Link key={l.href} href={l.href} className={styles.navLink}>{l.label}</Link>
           ))}
         </nav>
 
         {/* Actions */}
         <div className={styles.actions}>
           <button className={styles.iconBtn} aria-label="Search"><Search size={18} strokeWidth={1.8}/></button>
-          <button className={styles.iconBtn} aria-label="Cart"><ShoppingBag size={18} strokeWidth={1.8}/></button>
-          <a href="#reservation" className={styles.bookBtn}>Book a Table</a>
+
+          {/* Cart icon with badge */}
+          <Link href="/cart" className={styles.cartBtn} aria-label={`Cart (${totalItems} items)`}>
+            <ShoppingBag size={18} strokeWidth={1.8}/>
+            {totalItems > 0 && (
+              <span className={styles.cartBadge}>{totalItems > 9 ? '9+' : totalItems}</span>
+            )}
+          </Link>
+
+          <Link href="/#reservation" className={styles.bookBtn}>Book a Table</Link>
+
           <button className={styles.mobileMenu} aria-label="Menu" onClick={() => setOpen(!open)}>
             {open ? <X size={20}/> : <Menu size={20}/>}
           </button>
@@ -61,9 +73,12 @@ export default function Navbar() {
       {open && (
         <div className={styles.drawer}>
           {navLinks.map(l => (
-            <a key={l.href} href={l.href} className={styles.drawerLink} onClick={() => setOpen(false)}>{l.label}</a>
+            <Link key={l.href} href={l.href} className={styles.drawerLink} onClick={() => setOpen(false)}>{l.label}</Link>
           ))}
-          <a href="#reservation" className="btn-primary" onClick={() => setOpen(false)}>Book a Table</a>
+          <Link href="/cart" className={styles.drawerLink} onClick={() => setOpen(false)}>
+            🛒 Cart {totalItems > 0 && `(${totalItems})`}
+          </Link>
+          <Link href="/#reservation" className="btn-primary" onClick={() => setOpen(false)}>Book a Table</Link>
         </div>
       )}
     </header>

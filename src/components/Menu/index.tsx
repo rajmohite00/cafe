@@ -1,25 +1,19 @@
-import styles from './Menu.module.css';
+'use client';
+
+import { useState } from 'react';
 import Image from 'next/image';
+import Link from 'next/link';
+import { ShoppingCart, Star, Clock, Flame, Leaf } from 'lucide-react';
+import { useCart } from '@/context/CartContext';
+import { menuItems, categories, MenuItem } from '@/data/menuData';
+import styles from './Menu.module.css';
 
-const menuItems = [
-  { name: 'Cold Brew',        desc: 'Brewed slowly for a smooth.',                  price: 3.00,  img: '☕', badge: ''    },
-  { name: 'Grilled Cheese',   desc: 'It is a classic comfort food with cheddar.',   price: 3.55,  img: '🧀', badge: ''    },
-  { name: 'Chocolate Cake',   desc: 'A rich and moist cake topped with creamy.',    price: 2.95,  img: '🍰', badge: ''    },
-  { name: 'Latte',            desc: 'Smooth and creamy.',                            price: 2.15,  img: '☕', badge: 'New' },
-  { name: 'Caesar Salad',     desc: 'Crisp romaine tossed with dressing.',          price: 2.00,  img: '🥗', badge: 'New' },
-  { name: 'Matcha Latte',     desc: 'A creamy and vibrant green tea.',              price: 1.80,  img: '🍵', badge: ''    },
-  { name: 'Espresso Delight', desc: 'A rich and bold espresso shot.',               price: 2.95,  img: '☕', badge: ''    },
-  { name: 'Almond Croissant', desc: 'A butter, flaky croissant with rich almond.',  price: 5.80,  img: '🥐', badge: ''    },
-];
-
-// Decorative SVGs
 const BeanGroup = () => (
   <svg viewBox="0 0 140 100" fill="none" xmlns="http://www.w3.org/2000/svg" className={styles.decorBean}>
     <ellipse cx="35" cy="50" rx="32" ry="22" stroke="#9E7550" strokeWidth="1.5" fill="none"/>
     <path d="M35 29 Q47 38 47 50 Q47 62 35 71" stroke="#9E7550" strokeWidth="1.2" fill="none" strokeLinecap="round"/>
     <path d="M35 29 Q23 38 23 50 Q23 62 35 71" stroke="#9E7550" strokeWidth="1.2" fill="none" strokeLinecap="round"/>
     <ellipse cx="105" cy="30" rx="22" ry="15" stroke="#9E7550" strokeWidth="1.2" fill="none" opacity="0.7"/>
-    <path d="M105 16 Q114 22 114 30 Q114 38 105 44" stroke="#9E7550" strokeWidth="1" fill="none" strokeLinecap="round" opacity="0.7"/>
     <ellipse cx="115" cy="75" rx="16" ry="11" stroke="#9E7550" strokeWidth="1" fill="none" opacity="0.5"/>
   </svg>
 );
@@ -31,13 +25,75 @@ const CupDecor = () => (
     <path d="M115 75 Q132 75 132 92 Q132 109 115 109" stroke="#8A7560" strokeWidth="1.5" fill="none" strokeLinecap="round"/>
     <path d="M52 35 Q56 18 60 35" stroke="#8A7560" strokeWidth="1.2" fill="none" strokeLinecap="round" opacity="0.7"/>
     <path d="M68 28 Q72 12 76 28" stroke="#8A7560" strokeWidth="1.2" fill="none" strokeLinecap="round" opacity="0.7"/>
-    <ellipse cx="70" cy="60" rx="32" ry="10" stroke="#8A7560" strokeWidth="1" fill="none" opacity="0.4"/>
   </svg>
 );
 
+function MenuCard({ item }: { item: MenuItem }) {
+  const { addItem } = useCart();
+  const [added, setAdded] = useState(false);
+
+  const handleAdd = (e: React.MouseEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    addItem(item);
+    setAdded(true);
+    setTimeout(() => setAdded(false), 1500);
+  };
+
+  const isEmoji = item.img.startsWith('/') === false;
+
+  return (
+    <Link href={`/menu/${item.slug}`} className={styles.card}>
+      {/* Image / emoji */}
+      <div className={styles.cardImg}>
+        {isEmoji ? (
+          <span className={styles.cardEmoji}>{item.img}</span>
+        ) : (
+          <Image src={item.img} alt={item.name} fill style={{ objectFit: 'cover' }} sizes="(max-width:768px) 90vw, 320px" />
+        )}
+        {item.badge && <span className={styles.cardBadge}>{item.badge}</span>}
+        {item.isVeg && (
+          <span className={styles.vegDot} title="Pure Vegetarian">
+            <Leaf size={10} />
+          </span>
+        )}
+      </div>
+
+      {/* Content */}
+      <div className={styles.cardBody}>
+        <div className={styles.cardMeta}>
+          <span className={styles.cardCategory}>{item.category}</span>
+          <span className={styles.cardRating}><Star size={11} fill="currentColor" /> {item.rating}</span>
+        </div>
+        <h3 className={styles.cardName}>{item.name}</h3>
+        <p className={styles.cardDesc}>{item.desc}</p>
+
+        <div className={styles.cardInfo}>
+          <span className={styles.infoTag}><Clock size={11} /> {item.prepTime}</span>
+          <span className={styles.infoTag}><Flame size={11} /> {item.calories}</span>
+        </div>
+
+        <div className={styles.cardFooter}>
+          <span className={styles.cardPrice}>₹{item.price}</span>
+          <button
+            className={`${styles.addBtn} ${added ? styles.addBtnAdded : ''}`}
+            onClick={handleAdd}
+            aria-label={`Add ${item.name} to cart`}
+          >
+            {added ? '✓ Added' : <><ShoppingCart size={13} /> Add</>}
+          </button>
+        </div>
+      </div>
+    </Link>
+  );
+}
+
 export default function Menu() {
-  const left  = menuItems.filter((_, i) => i % 2 === 0);
-  const right = menuItems.filter((_, i) => i % 2 !== 0);
+  const [activeCategory, setActiveCategory] = useState('All');
+
+  const filtered = activeCategory === 'All'
+    ? menuItems
+    : menuItems.filter(i => i.category === activeCategory);
 
   return (
     <>
@@ -49,38 +105,43 @@ export default function Menu() {
       </div>
 
       <section id="menu" className={`section-pad ${styles.section}`}>
-        {/* Decorative illustrations */}
         <BeanGroup />
         <CupDecor />
 
         <div className="container">
           <div className={styles.header}>
-            <h2 className={`section-title ${styles.title}`}>Our Menu</h2>
+            <span className="section-label">Our Menu</span>
+            <h2 className={`section-title ${styles.title}`}>Crafted with Love &amp; Spice</h2>
             <p className="section-subtitle" style={{ textAlign: 'center', maxWidth: 560, marginInline: 'auto', marginTop: '0.75rem' }}>
-              Welcome to Raj&apos;s Cafe! Here, we pride ourselves on offering a diverse selection
-              of beverages and treats that cater to every taste.
+              Authentic Indian flavours, locally sourced ingredients &amp; every price in ₹. Welcome to Raj&apos;s Cafe.
             </p>
           </div>
 
-          {/* 2-column list menu */}
-          <div className={styles.menuGrid}>
-            <div className={styles.menuCol}>
-              {left.map(item => (
-                <MenuItem key={item.name} item={item} />
-              ))}
-            </div>
-            <div className={styles.menuCol}>
-              {right.map(item => (
-                <MenuItem key={item.name} item={item} />
-              ))}
-            </div>
+          {/* Category filter */}
+          <div className={styles.filters}>
+            {categories.map(cat => (
+              <button
+                key={cat}
+                className={`${styles.filterBtn} ${activeCategory === cat ? styles.filterActive : ''}`}
+                onClick={() => setActiveCategory(cat)}
+              >
+                {cat}
+              </button>
+            ))}
           </div>
 
-          {/* View full menu */}
+          {/* Card grid */}
+          <div className={styles.menuGrid}>
+            {filtered.map(item => (
+              <MenuCard key={item.slug} item={item} />
+            ))}
+          </div>
+
+          {/* View full menu link */}
           <div className={styles.ctaRow}>
-            <a href="#" className={styles.viewFullBtn}>
+            <Link href="/menu" className={styles.viewFullBtn}>
               View Full Menu →
-            </a>
+            </Link>
           </div>
         </div>
       </section>
@@ -92,24 +153,5 @@ export default function Menu() {
         </svg>
       </div>
     </>
-  );
-}
-
-function MenuItem({ item }: { item: typeof menuItems[0] }) {
-  return (
-    <div className={styles.menuItem}>
-      <div className={styles.menuItemLeft}>
-        <div className={styles.menuItemImg}>{item.img}</div>
-        <div className={styles.menuItemInfo}>
-          <div className={styles.menuItemNameRow}>
-            {item.badge && <span className={styles.badge}>{item.badge}</span>}
-            <span className={styles.menuItemName}>{item.name}</span>
-            <div className={styles.dotLine} />
-            <span className={styles.menuItemPrice}>$ {item.price.toFixed(2)}</span>
-          </div>
-          <p className={styles.menuItemDesc}>{item.desc}</p>
-        </div>
-      </div>
-    </div>
   );
 }

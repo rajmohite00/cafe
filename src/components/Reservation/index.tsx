@@ -110,7 +110,7 @@ export default function Reservation() {
                       <label className="form-label">Date</label>
                       <input
                         type="date"
-                        className="form-input"
+                        className={styles.dateInput}
                         value={form.date}
                         min={new Date().toISOString().split('T')[0]}
                         onChange={e => update('date', e.target.value)}
@@ -202,12 +202,12 @@ export default function Reservation() {
                       ['Email',   form.email],
                       ['Phone',   form.phone],
                       form.occasion ? ['Occasion', form.occasion] : null,
-                    ].filter(Boolean).map(([k,v]) => (
-                      <div key={k as string} className={styles.reviewRow}>
+                    ].filter(Boolean).map((row) => { const [k, v] = row as [string, string]; return (
+                      <div key={k} className={styles.reviewRow}>
                         <span className={styles.reviewKey}>{k}</span>
-                        <span className={styles.reviewVal}>{v as string}</span>
+                        <span className={styles.reviewVal}>{v}</span>
                       </div>
-                    ))}
+                    ); })}
                   </div>
                   {form.requests && (
                     <div className={styles.reviewNote}>
