@@ -302,10 +302,24 @@
 }
 
 @media (max-width: 768px) {
-  .menuGrid { grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: 1.25rem; }
+  .menuGrid { grid-template-columns: repeat(2, 1fr); gap: 1rem; }
   .decorBean, .decorCup { display: none; }
-  .filters { gap: 0.5rem; }
+  /* Horizontally scrollable filter row on mobile */
+  .filters {
+    flex-wrap: nowrap;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+    justify-content: flex-start;
+    padding-bottom: 6px;
+    gap: 0.5rem;
+  }
+  .filters::-webkit-scrollbar { display: none; }
+  .filterBtn { flex-shrink: 0; }
+  .viewMenuWrap { flex-direction: column; align-items: center; }
+  .viewFullBtn { width: 100%; justify-content: center; }
 }
 @media (max-width: 480px) {
   .menuGrid { grid-template-columns: 1fr; }
+  .title { font-size: clamp(1.8rem, 8vw, 2.5rem) !important; }
 }

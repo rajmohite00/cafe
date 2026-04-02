@@ -24,6 +24,7 @@
 .inner {
   display: flex;
   align-items: center;
+  justify-content: space-between;
   height: 72px;
   gap: 2rem;
 }

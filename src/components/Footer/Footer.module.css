@@ -193,7 +193,15 @@
   .brandCol { grid-column: 1 / -1; }
   .newsletterCol { grid-column: 1 / -1; }
 }
-@media (max-width: 600px) {
-  .grid { grid-template-columns: 1fr 1fr; }
-  .ctaInner { flex-direction: column; align-items: flex-start; }
+@media (max-width: 700px) {
+  .grid { grid-template-columns: 1fr 1fr; gap: 1.75rem; }
+  .ctaInner { flex-direction: column; align-items: flex-start; gap: 1.25rem; }
+  .ctaBtn { width: 100%; text-align: center; }
+  .ctaTitle { font-size: 1.8rem; }
+  .main { padding: 3rem 0 1.5rem; }
+}
+@media (max-width: 480px) {
+  .grid { grid-template-columns: 1fr; gap: 1.5rem; }
+  .bottomInner { flex-direction: column; align-items: flex-start; }
+  .ctaStrip { padding: 2.5rem 0; }
 }

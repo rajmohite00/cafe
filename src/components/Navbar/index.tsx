@@ -80,7 +80,9 @@ export default function Navbar() {
           <Link href="/cart" className={styles.drawerLink} onClick={() => setOpen(false)}>
             🛒 Cart {totalItems > 0 && `(${totalItems})`}
           </Link>
-          <Link href="/#reservation" className="btn-primary" onClick={() => setOpen(false)}>Book a Table</Link>
+          <Link href="/#reservation" className={styles.drawerBookBtn} onClick={() => setOpen(false)}>
+            📅 Book a Table
+          </Link>
         </div>
       )}
     </header>
