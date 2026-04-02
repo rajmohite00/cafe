@@ -1,9 +1,8 @@
 'use client';
 
-import { useState } from 'react';
+import { use, useState } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
-import { notFound } from 'next/navigation';
 import { ShoppingCart, ArrowLeft, Star, Clock, Flame, Leaf, Check, Plus, Minus } from 'lucide-react';
 import { useCart } from '@/context/CartContext';
 import { menuItems } from '@/data/menuData';
@@ -11,13 +10,26 @@ import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
 import styles from './item.module.css';
 
-export default function MenuItemPage({ params }: { params: { slug: string } }) {
-  const item = menuItems.find(i => i.slug === params.slug);
-  if (!item) notFound();
+export default function MenuItemPage({ params }: { params: Promise<{ slug: string }> }) {
+  const { slug } = use(params);
+  const item = menuItems.find(i => i.slug === slug);
 
   const { addItem, items } = useCart();
   const [qty, setQty] = useState(1);
   const [added, setAdded] = useState(false);
+
+  if (!item) {
+    return (
+      <>
+        <Navbar />
+        <main style={{ minHeight: '60vh', display: 'flex', alignItems: 'center', justifyContent: 'center', flexDirection: 'column', gap: '1rem', background: 'var(--cream)' }}>
+          <h1 style={{ fontFamily: 'var(--font-serif)', color: 'var(--brown)' }}>Item not found</h1>
+          <Link href="/menu" className="btn-primary">Back to Menu</Link>
+        </main>
+        <Footer />
+      </>
+    );
+  }
 
   const cartItem = items.find(i => i.slug === item.slug);
   const isEmoji = !item.img.startsWith('/');
