@@ -3,8 +3,20 @@ import styles from './Footer.module.css';
 import NewsletterForm from './NewsletterForm';
 
 const links = {
-  'Quick Links':  ['About Us', 'Our Menu', 'Chef\'s Story', 'Private Dining', 'Blog'],
-  'Reservations': ['Book a Table', 'Group Bookings', 'Corporate Events', 'Gift Cards', 'Catering'],
+  'Explore':      [
+    { label: 'Our Menu',     href: '/#menu'      },
+    { label: "Chef's Story", href: '/#about'     },
+    { label: 'Blog',         href: '/blog'       },
+    { label: 'Coffee Quiz',  href: '/quiz'       },
+    { label: 'Loyalty Rewards', href: '/loyalty' },
+  ],
+  'Services': [
+    { label: 'Book a Table',     href: '/#reservation' },
+    { label: 'Gift Cards',       href: '/gift'         },
+    { label: 'Group Bookings',   href: '/#reservation' },
+    { label: 'Corporate Events', href: '/#reservation' },
+    { label: 'Catering',         href: '/#reservation' },
+  ],
 };
 
 const socials = [
@@ -73,7 +85,9 @@ export default function Footer() {
                 <h4 className={styles.linkTitle}>{title}</h4>
                 <ul>
                   {items.map(item => (
-                    <li key={item}><a href="#" className={styles.linkItem}>{item}</a></li>
+                    <li key={item.label}>
+                      <a href={item.href} className={styles.linkItem}>{item.label}</a>
+                    </li>
                   ))}
                 </ul>
               </div>

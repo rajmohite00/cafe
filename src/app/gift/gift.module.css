@@ -1,0 +1,189 @@
+.main { background: var(--cream); min-height: 100vh; padding-bottom: 6rem; }
+
+/* Hero */
+.hero {
+  position: relative;
+  padding: 9rem 0 4rem;
+  overflow: hidden;
+  background: linear-gradient(135deg, #1A0A00 0%, var(--brown) 50%, #3D1F0A 100%);
+  margin-bottom: 4rem;
+  display: grid;
+  grid-template-columns: 1fr auto;
+  align-items: center;
+}
+.heroBg {
+  position: absolute; inset: 0;
+  background: radial-gradient(ellipse 60% 70% at 20% 50%, rgba(232,148,26,0.18) 0%, transparent 60%);
+  pointer-events: none;
+}
+.heroContent { position: relative; z-index: 1; display: flex; flex-direction: column; gap: 1rem; }
+.heroTitle {
+  font-family: var(--font-serif);
+  font-size: clamp(2.8rem, 5vw, 5rem);
+  color: var(--cream);
+  font-weight: 400; line-height: 1.08;
+}
+.heroTitle em { color: var(--amber-light); font-style: italic; }
+.heroSub { font-family: var(--font-body); font-size: 1.05rem; color: rgba(240,230,208,0.65); max-width: 420px; line-height: 1.8; }
+
+/* Mockup card */
+.cardMockup {
+  position: relative; z-index: 1;
+  padding-right: 6vw;
+  transform: rotate(8deg);
+}
+.mockCard {
+  width: 300px;
+  background: linear-gradient(135deg, #D4881A 0%, #E8941A 50%, #F5A832 100%);
+  border-radius: 18px;
+  padding: 1.75rem;
+  box-shadow: 0 32px 80px rgba(0,0,0,0.5), 0 4px 16px rgba(232,148,26,0.4);
+  display: flex; flex-direction: column; gap: 1.5rem;
+  color: white;
+}
+.mockCardTop { display: flex; justify-content: space-between; align-items: center; }
+.mockLogo { font-family: var(--font-serif); font-size: 1.1rem; }
+.mockTag { font-family: var(--font-ui); font-size: 0.62rem; font-weight: 700; letter-spacing: 0.14em; text-transform: uppercase; background: rgba(255,255,255,0.2); padding: 0.3rem 0.75rem; border-radius: 999px; }
+.mockAmount { font-family: var(--font-serif); font-size: 2.8rem; font-weight: 900; line-height: 1; }
+.mockBottom { display: flex; justify-content: space-between; font-family: var(--font-ui); font-size: 0.72rem; opacity: 0.8; }
+
+/* Layout */
+.layout { display: grid; grid-template-columns: 1.1fr 0.9fr; gap: 4rem; align-items: start; }
+
+/* Form */
+.formSection {}
+.formTitle { font-family: var(--font-serif); font-size: 2rem; color: var(--brown); margin-bottom: 1.5rem; font-weight: 400; }
+.amountGrid { display: flex; flex-wrap: wrap; gap: 0.6rem; margin-bottom: 1.75rem; }
+.amountBtn {
+  padding: 0.55rem 1.25rem;
+  border-radius: 999px;
+  border: 1.5px solid rgba(44,21,6,0.15);
+  background: rgba(255,253,249,0.7);
+  color: var(--brown-mid);
+  font-family: var(--font-ui); font-size: 0.82rem; font-weight: 700;
+  cursor: pointer; transition: all 0.22s var(--ease);
+}
+.amountBtn:hover { border-color: var(--amber); color: var(--amber); }
+.amountActive { background: var(--amber) !important; border-color: var(--amber) !important; color: white !important; box-shadow: 0 4px 14px rgba(232,148,26,0.35); }
+
+/* Custom amount input */
+.customWrap {
+  display: flex;
+  align-items: center;
+  gap: 0;
+  margin-bottom: 0.75rem;
+  position: relative;
+}
+.customPrefix {
+  position: absolute;
+  left: 1rem;
+  font-family: var(--font-serif);
+  font-size: 1.1rem;
+  color: var(--brown);
+  pointer-events: none;
+  z-index: 1;
+}
+.customInput {
+  padding-left: 2rem !important;
+  animation: fadeIn 0.25s var(--ease);
+}
+@keyframes fadeIn { from { opacity: 0; transform: translateY(-6px); } to { opacity: 1; transform: translateY(0); } }
+
+/* Amount preview */
+.amountPreview {
+  font-family: var(--font-ui);
+  font-size: 0.78rem;
+  color: var(--muted);
+  margin-bottom: 1.25rem;
+}
+.amountPreview strong {
+  color: var(--amber-dark);
+  font-size: 1rem;
+}
+
+/* Send button */
+.form { display: flex; flex-direction: column; }
+.sendBtn { width: 100%; justify-content: center; margin-top: 0.5rem; transition: all 0.28s var(--ease); }
+.sendBtn:disabled { opacity: 0.5; cursor: not-allowed; transform: none !important; box-shadow: none !important; }
+
+/* Success state */
+.successState {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1rem;
+  padding: 2rem 1rem;
+  text-align: center;
+  animation: fadeIn 0.4s var(--ease) both;
+}
+.successIcon { font-size: 4rem; }
+.successTitle {
+  font-family: var(--font-serif);
+  font-size: 2rem;
+  color: var(--brown);
+  font-weight: 400;
+}
+.successMsg {
+  font-family: var(--font-body);
+  font-size: 0.95rem;
+  color: var(--muted);
+  line-height: 1.8;
+  max-width: 380px;
+}
+
+/* Redeem result */
+.redeemResult {
+  margin-top: 0.75rem;
+  font-family: var(--font-ui);
+  font-size: 0.82rem;
+  font-weight: 600;
+  color: rgba(255,255,255,0.9);
+  background: rgba(0,0,0,0.15);
+  padding: 0.5rem 0.875rem;
+  border-radius: 6px;
+}
+.redeemHint {
+  margin-top: 0.6rem;
+  font-family: var(--font-body);
+  font-size: 0.72rem;
+  color: rgba(255,255,255,0.5);
+}
+.redeemHint code {
+  background: rgba(255,255,255,0.12);
+  padding: 0.1rem 0.4rem;
+  border-radius: 4px;
+  font-size: 0.75rem;
+  letter-spacing: 0.05em;
+}
+
+/* Info */
+.infoSection { display: flex; flex-direction: column; gap: 1.5rem; }
+.infoCard {
+  background: rgba(255,253,249,0.9);
+  border-radius: var(--radius-lg);
+  padding: 2rem;
+  border: 1px solid rgba(232,148,26,0.12);
+  box-shadow: 0 4px 32px rgba(44,21,6,0.08);
+}
+.infoTitle { font-family: var(--font-serif); font-size: 1.4rem; color: var(--brown); font-weight: 400; margin-bottom: 1.5rem; }
+.infoList { display: flex; flex-direction: column; gap: 1.25rem; }
+.infoItem { display: flex; gap: 1rem; align-items: flex-start; }
+.infoIcon { font-size: 1.5rem; flex-shrink: 0; margin-top: 2px; }
+.infoItemTitle { font-family: var(--font-ui); font-size: 0.88rem; font-weight: 700; color: var(--brown); margin-bottom: 0.2rem; }
+.infoItemDesc { font-family: var(--font-body); font-size: 0.82rem; color: var(--muted); line-height: 1.6; }
+
+.redeemCard {
+  background: linear-gradient(135deg, var(--amber) 0%, var(--amber-dark) 100%);
+  border-radius: var(--radius-md);
+  padding: 1.75rem;
+  color: white;
+}
+.redeemTitle { font-family: var(--font-serif); font-size: 1.3rem; font-weight: 400; margin-bottom: 0.5rem; }
+.redeemSub { font-family: var(--font-body); font-size: 0.85rem; opacity: 0.85; margin-bottom: 1.25rem; line-height: 1.6; }
+.redeemRow { display: flex; gap: 0.75rem; align-items: center; }
+
+@media (max-width: 900px) {
+  .hero { grid-template-columns: 1fr; }
+  .cardMockup { display: none; }
+  .layout { grid-template-columns: 1fr; }
+}

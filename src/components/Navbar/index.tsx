@@ -9,7 +9,9 @@ import styles from './Navbar.module.css';
 const navLinks = [
   { label: 'Our Menu',      href: '/#menu'         },
   { label: "Chef's Story",  href: '/#about'        },
-  { label: 'Testimonials',  href: '/#testimonials' },
+  { label: 'Blog',          href: '/blog'          },
+  { label: 'Coffee Quiz',   href: '/quiz'          },
+  { label: 'Gift Cards',    href: '/gift'          },
   { label: 'Reservations',  href: '/#reservation'  },
 ];
 

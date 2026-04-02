@@ -314,3 +314,59 @@ button { cursor: pointer; font-family: inherit; border: none; background: none; 
   margin-block: 1rem 1.5rem;
 }
 
+/* ══════════════════════════════════════════════
+   GLOBAL MOBILE RESPONSIVE UTILITIES
+══════════════════════════════════════════════ */
+
+/* Fluid container gets extra side padding on small screens */
+@media (max-width: 600px) {
+  :root {
+    --section-pad: 3.5rem;
+    --radius-xl: 28px;
+    --radius-lg: 20px;
+  }
+
+  .container {
+    width: min(var(--container), 92vw);
+  }
+
+  /* Buttons full-width on tiny screens */
+  .btn-primary,
+  .btn-outline {
+    width: 100%;
+    justify-content: center;
+    padding: 1rem 1.5rem;
+    font-size: 0.9rem;
+  }
+
+  /* Section title scale */
+  .section-title {
+    font-size: clamp(1.8rem, 7vw, 2.8rem);
+  }
+
+  /* Scrollable filter rows */
+  .filter-scroll {
+    display: flex;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+    gap: 0.5rem;
+    padding-bottom: 4px;
+  }
+  .filter-scroll::-webkit-scrollbar { display: none; }
+  .filter-scroll > * { flex-shrink: 0; }
+}
+
+/* Touch-friendly tap targets */
+@media (pointer: coarse) {
+  .btn-primary,
+  .btn-outline {
+    min-height: 48px;
+  }
+
+  button, a {
+    -webkit-tap-highlight-color: transparent;
+  }
+}
+
+
