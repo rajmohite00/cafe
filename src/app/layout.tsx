@@ -1,6 +1,7 @@
 import type { Metadata, Viewport } from 'next';
 import './globals.css';
 import { CartProvider } from '@/context/CartContext';
+import RevealObserver from '@/components/RevealObserver';
 
 export const metadata: Metadata = {
   title: "Raj's Cafe — The Perfect Blend of Aroma & Ambiance",
@@ -22,8 +23,12 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   return (
     <html lang="en" suppressHydrationWarning>
       <body>
-        <CartProvider>{children}</CartProvider>
+        <CartProvider>
+          {children}
+          <RevealObserver />
+        </CartProvider>
       </body>
     </html>
   );
 }
+

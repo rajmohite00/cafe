@@ -91,9 +91,10 @@ function MenuCard({ item }: { item: MenuItem }) {
 export default function Menu() {
   const [activeCategory, setActiveCategory] = useState('All');
 
-  const filtered = activeCategory === 'All'
+  const filtered = (activeCategory === 'All'
     ? menuItems
-    : menuItems.filter(i => i.category === activeCategory);
+    : menuItems.filter(i => i.category === activeCategory)
+  ).slice(0, 6); // show only 6 on homepage — full list is on /menu
 
   return (
     <>

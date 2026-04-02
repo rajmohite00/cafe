@@ -3,10 +3,10 @@ import { Droplets, Coffee, Users, Heart } from 'lucide-react';
 import styles from './About.module.css';
 
 const features = [
-  { icon: Droplets, title: 'Cozy Atmosphere',       desc: 'We are committed to eco-friendly practice, from using biodegradable materials to sourcing locally.' },
-  { icon: Coffee,   title: 'Artisanal Coffee',      desc: 'Our coffee is sourced from the finest regions around the world and roasted to perfection.' },
-  { icon: Users,    title: 'Community Engagement',  desc: 'We believe in giving back to our community through events, and local collaboration.' },
-  { icon: Heart,    title: 'Exceptional Service',   desc: 'Our friendly and knowledgeable staff are dedicated to providing you with the best service.' },
+  { icon: Droplets, title: 'Cozy Atmosphere',      desc: 'Committed to eco-friendly practices — biodegradable materials, locally sourced ingredients, and zero-waste brewing.' },
+  { icon: Coffee,   title: 'Artisanal Coffee',     desc: 'Beans sourced from India\'s finest estates, roasted in-house weekly, brewed to perfection every cup.' },
+  { icon: Users,    title: 'Community Roots',      desc: 'Giving back through local events, artisan workshops, and collaborating with neighbourhood farmers.' },
+  { icon: Heart,    title: 'Exceptional Service',  desc: 'Our warm, knowledgeable staff ensure every visit feels personal — from your first sip to the last bite.' },
 ];
 
 export default function About() {
@@ -19,29 +19,47 @@ export default function About() {
         </svg>
       </div>
 
-      <section id="sustainability" className={`section-pad ${styles.section}`}>
+      <section id="about" className={`section-pad ${styles.section}`}>
         <div className="container">
-          <h2 className={`section-title ${styles.title}`}>Our Commitment to Sustainability</h2>
+
+          {/* Header */}
+          <p className="section-label reveal" style={{ textAlign: 'center', display: 'block' }}>Our Story</p>
+          <h2 className={`section-title ${styles.title} reveal delay-1`}>
+            Our Commitment to Sustainability
+          </h2>
+          <p className={`${styles.titleSub} reveal delay-2`}>
+            Every cup we pour is a promise — to the earth, our community, and your palate.
+          </p>
 
           <div className={styles.grid}>
-            {/* Left image */}
-            <div className={styles.imgCol}>
+
+            {/* Left — image */}
+            <div className={`${styles.imgCol} reveal-left`}>
               <div className={styles.imgWrap}>
                 <Image
                   src="/chef.png"
-                  alt="Raj's Cafe team crafting coffee with care"
+                  alt="Chef at Raj's Cafe crafting coffee with care"
                   fill
-                  sizes="(max-width: 768px) 90vw, 45vw"
+                  sizes="(max-width: 900px) 90vw, 45vw"
                   className={styles.img}
                 />
                 <div className={styles.imgOverlay} />
               </div>
+
+              {/* Floating year badge */}
+              <div className={styles.imgBadge}>
+                <span className={styles.badgeNum}>15+</span>
+                <span className={styles.badgeTxt}>Years of Craft</span>
+              </div>
             </div>
 
-            {/* Right feature grid */}
+            {/* Right — feature cards */}
             <div className={styles.featuresGrid}>
-              {features.map(({ icon: Icon, title, desc }) => (
-                <div key={title} className={styles.featureCard}>
+              {features.map(({ icon: Icon, title, desc }, i) => (
+                <div
+                  key={title}
+                  className={`${styles.featureCard} reveal delay-${i + 2}`}
+                >
                   <div className={styles.featureIcon}>
                     <Icon size={22} strokeWidth={1.5} />
                   </div>
@@ -52,6 +70,7 @@ export default function About() {
                 </div>
               ))}
             </div>
+
           </div>
         </div>
       </section>

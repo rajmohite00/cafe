@@ -1,7 +1,8 @@
 .section {
   background:
-    radial-gradient(ellipse 60% 50% at 100% 50%, rgba(201,168,76,0.05), transparent),
-    var(--cream); /* replaced --charcoal */
+    radial-gradient(ellipse 55% 45% at 95% 50%, rgba(232,148,26,0.07), transparent 60%),
+    radial-gradient(ellipse 40% 55% at 5% 80%, rgba(158,117,80,0.05), transparent 60%),
+    linear-gradient(160deg, var(--cream) 0%, var(--cream-dark) 100%);
 }
 
 .grid {
@@ -31,14 +32,19 @@
 
 .infoIcon {
   flex-shrink: 0;
-  width: 40px; height: 40px;
+  width: 42px; height: 42px;
   display: flex;
   align-items: center;
   justify-content: center;
-  border-radius: 8px;
-  background: rgba(232,148,26,0.08);
+  border-radius: 12px;
+  background: rgba(232,148,26,0.09);
   color: var(--amber);
-  border: 1px solid rgba(232,148,26,0.15);
+  border: 1px solid rgba(232,148,26,0.18);
+  transition: background 0.25s, transform 0.25s;
+}
+.infoItem:hover .infoIcon {
+  background: rgba(232,148,26,0.16);
+  transform: scale(1.08);
 }
 
 .infoLabel {
@@ -59,7 +65,15 @@
 }
 
 /* Form wrap */
-.formWrap { padding: 2.5rem; }
+.formWrap {
+  padding: 2.5rem;
+  background: rgba(255,253,249,0.75);
+  border-radius: var(--radius-lg);
+  border: 1px solid rgba(232,148,26,0.12);
+  box-shadow: 0 8px 48px rgba(44,21,6,0.1), 0 2px 8px rgba(44,21,6,0.06);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+}
 
 /* Steps */
 .steps {
