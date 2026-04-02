@@ -347,7 +347,7 @@
    MOBILE
 ══════════ */
 @media (max-width: 768px) {
-  .hero { align-items: flex-end; }
+  .hero { align-items: center; }
 
   .gradLeft {
     background: linear-gradient(
@@ -362,21 +362,31 @@
   .content {
     width: 100%;
     margin-inline-start: 0;
-    padding-inline: 5vw;
-    padding-bottom: clamp(70px, 10vh, 110px);
+    padding-inline: 6vw;
+    padding-bottom: 0;
     text-align: center;
   }
 
   .badge, .ctas { justify-content: center; }
-  .sub { margin-inline: auto; }
-  .divider { margin-inline: auto; }
-  .stats { justify-content: center; gap: 1.5rem; flex-wrap: wrap; }
+  .sub { margin-inline: auto; margin-bottom: 1.5rem; }
+  .divider { margin-inline: auto; margin-block: 1rem 1.25rem; }
+  .stats { justify-content: center; gap: 1.25rem; flex-wrap: wrap; margin-bottom: 1.8rem; padding-bottom: 1.5rem; }
+  
+  .ctaGhost {
+    padding: 0.8rem 1.8rem;
+    border: 1px solid rgba(245,237,216,0.3);
+    border-radius: 8px;
+    background: rgba(255,255,255,0.05);
+    text-decoration: none;
+  }
+
   .scrollHint { display: none; }
-  .headline { font-size: clamp(2rem, 8vw, 3.2rem); }
+  .headline { font-size: clamp(2rem, 9vw, 3.2rem); }
 }
 
 @media (max-width: 480px) {
   .stats { gap: 1rem; }
-  .content { padding-bottom: 90px; }
+  .content { padding-bottom: 0; }
   .badge { font-size: 0.62rem; }
+  .ctas { gap: 0.85rem; }
 }
