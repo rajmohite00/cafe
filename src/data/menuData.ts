@@ -1,4 +1,5 @@
 import { MenuItem } from '@/context/CartContext';
+export type { MenuItem };
 
 export const menuItems: MenuItem[] = [
   {
