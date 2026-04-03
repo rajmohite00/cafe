@@ -7,12 +7,14 @@ import { useCart } from '@/context/CartContext';
 import styles from './Navbar.module.css';
 
 const navLinks = [
-  { label: 'Our Menu',      href: '/#menu'         },
-  { label: "Chef's Story",  href: '/#about'        },
+  { label: 'Menu',          href: '/menu'          },
+  { label: "Our Story",     href: '/#about'        },
+  { label: 'Brew Guide',    href: '/brew-guide'    },
+  { label: 'Reviews',       href: '/testimonials'  },
+  { label: 'FAQ',           href: '/faq'           },
   { label: 'Blog',          href: '/blog'          },
-  { label: 'Coffee Quiz',   href: '/quiz'          },
-  { label: 'Gift Cards',    href: '/gift'          },
-  { label: 'Reservations',  href: '/#reservation'  },
+  { label: 'Quiz',          href: '/quiz'          },
+  { label: 'Gift',          href: '/gift'          },
 ];
 
 export default function Navbar() {

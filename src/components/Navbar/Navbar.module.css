@@ -55,7 +55,7 @@
 .nav {
   display: flex;
   align-items: center;
-  gap: 2.25rem;
+  gap: 1.25rem;
   flex: 1;
   justify-content: center;
 }

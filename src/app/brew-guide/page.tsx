@@ -1,0 +1,15 @@
+import Navbar from '@/components/Navbar';
+import Footer from '@/components/Footer';
+import BrewGuide from '@/components/BrewGuide';
+
+export default function BrewGuidePage() {
+  return (
+    <>
+      <Navbar />
+      <main style={{ paddingTop: '100px', minHeight: '80vh' }}>
+        <BrewGuide />
+      </main>
+      <Footer />
+    </>
+  );
+}
