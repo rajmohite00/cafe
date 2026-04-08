@@ -1,0 +1,159 @@
+.section {
+  background: var(--cream);
+}
+
+.header {
+  text-align: center;
+  margin-bottom: 3.5rem;
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: 1fr 1.5fr;
+  gap: 2.5rem;
+  align-items: start;
+}
+
+/* Info col */
+.infoCol { display: flex; flex-direction: column; gap: 1.25rem; }
+
+.infoCard { padding: 1.75rem; }
+
+.cardHeader {
+  display: flex;
+  align-items: center;
+  gap: 0.875rem;
+  margin-bottom: 1.25rem;
+}
+
+.iconWrap {
+  width: 38px; height: 38px;
+  display: flex; align-items: center; justify-content: center;
+  border-radius: 8px;
+  background: rgba(232,148,26,0.1);
+  color: var(--amber);
+  flex-shrink: 0;
+}
+
+.cardTitle {
+  font-family: var(--font-ui);
+  font-size: 0.8rem;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--amber-dark);
+}
+
+.cardBody {
+  font-family: var(--font-body);
+  font-size: 1rem;
+  color: var(--muted);
+  line-height: 1.8;
+  margin-bottom: 1rem;
+}
+
+.mapLink {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  font-family: var(--font-ui);
+  font-size: 0.78rem;
+  font-weight: 600;
+  color: var(--amber);
+  text-decoration: underline;
+  text-decoration-color: rgba(232,148,26,0.3);
+  transition: color 0.2s;
+}
+.mapLink:hover { color: var(--amber-dark); }
+
+.hoursGrid { display: flex; flex-direction: column; gap: 0.75rem; }
+
+.hourRow {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding-bottom: 0.75rem;
+  border-bottom: 1px solid rgba(44,21,6,0.07);
+}
+.hourRow:last-child { border-bottom: none; padding-bottom: 0; }
+
+.hourDay {
+  font-family: var(--font-ui);
+  font-size: 0.82rem;
+  color: var(--muted);
+}
+
+.hourTime {
+  font-family: var(--font-body);
+  font-size: 0.9rem;
+  color: var(--brown);
+  font-weight: 500;
+}
+
+.contactList { display: flex; flex-direction: column; gap: 0.875rem; }
+
+.contactItem {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  font-family: var(--font-body);
+  font-size: 1rem;
+  color: var(--muted);
+  transition: color 0.2s;
+}
+.contactItem:hover { color: var(--amber); }
+
+/* Map col */
+
+.mapWrap {
+  position: relative;
+  height: 520px;
+  border-radius: var(--radius-md);
+  overflow: hidden;
+  border: 1px solid rgba(44,21,6,0.15);
+  box-shadow: 0 4px 24px rgba(44,21,6,0.1);
+}
+
+.mapWrap iframe {
+  width: 100%; height: 100%;
+  filter: invert(0.9) hue-rotate(175deg) saturate(0.4) brightness(0.75);
+}
+
+.mapOverlay {
+  position: absolute;
+  inset: 0;
+  background: rgba(13,11,8,0.2);
+  pointer-events: none;
+}
+
+.mapPin {
+  position: absolute;
+  top: 50%; left: 50%;
+  transform: translate(-50%, -50%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.25rem;
+  pointer-events: none;
+}
+
+.mapPinDot { font-size: 2rem; filter: drop-shadow(0 4px 8px rgba(0,0,0,0.6)); }
+
+.mapPinLabel {
+  background: var(--brown);
+  color: var(--amber);
+  font-family: var(--font-ui);
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  padding: 0.3rem 0.75rem;
+  border-radius: 4px;
+  border: 1px solid rgba(232,148,26,0.3);
+  white-space: nowrap;
+}
+
+@media (max-width: 900px) {
+  .grid { grid-template-columns: 1fr; }
+  .mapWrap { height: 380px; }
+}

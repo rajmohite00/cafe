@@ -1,0 +1,372 @@
+/* ═══════════════════════════════════════════════════
+   RAJ'S CAFE — WARM CAFÉ DESIGN SYSTEM
+   Inspired by artisan café aesthetic
+═══════════════════════════════════════════════════ */
+
+@import url('https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=Playfair+Display:ital,wght@0,400;0,600;0,700;0,900;1,400;1,700&family=Lato:wght@300;400;700&family=Nunito:wght@400;500;600;700&display=swap');
+
+/* ── Tokens ── */
+:root {
+  /* Colors */
+  --cream:        #F0E6D0;
+  --cream-dark:   #E8D9BB;
+  --cream-deeper: #DCC9A3;
+  --bg:           #EDE3CE;
+  --amber:        #E8941A;
+  --amber-dark:   #C97A10;
+  --amber-light:  #F5A832;
+  --brown:        #2C1506;
+  --brown-mid:    #6B3F1E;
+  --brown-light:  #9E7550;
+  --muted:        #8A7560;
+  --teal:         #1B4D5C;
+  --white:        #FFFDF9;
+  --card:         rgba(255,253,249,0.75);
+
+  /* Typography */
+  --font-serif:   'DM Serif Display', 'Playfair Display', Georgia, serif;
+  --font-body:    'Lato', sans-serif;
+  --font-ui:      'Nunito', sans-serif;
+
+  /* Spacing */
+  --section-pad:  5rem;
+  --container:    1200px;
+
+  /* Radii */
+  --radius-sm:    8px;
+  --radius-md:    20px;
+  --radius-lg:    32px;
+  --radius-xl:    48px;
+
+  /* Shadows */
+  --shadow-card:  0 4px 32px rgba(44,21,6,0.10), 0 1px 4px rgba(44,21,6,0.06);
+  --shadow-img:   0 12px 60px rgba(44,21,6,0.18);
+
+  /* Transitions */
+  --ease:         cubic-bezier(0.22,0.61,0.36,1);
+}
+
+/* ── Reset ── */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+html {
+  scroll-behavior: smooth;
+  scroll-padding-top: 80px;
+}
+
+body {
+  font-family: var(--font-body);
+  font-size: 16px;
+  color: var(--brown);
+  background: var(--bg);
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+  overflow-x: hidden;
+}
+
+img, video { display: block; max-width: 100%; }
+a { text-decoration: none; color: inherit; }
+ul { list-style: none; }
+button { cursor: pointer; font-family: inherit; border: none; background: none; }
+
+/* ── Container ── */
+.container {
+  width: min(var(--container), 94vw);
+  margin-inline: auto;
+}
+
+/* ── Section padding ── */
+.section-pad { padding-block: var(--section-pad); }
+
+/* ── Section labels ── */
+.section-label {
+  display: inline-block;
+  font-family: var(--font-ui);
+  font-size: 0.7rem;
+  font-weight: 700;
+  letter-spacing: 0.25em;
+  text-transform: uppercase;
+  color: var(--amber);
+  margin-bottom: 0.875rem;
+}
+
+/* ── Section titles ── */
+.section-title {
+  font-family: var(--font-serif);
+  font-size: clamp(2.2rem, 4vw, 3.5rem);
+  font-weight: 400;
+  color: var(--brown);
+  line-height: 1.1;
+  margin-bottom: 1rem;
+}
+
+.section-subtitle {
+  font-family: var(--font-body);
+  font-size: 1rem;
+  color: var(--muted);
+  line-height: 1.8;
+  max-width: 600px;
+}
+
+/* ── Buttons ── */
+.btn-primary {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.6rem;
+  padding: 0.875rem 2rem;
+  background: var(--amber);
+  color: var(--white);
+  font-family: var(--font-ui);
+  font-size: 0.82rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  border-radius: var(--radius-sm);
+  transition: all 0.3s var(--ease);
+  border: 2px solid var(--amber);
+}
+.btn-primary:hover {
+  background: var(--amber-dark);
+  border-color: var(--amber-dark);
+  transform: translateY(-2px);
+  box-shadow: 0 8px 24px rgba(232,148,26,0.35);
+}
+
+.btn-outline {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.6rem;
+  padding: 0.875rem 2rem;
+  background: transparent;
+  color: var(--brown);
+  font-family: var(--font-ui);
+  font-size: 0.82rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  border-radius: var(--radius-sm);
+  border: 2px solid var(--brown);
+  transition: all 0.3s var(--ease);
+}
+.btn-outline:hover {
+  background: var(--brown);
+  color: var(--cream);
+  transform: translateY(-2px);
+}
+
+/* ── Stars ── */
+.stars { display: flex; gap: 2px; color: var(--amber); }
+.star  { font-size: 0.9rem; }
+
+/* ══════════════════════════════════════════════
+   GLOBAL ANIMATIONS
+══════════════════════════════════════════════ */
+@keyframes floatBob {
+  0%, 100% { transform: translateY(0px) rotate(var(--rot, 0deg)); }
+  50%       { transform: translateY(-14px) rotate(var(--rot, 0deg)); }
+}
+@keyframes floatBobReverse {
+  0%, 100% { transform: translateY(0px) rotate(var(--rot, 0deg)); }
+  50%       { transform: translateY(14px) rotate(var(--rot, 0deg)); }
+}
+@keyframes fadeSlideUp {
+  from { opacity: 0; transform: translateY(32px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+@keyframes rotateSlow {
+  to { transform: rotate(360deg); }
+}
+@keyframes shimmer {
+  from { left: -120%; }
+  to   { left: 200%; }
+}
+@keyframes drawLine {
+  from { stroke-dashoffset: 1000; }
+  to   { stroke-dashoffset: 0; }
+}
+@keyframes wavyMove {
+  0%   { background-position-x: 0; }
+  100% { background-position-x: 1440px; }
+}
+@keyframes spinSlow {
+  to { transform: rotate(360deg); }
+}
+@keyframes scaleIn {
+  from { opacity: 0; transform: scale(0.92); }
+  to   { opacity: 1; transform: scale(1); }
+}
+
+/* ─────────────────────────────────────
+   SCROLL-REVEAL SYSTEM
+   Add class="reveal" to any element.
+   JS (IntersectionObserver) adds .revealed.
+───────────────────────────────────── */
+.reveal {
+  opacity: 0;
+  transform: translateY(36px);
+  transition: opacity 0.75s cubic-bezier(0.22, 0.61, 0.36, 1),
+              transform 0.75s cubic-bezier(0.22, 0.61, 0.36, 1);
+}
+.reveal.revealed {
+  opacity: 1;
+  transform: translateY(0);
+}
+.reveal-left {
+  opacity: 0;
+  transform: translateX(-40px);
+  transition: opacity 0.75s cubic-bezier(0.22, 0.61, 0.36, 1),
+              transform 0.75s cubic-bezier(0.22, 0.61, 0.36, 1);
+}
+.reveal-left.revealed {
+  opacity: 1;
+  transform: translateX(0);
+}
+.reveal-right {
+  opacity: 0;
+  transform: translateX(40px);
+  transition: opacity 0.75s cubic-bezier(0.22, 0.61, 0.36, 1),
+              transform 0.75s cubic-bezier(0.22, 0.61, 0.36, 1);
+}
+.reveal-right.revealed {
+  opacity: 1;
+  transform: translateX(0);
+}
+/* Stagger delay helpers */
+.delay-1 { transition-delay: 0.1s !important; }
+.delay-2 { transition-delay: 0.2s !important; }
+.delay-3 { transition-delay: 0.3s !important; }
+.delay-4 { transition-delay: 0.4s !important; }
+.delay-5 { transition-delay: 0.5s !important; }
+.delay-6 { transition-delay: 0.6s !important; }
+
+/* Smooth hover lift — apply to cards/images */
+.hover-lift {
+  transition: transform 0.35s cubic-bezier(0.22,0.61,0.36,1),
+              box-shadow 0.35s cubic-bezier(0.22,0.61,0.36,1);
+}
+.hover-lift:hover {
+  transform: translateY(-6px);
+  box-shadow: 0 20px 60px rgba(44,21,6,0.16);
+}
+
+/* ── Form Inputs & Components ── */
+.form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+  margin-bottom: 1.25rem;
+}
+
+.form-label {
+  font-family: var(--font-ui);
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  color: var(--brown);
+  text-transform: uppercase;
+}
+
+.form-input, .form-select, .form-textarea {
+  width: 100%;
+  padding: 0.75rem 1rem;
+  border-radius: var(--radius-sm);
+  border: 1.5px solid rgba(44,21,6,0.18);
+  background: rgba(255,253,249,0.85);
+  color: var(--brown);
+  font-family: var(--font-ui);
+  font-size: 0.95rem;
+  font-weight: 500;
+  outline: none;
+  transition: all 0.2s var(--ease);
+  box-shadow: 0 1px 4px rgba(44,21,6,0.06);
+}
+
+.form-input::placeholder, .form-textarea::placeholder {
+  color: var(--muted);
+  font-weight: 400;
+}
+
+.form-input:hover, .form-select:hover, .form-textarea:hover {
+  border-color: var(--amber);
+}
+
+.form-input:focus, .form-select:focus, .form-textarea:focus {
+  border-color: var(--amber);
+  box-shadow: 0 0 0 3px rgba(232,148,26,0.15);
+}
+
+.form-textarea {
+  resize: vertical;
+  min-height: 100px;
+}
+
+.glass-card {
+  background: var(--card);
+  border: 1px solid rgba(255,255,255,0.6);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-card);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+}
+
+.gold-divider {
+  width: 60px;
+  height: 2px;
+  background: var(--amber);
+  margin-block: 1rem 1.5rem;
+}
+
+/* ══════════════════════════════════════════════
+   GLOBAL MOBILE RESPONSIVE UTILITIES
+══════════════════════════════════════════════ */
+
+/* Fluid container gets extra side padding on small screens */
+@media (max-width: 600px) {
+  :root {
+    --section-pad: 3.5rem;
+    --radius-xl: 28px;
+    --radius-lg: 20px;
+  }
+
+  .container {
+    width: min(var(--container), 92vw);
+  }
+
+  /* Buttons full-width on tiny screens */
+  .btn-primary,
+  .btn-outline {
+    width: 100%;
+    justify-content: center;
+    padding: 1rem 1.5rem;
+    font-size: 0.9rem;
+  }
+
+  /* Section title scale */
+  .section-title {
+    font-size: clamp(1.8rem, 7vw, 2.8rem);
+  }
+
+  /* Scrollable filter rows */
+  .filter-scroll {
+    display: flex;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+    gap: 0.5rem;
+    padding-bottom: 4px;
+  }
+  .filter-scroll::-webkit-scrollbar { display: none; }
+  .filter-scroll > * { flex-shrink: 0; }
+}
+
+/* Touch-friendly tap targets */
+@media (pointer: coarse) {
+  .btn-primary,
+  .btn-outline {
+    min-height: 48px;
+  }
+
+  button, a {
+    -webkit-tap-highlight-color: transparent;
+  }
+}
+
+

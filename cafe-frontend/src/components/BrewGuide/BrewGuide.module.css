@@ -1,0 +1,141 @@
+/* ════════════════════ BREW GUIDE ════════════════════ */
+.section {
+  padding-block: 6rem;
+  background: linear-gradient(170deg, var(--cream-deeper) 0%, var(--cream-dark) 100%);
+  position: relative;
+  overflow: hidden;
+}
+
+.header { text-align: center; margin-bottom: 3.5rem; }
+.title  { font-size: clamp(2rem, 4vw, 3rem) !important; }
+.subtitle {
+  text-align: center;
+  margin-inline: auto;
+  margin-top: 0.75rem;
+}
+
+/* Grid */
+.grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1.75rem;
+}
+
+/* Card */
+.card {
+  background: rgba(255,253,249,0.88);
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  border: 1px solid rgba(44,21,6,0.06);
+  box-shadow: 0 4px 24px rgba(44,21,6,0.08);
+  display: flex;
+  flex-direction: column;
+  transition: transform 0.35s var(--ease), box-shadow 0.35s var(--ease);
+}
+.card:hover {
+  transform: translateY(-6px);
+  box-shadow: 0 20px 60px rgba(44,21,6,0.14);
+}
+
+.cardTop {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding: 1.5rem 1.5rem 1.25rem;
+  background: rgba(var(--accent-rgb, 201,122,16), 0.06);
+  border-bottom: 1px solid rgba(44,21,6,0.06);
+}
+.cardIcon {
+  font-size: 2.2rem;
+  flex-shrink: 0;
+  width: 52px; height: 52px;
+  display: flex; align-items: center; justify-content: center;
+  background: rgba(255,255,255,0.7);
+  border-radius: 14px;
+  box-shadow: 0 2px 8px rgba(44,21,6,0.08);
+}
+.cardName {
+  font-family: var(--font-serif);
+  font-size: 1.2rem;
+  color: var(--brown);
+  font-weight: 400;
+  margin-bottom: 0.3rem;
+}
+.cardMeta {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  font-family: var(--font-ui);
+  font-size: 0.72rem;
+  color: var(--muted);
+  font-weight: 600;
+}
+
+/* Difficulty badges */
+.badge {
+  padding: 0.18rem 0.6rem;
+  border-radius: 999px;
+  font-size: 0.62rem;
+  font-weight: 800;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+.badgeEasy         { background: rgba(46,125,50,0.1);  color: #2e7d32; }
+.badgeIntermediate { background: rgba(232,148,26,0.12); color: var(--amber-dark); }
+.badgeAdvanced     { background: rgba(44,21,6,0.1);    color: var(--brown-mid); }
+
+/* Steps */
+.steps {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  padding: 1.5rem;
+  flex: 1;
+}
+.step {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.75rem;
+  font-family: var(--font-body);
+  font-size: 0.85rem;
+  color: var(--brown-mid);
+  line-height: 1.55;
+}
+.stepNum {
+  flex-shrink: 0;
+  width: 22px; height: 22px;
+  border-radius: 50%;
+  color: white;
+  font-family: var(--font-ui);
+  font-size: 0.65rem;
+  font-weight: 800;
+  display: flex; align-items: center; justify-content: center;
+  margin-top: 2px;
+}
+
+/* Tip */
+.tip {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.6rem;
+  margin: 0 1.5rem 1.5rem;
+  padding: 0.875rem 1rem;
+  background: rgba(232,148,26,0.07);
+  border-radius: var(--radius-sm);
+  border-left: 3px solid var(--amber);
+  font-family: var(--font-body);
+  font-size: 0.8rem;
+  color: var(--brown-mid);
+  line-height: 1.5;
+}
+.tipIcon { font-size: 1rem; flex-shrink: 0; margin-top: 1px; }
+
+@media (max-width: 960px) {
+  .grid { grid-template-columns: 1fr 1fr; }
+}
+@media (max-width: 600px) {
+  .section { padding-block: 4rem; }
+  .grid { grid-template-columns: 1fr; gap: 1.25rem; }
+  .header { margin-bottom: 2.25rem; }
+}

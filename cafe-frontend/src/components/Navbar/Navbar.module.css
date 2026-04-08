@@ -1,0 +1,257 @@
+/* ═══════════════════════════════════════════════
+   NAVBAR — Transparent on hero, solid on scroll
+═══════════════════════════════════════════════ */
+
+.header {
+  position: fixed;
+  top: 0; left: 0; right: 0;
+  z-index: 100;
+  /* Transparent at top — blends with dark hero */
+  background: transparent;
+  border-bottom: 1px solid transparent;
+  transition: background 0.45s ease, border-color 0.45s ease, box-shadow 0.45s ease;
+}
+
+/* On scroll — rich frosted glass */
+.scrolled {
+  background: rgba(255, 253, 249, 0.94);
+  border-bottom-color: rgba(44, 21, 6, 0.07);
+  box-shadow: 0 2px 32px rgba(44, 21, 6, 0.1);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+}
+
+.inner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: 72px;
+  gap: 2rem;
+}
+
+/* ── Logo ── */
+.logo {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  flex-shrink: 0;
+  transition: opacity 0.2s;
+}
+.logo:hover { opacity: 0.85; }
+.logoIcon { display: flex; align-items: center; }
+
+.logoText {
+  font-family: var(--font-serif);
+  font-size: 1.2rem;
+  font-weight: 400;
+  /* White on dark hero, brown when scrolled */
+  color: rgba(255, 253, 249, 0.95);
+  letter-spacing: 0.01em;
+  transition: color 0.45s ease;
+}
+.scrolled .logoText { color: var(--brown); }
+
+/* ── Nav links ── */
+.nav {
+  display: flex;
+  align-items: center;
+  gap: 1.25rem;
+  flex: 1;
+  justify-content: center;
+}
+
+.navLink {
+  font-family: var(--font-ui);
+  font-size: 0.82rem;
+  font-weight: 600;
+  color: rgba(255, 253, 249, 0.78);
+  letter-spacing: 0.03em;
+  position: relative;
+  transition: color 0.25s;
+}
+.navLink::after {
+  content: '';
+  position: absolute;
+  bottom: -3px; left: 0; right: 0;
+  height: 2px;
+  background: var(--amber);
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform 0.3s ease;
+  border-radius: 1px;
+}
+.navLink:hover { color: rgba(255, 253, 249, 1); }
+.navLink:hover::after { transform: scaleX(1); }
+
+/* After scroll */
+.scrolled .navLink { color: var(--brown-mid); }
+.scrolled .navLink:hover { color: var(--brown); }
+
+/* ── Actions ── */
+.actions {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  flex-shrink: 0;
+}
+
+.iconBtn {
+  width: 36px; height: 36px;
+  border-radius: 50%;
+  background: transparent;
+  color: rgba(255, 253, 249, 0.75);
+  display: flex; align-items: center; justify-content: center;
+  transition: all 0.25s;
+}
+.iconBtn:hover {
+  background: rgba(255, 255, 255, 0.12);
+  color: rgba(255, 253, 249, 1);
+}
+.scrolled .iconBtn { color: var(--brown-mid); }
+.scrolled .iconBtn:hover { background: rgba(44,21,6,0.06); color: var(--brown); }
+
+/* Cart */
+.cartBtn {
+  position: relative;
+  width: 36px; height: 36px;
+  border-radius: 50%;
+  background: transparent;
+  color: rgba(255, 253, 249, 0.75);
+  display: flex; align-items: center; justify-content: center;
+  transition: all 0.25s;
+  text-decoration: none;
+}
+.cartBtn:hover {
+  background: rgba(255, 255, 255, 0.12);
+  color: rgba(255, 253, 249, 1);
+}
+.scrolled .cartBtn { color: var(--brown-mid); }
+.scrolled .cartBtn:hover { background: rgba(44,21,6,0.06); color: var(--brown); }
+
+.cartBadge {
+  position: absolute;
+  top: -1px; right: -3px;
+  min-width: 16px; height: 16px;
+  background: var(--amber);
+  color: white;
+  font-family: var(--font-ui);
+  font-size: 0.55rem;
+  font-weight: 800;
+  border-radius: 999px;
+  display: flex; align-items: center; justify-content: center;
+  padding: 0 3px;
+  border: 1.5px solid transparent;
+  animation: badgePop 0.25s var(--ease) both;
+}
+.scrolled .cartBadge { border-color: var(--white); }
+
+@keyframes badgePop {
+  from { transform: scale(0); }
+  to   { transform: scale(1); }
+}
+
+/* Book button */
+.bookBtn {
+  padding: 0.6rem 1.35rem;
+  background: var(--amber);
+  color: var(--white);
+  font-family: var(--font-ui);
+  font-size: 0.78rem;
+  font-weight: 700;
+  border-radius: var(--radius-sm);
+  transition: all 0.25s;
+  white-space: nowrap;
+  border: 2px solid var(--amber);
+  box-shadow: 0 4px 14px rgba(232,148,26,0.3);
+}
+.bookBtn:hover {
+  background: var(--amber-dark);
+  border-color: var(--amber-dark);
+  transform: translateY(-1px);
+  box-shadow: 0 6px 20px rgba(232,148,26,0.4);
+}
+
+.mobileMenu {
+  display: none;
+  color: rgba(255,253,249,0.9);
+  padding: 0.6rem;
+  transition: color 0.45s;
+  min-width: 44px;
+  min-height: 44px;
+  align-items: center;
+  justify-content: center;
+  border-radius: 8px;
+}
+.mobileMenu:hover { background: rgba(255,255,255,0.1); }
+.scrolled .mobileMenu { color: var(--brown); }
+.scrolled .mobileMenu:hover { background: rgba(44,21,6,0.06); }
+
+/* ── Mobile drawer ── */
+.drawer {
+  position: absolute;
+  top: 72px; left: 0; right: 0;
+  background: rgba(255, 253, 249, 0.98);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  padding: 1rem 1.25rem 1.5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+  border-bottom: 1px solid rgba(44,21,6,0.08);
+  box-shadow: 0 16px 48px rgba(44,21,6,0.15);
+  animation: drawerDrop 0.3s var(--ease) both;
+  max-height: calc(100dvh - 72px);
+  overflow-y: auto;
+}
+@keyframes drawerDrop {
+  from { opacity: 0; transform: translateY(-12px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+.drawerLink {
+  font-family: var(--font-ui);
+  font-size: 1rem;
+  font-weight: 600;
+  color: var(--brown-mid);
+  padding: 0.95rem 0;
+  border-bottom: 1px solid rgba(44,21,6,0.06);
+  transition: color 0.2s, padding-left 0.2s;
+  display: flex;
+  align-items: center;
+  min-height: 48px;
+}
+.drawerLink:hover { color: var(--amber); padding-left: 6px; }
+
+.drawerBookBtn {
+  margin-top: 1.25rem;
+  background: var(--amber);
+  color: white;
+  font-family: var(--font-ui);
+  font-size: 0.9rem;
+  font-weight: 700;
+  text-align: center;
+  padding: 1rem;
+  border-radius: var(--radius-sm);
+  letter-spacing: 0.04em;
+  transition: background 0.25s;
+  width: 100%;
+  min-height: 52px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.drawerBookBtn:hover { background: var(--amber-dark); }
+
+/* ── Responsive ── */
+@media (max-width: 900px) {
+  .nav { display: none; }
+  .iconBtn { display: none; }
+  .bookBtn { display: none; }
+  .mobileMenu { display: flex; }
+  .cartBtn { display: flex; }
+}
+
+@media (max-width: 480px) {
+  .inner { height: 60px; }
+  .drawer { top: 60px; }
+  .logoText { font-size: 1.05rem; }
+}

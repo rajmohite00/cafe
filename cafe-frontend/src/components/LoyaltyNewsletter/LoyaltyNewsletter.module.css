@@ -1,0 +1,287 @@
+/* ═══════════════════════════════════════════════
+   LOYALTY STRIP
+═══════════════════════════════════════════════ */
+.loyalty {
+  background: linear-gradient(140deg, var(--brown) 0%, #2C1506 50%, #1A0A00 100%);
+  padding-block: 5.5rem;
+  position: relative;
+  overflow: hidden;
+}
+.loyalty::before {
+  content: '';
+  position: absolute; inset: 0;
+  background: radial-gradient(ellipse 50% 70% at 15% 50%, rgba(232,148,26,0.12) 0%, transparent 60%);
+  pointer-events: none;
+}
+
+.loyaltyInner {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 4rem;
+  align-items: center;
+}
+
+/* Left text */
+.loyaltyLeft { position: relative; z-index: 1; }
+.loyaltyBadge {
+  display: inline-block;
+  font-family: var(--font-ui);
+  font-size: 0.68rem;
+  font-weight: 700;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--amber-light);
+  background: rgba(232,148,26,0.12);
+  border: 1px solid rgba(232,148,26,0.2);
+  padding: 0.35rem 1rem;
+  border-radius: 999px;
+  margin-bottom: 1.2rem;
+}
+.loyaltyTitle {
+  font-family: var(--font-serif);
+  font-size: clamp(2.2rem, 4vw, 3.8rem);
+  color: var(--cream);
+  font-weight: 400;
+  line-height: 1.1;
+  margin-bottom: 1.25rem;
+}
+.loyaltyAccent { color: var(--amber-light); font-style: italic; }
+.loyaltySub {
+  font-family: var(--font-body);
+  font-size: 1rem;
+  color: rgba(240,230,208,0.6);
+  max-width: 440px;
+  line-height: 1.8;
+  margin-bottom: 2rem;
+}
+
+.loyaltyPerks {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.875rem;
+  margin-bottom: 2rem;
+}
+.perk {
+  display: flex;
+  align-items: center;
+  gap: 0.65rem;
+  background: rgba(255,255,255,0.06);
+  border: 1px solid rgba(255,255,255,0.08);
+  border-radius: var(--radius-sm);
+  padding: 0.65rem 1rem;
+}
+.perkIcon { font-size: 1.1rem; }
+.perkLabel {
+  font-family: var(--font-ui);
+  font-size: 0.78rem;
+  font-weight: 600;
+  color: rgba(240,230,208,0.75);
+}
+
+.loyaltyCtas {
+  display: flex;
+  align-items: center;
+  gap: 1.5rem;
+}
+.learnMore {
+  font-family: var(--font-ui);
+  font-size: 0.82rem;
+  font-weight: 600;
+  color: rgba(240,230,208,0.55);
+  border-bottom: 1px solid rgba(240,230,208,0.2);
+  padding-bottom: 2px;
+  transition: all 0.25s;
+}
+.learnMore:hover { color: var(--amber-light); border-bottom-color: var(--amber-light); }
+
+/* Right — loyalty card visual */
+.loyaltyRight { position: relative; z-index: 1; flex-shrink: 0; }
+
+.loyaltyCard {
+  width: 300px;
+  background: linear-gradient(135deg, rgba(255,255,255,0.12) 0%, rgba(255,255,255,0.06) 100%);
+  border: 1px solid rgba(255,255,255,0.18);
+  border-radius: 20px;
+  padding: 1.75rem;
+  backdrop-filter: blur(20px);
+  box-shadow: 0 24px 80px rgba(0,0,0,0.5);
+  color: white;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+.lcTop { display: flex; justify-content: space-between; align-items: center; }
+.lcLogo { font-family: var(--font-serif); font-size: 1rem; }
+.lcTier {
+  font-family: var(--font-ui);
+  font-size: 0.6rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  background: linear-gradient(90deg, #FFD700, #FFA500);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+.lcPoints { display: flex; flex-direction: column; }
+.lcPtsNum { font-family: var(--font-serif); font-size: 2.8rem; font-weight: 900; line-height: 1; }
+.lcPtsLabel { font-family: var(--font-ui); font-size: 0.62rem; font-weight: 700; letter-spacing: 0.14em; opacity: 0.55; }
+.lcBar { height: 6px; background: rgba(255,255,255,0.15); border-radius: 999px; overflow: hidden; }
+.lcBarFill { height: 100%; background: linear-gradient(90deg, var(--amber-light), #FFD700); border-radius: 999px; }
+.lcNext { font-family: var(--font-ui); font-size: 0.72rem; color: rgba(255,255,255,0.65); }
+.lcName { font-family: var(--font-body); font-size: 0.72rem; color: rgba(255,255,255,0.4); padding-top: 0.5rem; border-top: 1px solid rgba(255,255,255,0.1); }
+
+
+/* ═══════════════════════════════════════════════
+   NEWSLETTER
+═══════════════════════════════════════════════ */
+.newsletter {
+  background: var(--cream);
+  padding-block: 5rem;
+  position: relative;
+  overflow: hidden;
+}
+.newsletter::before {
+  content: '';
+  position: absolute; inset: 0;
+  background: radial-gradient(ellipse 60% 80% at 50% 100%, rgba(232,148,26,0.07) 0%, transparent 60%);
+  pointer-events: none;
+}
+
+.nlInner { position: relative; z-index: 1; display: flex; justify-content: center; }
+.nlContent {
+  max-width: 600px;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1rem;
+}
+.nlBadge {
+  display: inline-block;
+  font-family: var(--font-ui);
+  font-size: 0.68rem;
+  font-weight: 700;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--amber-dark);
+  background: rgba(232,148,26,0.1);
+  border: 1px solid rgba(232,148,26,0.2);
+  padding: 0.35rem 1rem;
+  border-radius: 999px;
+}
+.nlTitle {
+  font-family: var(--font-serif);
+  font-size: clamp(2rem, 4vw, 3.2rem);
+  color: var(--brown);
+  font-weight: 400;
+}
+.nlSub {
+  font-family: var(--font-body);
+  font-size: 0.98rem;
+  color: var(--muted);
+  line-height: 1.8;
+}
+.nlForm {
+  display: flex;
+  gap: 0.75rem;
+  width: 100%;
+  max-width: 480px;
+}
+.nlInput {
+  flex: 1;
+  padding: 0.875rem 1.25rem;
+  border-radius: var(--radius-sm);
+  border: 1.5px solid rgba(44,21,6,0.15);
+  background: rgba(255,253,249,0.9);
+  color: var(--brown);
+  font-family: var(--font-ui);
+  font-size: 0.92rem;
+  outline: none;
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+.nlInput:focus {
+  border-color: var(--amber);
+  box-shadow: 0 0 0 3px rgba(232,148,26,0.12);
+}
+.nlInput::placeholder { color: var(--muted); }
+.nlBtn {
+  white-space: nowrap;
+  padding: 0.875rem 1.75rem;
+  background: var(--amber);
+  color: white;
+  font-family: var(--font-ui);
+  font-size: 0.82rem;
+  font-weight: 700;
+  border: 2px solid var(--amber);
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  transition: all 0.28s var(--ease);
+  box-shadow: 0 4px 16px rgba(232,148,26,0.28);
+}
+.nlBtn:hover {
+  background: var(--amber-dark);
+  border-color: var(--amber-dark);
+  transform: translateY(-2px);
+  box-shadow: 0 8px 24px rgba(232,148,26,0.4);
+}
+.nlNote {
+  font-family: var(--font-body);
+  font-size: 0.82rem;
+  color: var(--muted);
+}
+.nlNote strong { color: var(--brown); }
+
+/* ── Newsletter Success State ── */
+.nlSuccess {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.75rem;
+  animation: fadeSlideUp 0.45s cubic-bezier(0.22,0.61,0.36,1) both;
+}
+@keyframes fadeSlideUp {
+  from { opacity: 0; transform: translateY(20px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+.nlSuccessIcon { font-size: 3.5rem; }
+.nlSuccessTitle {
+  font-family: var(--font-serif);
+  font-size: 2.2rem;
+  color: var(--brown);
+  font-weight: 400;
+}
+.nlSuccessMsg {
+  font-family: var(--font-body);
+  font-size: 0.95rem;
+  color: var(--muted);
+  line-height: 1.8;
+  text-align: center;
+  max-width: 440px;
+}
+.nlSuccessMsg strong { color: var(--amber-dark); }
+.nlResetBtn {
+  margin-top: 0.5rem;
+  background: none;
+  border: none;
+  font-family: var(--font-ui);
+  font-size: 0.78rem;
+  font-weight: 600;
+  color: var(--muted);
+  cursor: pointer;
+  border-bottom: 1px dashed var(--muted);
+  transition: color 0.2s;
+  padding: 0;
+}
+.nlResetBtn:hover { color: var(--amber-dark); border-bottom-color: var(--amber-dark); }
+
+/* Responsive */
+@media (max-width: 900px) {
+  .loyaltyInner { grid-template-columns: 1fr; }
+  .loyaltyRight { display: none; }
+  .loyaltyPerks { grid-template-columns: 1fr; }
+}
+@media (max-width: 500px) {
+  .nlForm { flex-direction: column; }
+  .nlBtn { width: 100%; }
+}
