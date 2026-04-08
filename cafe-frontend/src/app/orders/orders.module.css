@@ -3,7 +3,7 @@
 ══════════════════════════════════════ */
 
 .main {
-  padding-top: 160px;
+  padding-top: 110px;
   padding-bottom: 5rem;
   min-height: 100svh;
   background: var(--bg);
@@ -647,4 +647,4 @@
   .itemsTotal { font-size: 0.65rem; gap: 0.25rem; padding: 0.4rem 0.5rem; }
 }
 
-@media (max-width: 768px) { .main { padding-top: 90px !important; } }
+@media (max-width: 768px) { .main { padding-top: 65px !important; } }

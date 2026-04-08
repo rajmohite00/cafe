@@ -70,12 +70,12 @@ ul { list-style: none; }
 button { cursor: pointer; font-family: inherit; border: none; background: none; }
 
 .padded-main {
-  padding-top: 160px;
+  padding-top: 110px;
   min-height: 80vh;
 }
 @media (max-width: 768px) {
   .padded-main {
-    padding-top: 90px !important;
+    padding-top: 65px !important;
   }
 }
 
