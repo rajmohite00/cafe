@@ -187,10 +187,46 @@ export default function AdminPage() {
     { key:'seo',          icon:Settings,        label:'SEO Settings'           },
   ];
 
-  // ── Sidebar ──
+  // ── Sidebar (desktop only) + Mobile Bottom Nav ──
   const Sidebar = () => (
-    <aside className={styles.sidebar}>
-      <div className={styles.sidebarLogo}>
+    <>
+      {/* ── Desktop Sidebar ── */}
+      <aside className={styles.sidebar}>
+        <div className={styles.sidebarLogo}>
+          <span className={styles.logoGold}>✦</span>
+          <div>
+            <div className={styles.logoName}>Admin Panel</div>
+            <div className={styles.logoSub}>Raj&apos;s Cafe</div>
+          </div>
+        </div>
+
+        <nav className={styles.sidebarNav}>
+          {navItems.map(({ key, icon: Icon, label, badge }) => (
+            <button
+              key={key}
+              className={`${styles.navItem} ${tab === key ? styles.navActive : ''}`}
+              onClick={() => setTab(key as Tab)}
+            >
+              <Icon size={17} strokeWidth={1.8} />
+              <span>{label}</span>
+              {badge ? <span className={styles.navBadge}>{badge}</span> : null}
+              <ChevronRight size={14} className={styles.navChev} />
+            </button>
+          ))}
+        </nav>
+
+        <div className={styles.sidebarFooter}>
+          <button className={styles.logoutBtn}>
+            <LogOut size={15} strokeWidth={1.8} /> Sign Out
+          </button>
+          <a href="/" className={styles.viewSiteBtn} target="_blank" rel="noopener noreferrer">
+            <Eye size={14} /> View Site
+          </a>
+        </div>
+      </aside>
+
+      {/* ── Mobile Top Bar (logo only) ── */}
+      <div className={styles.mobileTopBar}>
         <span className={styles.logoGold}>✦</span>
         <div>
           <div className={styles.logoName}>Admin Panel</div>
@@ -198,30 +234,23 @@ export default function AdminPage() {
         </div>
       </div>
 
-      <nav className={styles.sidebarNav}>
+      {/* ── Mobile Bottom Navigation ── */}
+      <nav className={styles.mobileBottomNav}>
         {navItems.map(({ key, icon: Icon, label, badge }) => (
           <button
             key={key}
-            className={`${styles.navItem} ${tab === key ? styles.navActive : ''}`}
-            onClick={() => setTab(key)}
+            className={`${styles.mobileNavBtn} ${tab === key ? styles.mobileNavActive : ''}`}
+            onClick={() => setTab(key as Tab)}
           >
-            <Icon size={17} strokeWidth={1.8} />
-            <span>{label}</span>
-            {badge ? <span className={styles.navBadge}>{badge}</span> : null}
-            <ChevronRight size={14} className={styles.navChev} />
+            <div className={styles.mobileNavIconWrap}>
+              <Icon size={20} strokeWidth={1.8} />
+              {badge ? <span className={styles.mobileNavBadge}>{badge}</span> : null}
+            </div>
+            <span className={styles.mobileNavLabel}>{label}</span>
           </button>
         ))}
       </nav>
-
-      <div className={styles.sidebarFooter}>
-        <button className={styles.logoutBtn}>
-          <LogOut size={15} strokeWidth={1.8} /> Sign Out
-        </button>
-        <a href="/" className={styles.viewSiteBtn} target="_blank" rel="noopener noreferrer">
-          <Eye size={14} /> View Site
-        </a>
-      </div>
-    </aside>
+    </>
   );
 
   // ── Dashboard Tab ──
