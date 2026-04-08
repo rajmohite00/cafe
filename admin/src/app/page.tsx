@@ -89,10 +89,10 @@ export default function AdminPage() {
     const fetchAllData = async () => {
       try {
         const [menuRes, resRes, contactRes, postRes] = await Promise.all([
-          fetch('${API_URL}/api/data/menu'),
-          fetch('${API_URL}/api/data/reservations'),
-          fetch('${API_URL}/api/data/contacts'),
-          fetch('${API_URL}/api/data/posts')
+          fetch(`${API_URL}/api/data/menu`),
+          fetch(`${API_URL}/api/data/reservations`),
+          fetch(`${API_URL}/api/data/contacts`),
+          fetch(`${API_URL}/api/data/posts`)
         ]);
         const [menu, res, contacts, posts] = await Promise.all([
           menuRes.json(), resRes.json(), contactRes.json(), postRes.json()
@@ -111,7 +111,7 @@ export default function AdminPage() {
   useEffect(() => {
     const fetchOrders = async () => {
       try {
-        const res = await fetch('${API_URL}/api/orders');
+        const res = await fetch(`${API_URL}/api/orders`);
         const data = await res.json();
         if (data.success) {
           setOrders(data.data);
@@ -121,7 +121,7 @@ export default function AdminPage() {
       }
 
       try {
-        const resAct = await fetch('${API_URL}/api/activities');
+        const resAct = await fetch(`${API_URL}/api/activities`);
         const dataAct = await resAct.json();
         if (dataAct.success) {
           setActivities(dataAct.data);
@@ -157,7 +157,7 @@ export default function AdminPage() {
   };
   const addMenuItem = async () => {
     const newItem = { name:'New Dish', category:'Signature', price:0, tag:'', emoji:'🍽', visible:true };
-    const res = await fetch('${API_URL}/api/data/menu', {
+    const res = await fetch(`${API_URL}/api/data/menu`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(newItem)
@@ -517,7 +517,7 @@ export default function AdminPage() {
         <div><h1 className={styles.pageTitle}>Blog & Events</h1><p className={styles.pageSubtitle}>{posts.filter(p=>p.status==='published').length} published · {posts.filter(p=>p.status==='draft').length} drafts</p></div>
         <button className={styles.primaryBtn} onClick={async () => { 
           const np = { title:'New Post', excerpt:'', status:'draft', date:new Date().toISOString().split('T')[0] }; 
-          const res = await fetch('${API_URL}/api/data/posts', {
+          const res = await fetch(`${API_URL}/api/data/posts`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify(np)
