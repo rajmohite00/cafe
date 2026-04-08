@@ -50,114 +50,321 @@ function downloadBill(order: Order, userName: string) {
 
   const itemRows   = order.items.map(i => `
     <tr>
-      <td style="padding:10px 12px;border-bottom:1px solid #f0e8d8;color:#3d2208;font-size:14px;">${i.name}</td>
-      <td style="padding:10px 12px;border-bottom:1px solid #f0e8d8;text-align:center;color:#6b4c2a;font-size:14px;">${i.quantity}</td>
-      <td style="padding:10px 12px;border-bottom:1px solid #f0e8d8;text-align:right;color:#3d2208;font-size:14px;">₹${i.price}</td>
-      <td style="padding:10px 12px;border-bottom:1px solid #f0e8d8;text-align:right;font-weight:700;color:#3d2208;font-size:14px;">₹${i.price * i.quantity}</td>
+      <td class="item-name">${i.name}</td>
+      <td class="text-center">${i.quantity}</td>
+      <td class="text-right">₹${i.price.toFixed(2)}</td>
+      <td class="text-right" style="font-weight:600;">₹${(i.price * i.quantity).toFixed(2)}</td>
     </tr>`).join('');
+
+  // Randomized widths for decorative barcode
+  const randomBarcode = Array.from({length: 30}).map(() => `<div style="width:${Math.floor(Math.random() * 4) + 1}px; background:#334155;"></div>`).join('');
 
   const billHtml = `<!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8"/>
-  <title>Bill – Raj's Cafe #${order._id.slice(-6).toUpperCase()}</title>
+  <title>Tax Invoice – Raj's Cafe #${order._id.slice(-6).toUpperCase()}</title>
   <style>
-    @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Lato:wght@400;700&display=swap');
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Playfair+Display:wght@600;700&display=swap');
+    
+    :root {
+      --brand: #c27803; 
+      --brand-dark: #2C1506; 
+      --text-main: #334155;
+      --text-light: #64748b;
+      --border: #e2e8f0;
+      --bg: #ffffff;
+    }
+
     * { box-sizing: border-box; margin: 0; padding: 0; }
-    body { font-family: 'Lato', sans-serif; background: #fff; color: #3d2208; }
-    .bill { max-width: 600px; margin: 0 auto; padding: 40px 40px 24px; }
-    .header { text-align: center; border-bottom: 2px solid #E8941A; padding-bottom: 24px; margin-bottom: 24px; }
-    .logo { font-family: 'Playfair Display', Georgia, serif; font-size: 32px; color: #2C1506; margin-bottom: 4px; }
-    .tagline { font-size: 11px; letter-spacing: 0.2em; text-transform: uppercase; color: #E8941A; font-weight: 700; }
-    .address { font-size: 12px; color: #8A7560; margin-top: 6px; }
-    .meta { display: flex; justify-content: space-between; margin-bottom: 20px; background: #FFF8F0; border-radius: 8px; padding: 14px 16px; }
-    .meta-col { display: flex; flex-direction: column; gap: 4px; }
-    .meta-label { font-size: 10px; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: #8A7560; }
-    .meta-val { font-size: 13px; color: #2C1506; font-weight: 700; }
-    .status-badge { display: inline-block; padding: 3px 10px; border-radius: 999px; font-size: 11px; font-weight: 700; background: #e8f5e9; color: #1b5e20; }
-    table { width: 100%; border-collapse: collapse; margin-bottom: 16px; }
-    thead tr { background: #2C1506; }
-    thead th { padding: 10px 12px; color: #F5EDD8; font-size: 11px; letter-spacing: 0.1em; text-transform: uppercase; text-align: left; font-weight: 700; }
-    thead th:last-child, thead th:nth-child(3), thead th:nth-child(2) { text-align: right; }
-    thead th:nth-child(2) { text-align: center; }
-    .totals { margin-left: auto; width: 260px; }
-    .total-row { display: flex; justify-content: space-between; font-size: 13px; padding: 6px 0; color: #6b4c2a; border-bottom: 1px solid #f5edd8; }
-    .total-row.grand { font-size: 18px; font-weight: 800; color: #2C1506; border-top: 2px solid #E8941A; border-bottom: none; padding-top: 10px; margin-top: 4px; }
-    .grand span:last-child { color: #E8941A; }
-    .footer { text-align: center; margin-top: 30px; padding-top: 20px; border-top: 1px solid #f0e8d8; }
-    .footer p { font-size: 12px; color: #8A7560; line-height: 1.8; }
-    .thank { font-family: 'Playfair Display', Georgia, serif; font-size: 18px; color: #2C1506; margin-bottom: 6px; font-style: italic; }
-    .watermark { font-size: 10px; color: #bbb; margin-top: 12px; }
+    body { 
+      font-family: 'Inter', sans-serif; 
+      background: #f8fafc; 
+      color: var(--text-main); 
+      -webkit-font-smoothing: antialiased;
+    }
+    
+    .invoice-wrapper {
+      max-width: 800px;
+      margin: 40px auto;
+      background: var(--bg);
+      padding: 60px;
+      box-shadow: 0 10px 40px rgba(0,0,0,0.08);
+      border-radius: 8px;
+    }
+
+    .header-top {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      margin-bottom: 50px;
+    }
+
+    .logo-container {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .logo { 
+      font-family: 'Playfair Display', serif; 
+      font-size: 36px; 
+      color: var(--brand-dark); 
+      font-weight: 700;
+      letter-spacing: -0.5px;
+      margin-bottom: 8px;
+    }
+    .logo span { color: var(--brand); }
+    
+    .company-details {
+      color: var(--text-light);
+      font-size: 13px;
+      line-height: 1.6;
+    }
+
+    .invoice-title-container {
+      text-align: right;
+    }
+
+    .invoice-title {
+      font-size: 32px;
+      font-weight: 700;
+      color: var(--brand-dark);
+      text-transform: uppercase;
+      letter-spacing: 2px;
+      margin-bottom: 8px;
+      opacity: 0.1;
+    }
+
+    .invoice-number {
+      font-size: 16px;
+      font-weight: 600;
+      color: var(--text-main);
+    }
+    .invoice-date {
+      font-size: 13px;
+      color: var(--text-light);
+      margin-top: 4px;
+    }
+
+    .billing-row {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 40px;
+      padding-top: 30px;
+      border-top: 2px solid var(--border);
+    }
+
+    .bill-box {
+      width: 45%;
+    }
+
+    .bill-title {
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      color: var(--text-light);
+      font-weight: 600;
+      margin-bottom: 12px;
+    }
+
+    .customer-name {
+      font-size: 16px;
+      font-weight: 600;
+      color: var(--brand-dark);
+      margin-bottom: 4px;
+    }
+
+    .customer-detail {
+      font-size: 13px;
+      color: var(--text-light);
+      line-height: 1.5;
+    }
+
+    .status-badge { 
+      display: inline-block; 
+      padding: 6px 12px; 
+      border-radius: 4px; 
+      font-size: 11px; 
+      font-weight: 600; 
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      margin-top: 12px;
+    }
+    .status-Completed { background: #dcfce7; color: #166534; }
+    .status-Pending { background: #fef08a; color: #854d0e; }
+    .status-Cancelled { background: #fee2e2; color: #991b1b; }
+    .status-Ready { background: #dbeafe; color: #1e40af; }
+    .status-Preparing { background: #ffedd5; color: #9a3412; }
+
+    table { 
+      width: 100%; 
+      border-collapse: collapse; 
+      margin-bottom: 30px; 
+    }
+    
+    thead th { 
+      padding: 12px 16px; 
+      background: #f8fafc;
+      color: var(--text-light); 
+      font-size: 11px; 
+      text-transform: uppercase; 
+      letter-spacing: 1px;
+      text-align: left; 
+      font-weight: 600; 
+      border-bottom: 2px solid var(--border);
+    }
+    
+    thead th.text-right { text-align: right; }
+    thead th.text-center { text-align: center; }
+    
+    tbody td {
+      padding: 16px;
+      border-bottom: 1px solid var(--border);
+      font-size: 14px;
+      color: var(--text-main);
+    }
+    
+    tbody td.text-right { text-align: right; }
+    tbody td.text-center { text-align: center; }
+    
+    .item-name {
+      font-weight: 600;
+      color: var(--brand-dark);
+    }
+
+    .totals { 
+      width: 320px;
+      margin-left: auto;
+    }
+    
+    .total-row { 
+      display: flex; 
+      justify-content: space-between; 
+      font-size: 14px; 
+      padding: 12px 16px; 
+      color: var(--text-main); 
+    }
+    
+    .total-row.border-bottom {
+      border-bottom: 1px solid var(--border);
+    }
+    
+    .total-row.grand { 
+      font-size: 18px; 
+      font-weight: 700; 
+      color: var(--brand-dark); 
+      background: #f8fafc;
+      border-radius: 8px;
+      margin-top: 8px;
+    }
+    
+    .grand span:last-child { 
+      color: var(--brand); 
+    }
+    
+    .footer { 
+      margin-top: 60px; 
+      padding-top: 30px; 
+      border-top: 1px solid var(--border);
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-end;
+    }
+    
+    .footer-msg {
+      font-size: 12px; 
+      color: var(--text-light); 
+      line-height: 1.6; 
+    }
+
+    .thank-you { 
+      font-family: 'Playfair Display', serif; 
+      font-size: 20px; 
+      color: var(--brand-dark); 
+      margin-bottom: 8px; 
+      font-style: italic; 
+    }
+    
+    .barcode {
+      display: flex; 
+      height: 30px; 
+      gap: 2px; 
+      margin-bottom: 5px;
+      opacity: 0.7;
+    }
+
     @media print {
-      body { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
-      .bill { padding: 20px; }
+      body { background: #fff; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+      .invoice-wrapper { box-shadow: none; margin: 0; padding: 20px; max-width: 100%; border: none; }
     }
   </style>
 </head>
 <body>
-<div class="bill">
-  <div class="header">
-    <div class="logo">☕ Raj's Cafe</div>
-    <div class="tagline">The Perfect Blend of Aroma &amp; Ambiance</div>
-    <div class="address">123 Connaught Place, New Delhi – 110001 | +91 98765 43210 | rajscafe.in</div>
-  </div>
-
-  <div class="meta">
-    <div class="meta-col">
-      <span class="meta-label">Order ID</span>
-      <span class="meta-val">#${order._id.slice(-6).toUpperCase()}</span>
+<div class="invoice-wrapper">
+  <div class="header-top">
+    <div class="logo-container">
+      <div class="logo">Raj's<span>Cafe</span></div>
+      <div class="company-details">
+        123 Connaught Place, New Delhi – 110001<br/>
+        +91 98765 43210 &bull; rajscafe.in<br/>
+        GSTIN: 07ABCDE1234F1Z5
+      </div>
     </div>
-    <div class="meta-col">
-      <span class="meta-label">Customer</span>
-      <span class="meta-val">${userName}</span>
-    </div>
-    <div class="meta-col">
-      <span class="meta-label">Date &amp; Time</span>
-      <span class="meta-val">${formatDate(order.createdAt)}</span>
-    </div>
-    <div class="meta-col">
-      <span class="meta-label">Payment</span>
-      <span class="meta-val">${pmLabel}</span>
-    </div>
-    <div class="meta-col">
-      <span class="meta-label">Status</span>
-      <span class="status-badge">${order.status}</span>
+    <div class="invoice-title-container">
+      <div class="invoice-title">Tax Invoice</div>
+      <div class="invoice-number">Invoice #${order._id.slice(-6).toUpperCase()}</div>
+      <div class="invoice-date">Date: ${formatDate(order.createdAt)}</div>
     </div>
   </div>
 
-  ${order.address ? `<p style="font-size:12px;color:#8A7560;margin-bottom:16px;">📍 <strong>Delivery Address:</strong> ${order.address}</p>` : ''}
+  <div class="billing-row">
+    <div class="bill-box">
+      <div class="bill-title">Billed To</div>
+      <div class="customer-name">${userName}</div>
+      ${order.address ? `<div class="customer-detail">${order.address}</div>` : ''}
+    </div>
+    <div class="bill-box" style="text-align: right;">
+      <div class="bill-title">Payment Method</div>
+      <div class="customer-detail">${pmLabel}</div>
+      <div class="status-badge status-${order.status}">${order.status}</div>
+    </div>
+  </div>
 
   <table>
     <thead>
       <tr>
         <th>Item Description</th>
-        <th style="text-align:center;">Qty</th>
-        <th style="text-align:right;">Unit Price</th>
-        <th style="text-align:right;">Total</th>
+        <th class="text-center">Qty</th>
+        <th class="text-right">Price</th>
+        <th class="text-right">Total</th>
       </tr>
     </thead>
     <tbody>${itemRows}</tbody>
   </table>
 
   <div class="totals">
-    <div class="total-row"><span>Subtotal</span><span>₹${subtotal}</span></div>
-    <div class="total-row"><span>GST (5%)</span><span>₹${gst}</span></div>
-    <div class="total-row"><span>Delivery</span><span>₹${delivery}</span></div>
-    <div class="total-row grand"><span>Grand Total</span><span>₹${order.totalAmount}</span></div>
+    <div class="total-row border-bottom"><span>Subtotal</span><span>₹${subtotal.toFixed(2)}</span></div>
+    <div class="total-row border-bottom"><span>GST (5%)</span><span>₹${gst.toFixed(2)}</span></div>
+    <div class="total-row border-bottom"><span>Delivery</span><span>₹${delivery.toFixed(2)}</span></div>
+    <div class="total-row grand"><span>Grand Total</span><span>₹${order.totalAmount.toFixed(2)}</span></div>
   </div>
 
   <div class="footer">
-    <p class="thank">Thank you for dining with us! 🙏</p>
-    <p>We hope you enjoyed your meal. Visit us again soon.<br/>
-    For feedback or queries: <strong>hello@rajscafe.in</strong> | GST No: 07ABCDE1234F1Z5</p>
-    <p class="watermark">This is a computer-generated receipt. No signature required.</p>
+    <div class="footer-msg">
+      <div class="thank-you">Thank you for your visit!</div>
+      For feedback or queries: hello@rajscafe.in<br/>
+      This is a computer-generated receipt and requires no signature.
+    </div>
+    <div class="barcode">
+      ${randomBarcode}
+    </div>
   </div>
 </div>
-<script>window.onload = () => { window.print(); }</script>
+<script>window.onload = () => { setTimeout(() => window.print(), 500); }</script>
 </body>
 </html>`;
 
-  const win = window.open('', '_blank', 'width=650,height=900');
+  const win = window.open('', '_blank', 'width=800,height=900');
   if (win) {
     win.document.write(billHtml);
     win.document.close();
