@@ -34,10 +34,40 @@ export default function CheckoutPage() {
 
   const handlePlaceOrder = async () => {
     setLoading(true);
-    await new Promise(r => setTimeout(r, 1800)); // simulate processing
-    clearCart();
-    setStep('done');
-    setLoading(false);
+    try {
+      const orderPayload = {
+        customerName: form.name,
+        customerEmail: form.email,
+        items: items.map(item => ({
+          name: item.name,
+          quantity: item.quantity,
+          price: item.price
+        })),
+        totalAmount: grandTotal,
+      };
+
+      const response = await fetch('http://localhost:5000/api/orders', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(orderPayload),
+      });
+
+      if (!response.ok) {
+        throw new Error('Failed to place order');
+      }
+
+      await response.json();
+      
+      clearCart();
+      setStep('done');
+    } catch (error) {
+      console.error('Error placing order:', error);
+      alert('There was an error placing your order. Please try again.');
+    } finally {
+      setLoading(false);
+    }
   };
 
   if (items.length === 0 && step !== 'done') {

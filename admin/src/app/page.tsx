@@ -1,21 +1,30 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import {
   LayoutDashboard, UtensilsCrossed, CalendarCheck, MessageSquare,
   Clock, Settings, Image as ImageIcon, Palette, FileText,
   TrendingUp, Users, Star, Plus, Trash2, Edit, Eye, Check, X,
-  ChevronRight, LogOut, Bell
+  ChevronRight, LogOut, Bell, ShoppingCart
 } from 'lucide-react';
 import styles from './page.module.css';
 
 // ── Types ──
-type Tab = 'dashboard' | 'menu' | 'reservations' | 'contacts' | 'hours' | 'seo' | 'design' | 'blog';
+type Tab = 'dashboard' | 'orders' | 'menu' | 'reservations' | 'contacts' | 'hours' | 'seo' | 'design' | 'blog';
 
 type MenuItem = { id: number; name: string; category: string; price: number; tag: string; emoji: string; visible: boolean; };
 type Reservation = { id: string; name: string; date: string; time: string; guests: number; email: string; phone: string; status: 'pending'|'confirmed'|'cancelled'; occasion?: string; };
 type Contact = { id: string; name: string; email: string; subject: string; message: string; status: 'unread'|'read'; createdAt: string; };
 type BlogPost = { id: number; title: string; excerpt: string; status: 'draft'|'published'; date: string; };
+type Order = {
+  _id: string;
+  customerName: string;
+  customerEmail: string;
+  items: { name: string; quantity: number; price: number }[];
+  totalAmount: number;
+  status: string;
+  createdAt: string;
+};
 
 // ── Seed data ──
 const seedMenu: MenuItem[] = [
@@ -50,6 +59,7 @@ const totalRevenue = seedReservations.filter(r => r.status !== 'cancelled').redu
 // ── Component ──
 export default function AdminPage() {
   const [tab,          setTab]          = useState<Tab>('dashboard');
+  const [orders,       setOrders]       = useState<Order[]>([]);
   const [menuItems,    setMenuItems]    = useState<MenuItem[]>(seedMenu);
   const [reservations, setReservations] = useState<Reservation[]>(seedReservations);
   const [contacts,     setContacts]     = useState<Contact[]>(seedContacts);
@@ -57,6 +67,23 @@ export default function AdminPage() {
   const [editItem,     setEditItem]     = useState<MenuItem|null>(null);
   const [editPost,     setEditPost]     = useState<BlogPost|null>(null);
   const [designColor,  setDesignColor]  = useState('#C9A84C');
+
+  useEffect(() => {
+    const fetchOrders = async () => {
+      try {
+        const res = await fetch('http://localhost:5000/api/orders');
+        const data = await res.json();
+        if (data.success) {
+          setOrders(data.data);
+        }
+      } catch (err) {
+        console.error('Failed to fetch orders:', err);
+      }
+    };
+    fetchOrders();
+    const interval = setInterval(fetchOrders, 10000);
+    return () => clearInterval(interval);
+  }, []);
 
   // ── Helpers ──
   const updateResStatus = (id: string, status: Reservation['status']) =>
@@ -73,6 +100,7 @@ export default function AdminPage() {
 
   const navItems: { key: Tab; icon: React.ElementType; label: string; badge?: number }[] = [
     { key:'dashboard',    icon:LayoutDashboard, label:'Dashboard'             },
+    { key:'orders',       icon:ShoppingCart,    label:'Orders',       badge: orders.filter(o=>o.status==='Pending').length },
     { key:'menu',         icon:UtensilsCrossed, label:'Menu Manager'           },
     { key:'reservations', icon:CalendarCheck,   label:'Reservations', badge: reservations.filter(r=>r.status==='pending').length },
     { key:'contacts',     icon:MessageSquare,   label:'Contacts',     badge: contacts.filter(c=>c.status==='unread').length       },
@@ -494,8 +522,73 @@ export default function AdminPage() {
     </div>
   );
 
+  // ── Orders ──
+  const OrdersView = () => {
+    const updateOrderStatus = async (id: string, newStatus: string) => {
+      try {
+        const res = await fetch(`http://localhost:5000/api/orders/${id}`, {
+          method: 'PUT',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ status: newStatus })
+        });
+        const data = await res.json();
+        if (data.success) {
+          setOrders(orders.map(o => o._id === id ? { ...o, status: newStatus } : o));
+        }
+      } catch (err) {
+        console.error('Failed to update order status:', err);
+      }
+    };
+
+    return (
+      <div className={styles.content}>
+        <div className={styles.pageHeader}>
+          <div>
+            <h1 className={styles.pageTitle}>Orders</h1>
+            <p className={styles.pageSubtitle}>{orders.filter(o=>o.status==='Pending').length} pending orders</p>
+          </div>
+        </div>
+        <div className={styles.tableWrap}>
+          <table className={styles.table}>
+            <thead><tr>{['Customer','Items','Amount','Date','Status','Actions'].map(h => <th key={h} className={styles.th}>{h}</th>)}</tr></thead>
+            <tbody>
+              {orders.map(o => (
+                <tr key={o._id} className={styles.tr}>
+                  <td className={styles.td}>
+                    <div className={styles.guestName}>{o.customerName || 'Guest'}</div>
+                    <div className={styles.guestEmail}>{o.customerEmail}</div>
+                  </td>
+                  <td className={styles.td}>
+                    {o.items.map(i => `${i.name} (x${i.quantity})`).join(', ')}
+                  </td>
+                  <td className={styles.td}>₹{o.totalAmount}</td>
+                  <td className={styles.td}>{new Date(o.createdAt).toLocaleString()}</td>
+                  <td className={styles.td}><span className={`${styles.statusBadge} ${o.status === 'Completed' ? styles.status_confirmed : styles.status_pending}`}>{o.status}</span></td>
+                  <td className={styles.td}>
+                    {o.status === 'Pending' && (
+                      <div style={{ display:'flex', gap:'0.5rem' }}>
+                        <button className={styles.btnConfirm} onClick={() => updateOrderStatus(o._id,'Completed')}><Check size={13}/> Complete</button>
+                        <button className={styles.btnCancel} onClick={() => updateOrderStatus(o._id,'Cancelled')}><X size={13}/> Cancel</button>
+                      </div>
+                    )}
+                  </td>
+                </tr>
+              ))}
+              {orders.length === 0 && (
+                <tr>
+                  <td colSpan={6} style={{ textAlign: 'center', padding: '2rem' }}>No orders found</td>
+                </tr>
+              )}
+            </tbody>
+          </table>
+        </div>
+      </div>
+    );
+  };
+
   const viewMap: Record<Tab, React.ReactNode> = {
     dashboard:    <DashboardView />,
+    orders:       <OrdersView />,
     menu:         <MenuView />,
     reservations: <ReservationsView />,
     contacts:     <ContactsView />,
