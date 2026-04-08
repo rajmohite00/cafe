@@ -39,7 +39,11 @@ if (!MONGODB_URI) {
     .catch((err) => console.error('❌ MongoDB Connection Error:', err));
 }
 
-// Start Server
-app.listen(PORT, () => {
-  console.log(`🚀 Backend Server is running on http://localhost:${PORT}`);
-});
+// Start Server (local dev) or export for Vercel
+if (process.env.NODE_ENV !== 'production') {
+  app.listen(PORT, () => {
+    console.log(`🚀 Backend Server is running on port ${PORT}`);
+  });
+}
+
+module.exports = app;
