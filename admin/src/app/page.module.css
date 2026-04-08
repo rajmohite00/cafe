@@ -616,17 +616,113 @@
 .blogExcerpt { font-size: 0.875rem; color: var(--muted); line-height: 1.6; }
 
 @media (max-width: 1100px) {
-  .content { padding: 2rem 2rem; }
+  .content { padding: 2rem 1.5rem; }
   .statsGrid { grid-template-columns: 1fr 1fr; }
   .designGrid { grid-template-columns: 1fr; }
 }
+
+/* ── Mobile / Tablet ── */
 @media (max-width: 768px) {
   .layout { flex-direction: column; }
-  .sidebar { width: 100%; height: auto; position: static; flex-direction: row; overflow-x: auto; padding: 1rem; }
-  .sidebarNav { flex-direction: row; padding: 0; gap: 0.25rem; flex: 1; }
-  .navItem { flex-direction: column; gap: 0.25rem; padding: 0.5rem 0.75rem; font-size: 0.65rem; }
+
+  /* Sidebar becomes a top navbar */
+  .sidebar {
+    width: 100%;
+    height: auto;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    flex-direction: column;
+    overflow: visible;
+    padding: 0.75rem 1rem 0;
+    border-right: none;
+    border-bottom: 1px solid rgba(201,168,76,0.12);
+    background: #0c0b0a;
+  }
+
+  /* Logo row on mobile */
+  .sidebarLogo {
+    padding-bottom: 0.75rem;
+    margin-bottom: 0;
+    border-bottom: none;
+  }
+
+  /* Horizontal scrollable nav */
+  .sidebarNav {
+    flex-direction: row;
+    overflow-x: auto;
+    padding: 0.5rem 0;
+    gap: 0.2rem;
+    flex: unset;
+    width: 100%;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+  }
+  .sidebarNav::-webkit-scrollbar { display: none; }
+
+  .navItem {
+    flex-direction: column;
+    gap: 0.2rem;
+    padding: 0.5rem 0.75rem;
+    font-size: 0.62rem;
+    white-space: nowrap;
+    flex-shrink: 0;
+    min-width: 60px;
+    text-align: center;
+  }
   .navChev { display: none; }
-  .sidebarLogo, .sidebarFooter { display: none; }
-  .statsGrid { grid-template-columns: 1fr 1fr; }
+  .sidebarFooter { display: none; }
+
+  /* Main content */
+  .content { padding: 1.25rem 1rem; }
+  .pageTitle { font-size: 1.5rem; }
+  .pageHeader { margin-bottom: 1.5rem; padding-bottom: 1.25rem; gap: 0.75rem; }
+  .headerActions { display: none; }
+
+  /* Stats: 2 columns on tablet, stacked on phone */
+  .statsGrid { grid-template-columns: 1fr 1fr; gap: 0.75rem; margin-bottom: 1.5rem; }
+  .statCard { padding: 1rem; }
+  .statVal { font-size: 1.5rem; }
+
+  /* Tables become horizontally scrollable */
+  .tableWrap { border-radius: 8px; }
+  .th { padding: 0.65rem 0.75rem; font-size: 0.6rem; }
+  .td { padding: 0.75rem; font-size: 0.8rem; }
+  .guestName { font-size: 0.85rem; }
+
+  /* Edit forms */
   .editGrid { grid-template-columns: 1fr; }
+  .editCard { padding: 1.25rem; }
+
+  /* Menu grid */
+  .menuGrid { grid-template-columns: 1fr; }
+
+  /* Blog */
+  .blogItem { flex-direction: column; gap: 0.75rem; }
+
+  /* Design grid */
+  .designGrid { grid-template-columns: 1fr; }
+
+  /* Hours */
+  .hourRow { gap: 0.75rem; }
+  .hourDay { min-width: 120px; font-size: 0.8rem; }
+
+  /* Buttons */
+  .primaryBtn { padding: 0.6rem 1rem; font-size: 0.78rem; }
+  .ghostBtn { padding: 0.6rem 1rem; font-size: 0.78rem; }
+}
+
+/* ── Small phones ── */
+@media (max-width: 480px) {
+  .statsGrid { grid-template-columns: 1fr 1fr; gap: 0.6rem; }
+  .statCard { padding: 0.875rem; }
+  .statVal { font-size: 1.35rem; }
+  .statLabel { font-size: 0.68rem; }
+  .sectionTitle { font-size: 1rem; }
+  .content { padding: 1rem 0.75rem; }
+  .pageTitle { font-size: 1.35rem; }
+
+  /* Actions column hidden on small screens */
+  .td:last-child { min-width: 80px; }
+  .btnConfirm span, .btnCancel span { display: none; }
 }

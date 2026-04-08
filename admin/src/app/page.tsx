@@ -82,7 +82,12 @@ export default function AdminPage() {
   const [designColor,  setDesignColor]  = useState('#C9A84C');
   const [activities,   setActivities]   = useState<Activity[]>([]);
 
-  const totalRevenue = reservations.filter(r => r.status !== 'cancelled').reduce((a,r) => a + r.guests * 1200, 0);
+  // ── Real-time computed stats from orders ──
+  const today = new Date().toDateString();
+  const confirmedOrders = orders.filter(o => o.status === 'Completed');
+  const pendingOrders   = orders.filter(o => o.status === 'Pending');
+  const totalIncome     = orders.filter(o => o.status !== 'Cancelled').reduce((a, o) => a + o.totalAmount, 0);
+  const todayIncome     = orders.filter(o => o.status !== 'Cancelled' && new Date(o.createdAt).toDateString() === today).reduce((a, o) => a + o.totalAmount, 0);
 
   useEffect(() => {
     // Initial fetch for everything else
@@ -236,12 +241,12 @@ export default function AdminPage() {
       {/* Stat cards */}
       <div className={styles.statsGrid}>
         {[
-          { label:'Total Reservations', val:reservations.length,                              icon:CalendarCheck, trend:'+12%', color:'var(--gold)' },
-          { label:'Pending Confirmations', val:reservations.filter(r=>r.status==='pending').length, icon:Bell,    trend:'Needs Action', color:'#E09B3D' },
-          { label:'Revenue (Est.)', val:`₹${totalRevenue.toLocaleString()}`,               icon:TrendingUp,  trend:'+8% vs last month', color:'#5ABF78' },
-          { label:'Unread Messages', val:contacts.filter(c=>c.status==='unread').length,        icon:MessageSquare, trend:'New', color:'#5B9CF6' },
-          { label:'Menu Items', val:menuItems.length,                                           icon:UtensilsCrossed, trend:`${menuItems.filter(m=>m.visible).length} visible`, color:'var(--gold)' },
-          { label:'Avg. Rating', val:'4.9 ★',                                                  icon:Star,        trend:'2,400+ reviews', color:'var(--gold)' },
+          { label:'Total Orders',          val: orders.length,                                  icon: ShoppingCart,   trend: `${confirmedOrders.length} completed`,          color:'var(--gold)' },
+          { label:'Pending Orders',         val: pendingOrders.length,                            icon: Bell,           trend: pendingOrders.length > 0 ? 'Needs Action' : 'All clear ✓', color: pendingOrders.length > 0 ? '#E09B3D' : '#5ABF78' },
+          { label:'Total Reservations',     val: reservations.length,                             icon: CalendarCheck,  trend: `${reservations.filter(r=>r.status==='pending').length} pending`, color:'var(--gold)' },
+          { label:'Today\'s Income',        val: `₹${todayIncome.toLocaleString()}`,              icon: TrendingUp,     trend: 'Updated live',                                 color:'#5ABF78' },
+          { label:'All-Time Cafe Income',   val: `₹${totalIncome.toLocaleString()}`,              icon: TrendingUp,     trend: `from ${orders.length} orders`,                 color:'#5B9CF6' },
+          { label:'Unread Messages',        val: contacts.filter(c=>c.status==='unread').length,  icon: MessageSquare,  trend: 'New',                                          color:'#5B9CF6' },
         ].map(({ label, val, icon: Icon, trend, color }) => (
           <div key={label} className={styles.statCard}>
             <div className={styles.statTop}>
