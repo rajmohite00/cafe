@@ -1,5 +1,6 @@
 import type { Metadata } from 'next';
 import './globals.css';
+import './admin.globals.css';
 import styles from './admin.module.css';
 
 export const metadata: Metadata = {
