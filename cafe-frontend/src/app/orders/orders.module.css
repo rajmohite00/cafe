@@ -3,7 +3,7 @@
 ══════════════════════════════════════ */
 
 .main {
-  padding-top: 100px;
+  padding-top: 160px;
   padding-bottom: 5rem;
   min-height: 100svh;
   background: var(--bg);
@@ -478,7 +478,7 @@
 /* ── Tablet / Large Mobile ── */
 @media (max-width: 768px) {
   .main {
-    padding-top: 80px;
+    padding-top: 130px;
     padding-bottom: 3rem;
   }
 
@@ -589,7 +589,7 @@
 
 /* ── Small Phones (≤480px) ── */
 @media (max-width: 480px) {
-  .main { padding-top: 72px; padding-bottom: 2.5rem; }
+  .main { padding-top: 110px; padding-bottom: 2.5rem; }
 
   /* Stats: 2 columns */
   .statsGrid { grid-template-columns: repeat(2, 1fr); gap: 0.6rem; }
