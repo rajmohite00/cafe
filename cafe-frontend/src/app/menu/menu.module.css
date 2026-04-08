@@ -309,3 +309,5 @@
   .grid { grid-template-columns: 1fr; }
   .searchWrap { max-width: 100%; }
 }
+
+@media (max-width: 768px) { .main { padding-top: 90px !important; } }

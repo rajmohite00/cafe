@@ -69,6 +69,16 @@ a { text-decoration: none; color: inherit; }
 ul { list-style: none; }
 button { cursor: pointer; font-family: inherit; border: none; background: none; }
 
+.padded-main {
+  padding-top: 160px;
+  min-height: 80vh;
+}
+@media (max-width: 768px) {
+  .padded-main {
+    padding-top: 90px !important;
+  }
+}
+
 /* ── Container ── */
 .container {
   width: min(var(--container), 94vw);

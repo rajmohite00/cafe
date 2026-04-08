@@ -397,3 +397,5 @@
   .card { padding: 1.25rem; }
   .successCard { padding: 2rem 1.25rem; }
 }
+
+@media (max-width: 768px) { .main { padding-top: 90px !important; } }
