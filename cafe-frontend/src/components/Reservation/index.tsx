@@ -4,12 +4,18 @@ import { useState } from 'react';
 import { Calendar, Clock, Users, ChevronRight, CheckCircle } from 'lucide-react';
 import styles from './Reservation.module.css';
 
+const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000';
+
+
 export default function Reservation() {
-  const [step, setStep]       = useState<1|2|3>(1);
-  const [submitted, setSubmitted] = useState(false);
+  const [step, setStep]           = useState<1|2|3>(1);
+  const [submitted, setSubmitted]   = useState(false);
+  const [loading, setLoading]       = useState(false);
+  const [error, setError]           = useState('');
   const [form, setForm] = useState({
     date: '', time: '', guests: '2', name: '', email: '', phone: '', occasion: '', requests: '',
   });
+
 
   const times = ['08:00','08:30','09:00','09:30','10:00','10:30','11:00','11:30','12:00','12:30',
                   '13:00','13:30','14:00','18:00','18:30','19:00','19:30','20:00','20:30','21:00'];
@@ -18,16 +24,34 @@ export default function Reservation() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    // POST to /api/reservation
+    setLoading(true);
+    setError('');
     try {
-      await fetch('/api/reservation', {
+      const res = await fetch(`${API_URL}/api/data/reservations`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(form),
+        body: JSON.stringify({
+          name:     form.name,
+          email:    form.email,
+          phone:    form.phone,
+          date:     form.date,
+          time:     form.time,
+          guests:   Number(form.guests),
+          occasion: form.occasion,
+          requests: form.requests,
+          status:   'pending',
+        }),
       });
-    } catch { /* noop */ }
-    setSubmitted(true);
+      const data = await res.json();
+      if (!data.success) throw new Error(data.message || 'Failed to book');
+      setSubmitted(true);
+    } catch (err: any) {
+      setError(err.message || 'Something went wrong. Please try again.');
+    } finally {
+      setLoading(false);
+    }
   };
+
 
   if (submitted) {
     return (
@@ -216,9 +240,16 @@ export default function Reservation() {
                     </div>
                   )}
                   <div className={styles.stepBtns}>
-                    <button type="button" className="btn-outline" onClick={() => setStep(2)}>Edit</button>
-                    <button type="submit" className="btn-primary">Confirm — Book Now</button>
+                    <button type="button" className="btn-outline" onClick={() => setStep(2)} disabled={loading}>Edit</button>
+                    <button type="submit" className="btn-primary" disabled={loading}>
+                      {loading ? '⏳ Booking...' : 'Confirm — Book Now'}
+                    </button>
                   </div>
+                  {error && (
+                    <p style={{ color: '#f87171', fontSize: '0.85rem', marginTop: '0.75rem', textAlign: 'center' }}>
+                      ⚠️ {error}
+                    </p>
+                  )}
                 </div>
               )}
             </form>
