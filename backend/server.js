@@ -4,8 +4,10 @@ const dotenv = require('dotenv');
 const mongoose = require('mongoose');
 
 // Route imports
-const orderRoutes = require('./routes/orderRoutes');
+const orderRoutes    = require('./routes/orderRoutes');
 const activityRoutes = require('./routes/activityRoutes');
+const authRoutes     = require('./routes/authRoutes');
+const dynamicRoutes  = require('./routes/dynamicRoutes');
 
 // Load environment variables
 dotenv.config();
@@ -18,10 +20,10 @@ app.use(cors());
 app.use(express.json());
 
 // Routes
-app.use('/api/orders', orderRoutes);
+app.use('/api/auth',       authRoutes);
+app.use('/api/orders',     orderRoutes);
 app.use('/api/activities', activityRoutes);
-const dynamicRoutes = require('./routes/dynamicRoutes');
-app.use('/api/data', dynamicRoutes);
+app.use('/api/data',       dynamicRoutes);
 
 // Basic health check route
 app.get('/api/health', (req, res) => {

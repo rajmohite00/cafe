@@ -1,6 +1,7 @@
 import type { Metadata, Viewport } from 'next';
 import './globals.css';
 import { CartProvider } from '@/context/CartContext';
+import { AuthProvider } from '@/context/AuthContext';
 import RevealObserver from '@/components/RevealObserver';
 import ActivityTracker from '@/components/ActivityTracker';
 
@@ -24,11 +25,13 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   return (
     <html lang="en" suppressHydrationWarning>
       <body>
-        <CartProvider>
-          {children}
-          <RevealObserver />
-          <ActivityTracker />
-        </CartProvider>
+        <AuthProvider>
+          <CartProvider>
+            {children}
+            <RevealObserver />
+            <ActivityTracker />
+          </CartProvider>
+        </AuthProvider>
       </body>
     </html>
   );

@@ -2,8 +2,9 @@
 
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
-import { Search, ShoppingBag, Menu, X } from 'lucide-react';
+import { Search, ShoppingBag, Menu, X, User, LogOut } from 'lucide-react';
 import { useCart } from '@/context/CartContext';
+import { useAuth } from '@/context/AuthContext';
 import styles from './Navbar.module.css';
 
 const navLinks = [
@@ -21,6 +22,7 @@ export default function Navbar() {
   const [scrolled, setScrolled] = useState(false);
   const [open, setOpen]         = useState(false);
   const { totalItems }          = useCart();
+  const { user, logout }        = useAuth();
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 30);
@@ -67,6 +69,18 @@ export default function Navbar() {
 
           <Link href="/#reservation" className={styles.bookBtn}>Book a Table</Link>
 
+          {/* Auth: show user or login */}
+          {user ? (
+            <div className={styles.userMenu}>
+              <span className={styles.userGreet}><User size={14}/> {user.name.split(' ')[0]}</span>
+              <button className={styles.logoutBtn} onClick={logout} title="Sign out">
+                <LogOut size={14}/>
+              </button>
+            </div>
+          ) : (
+            <Link href="/login" className={styles.loginBtn}>Sign In</Link>
+          )}
+
           <button className={styles.mobileMenu} aria-label="Menu" onClick={() => setOpen(!open)}>
             {open ? <X size={20}/> : <Menu size={20}/>}
           </button>
@@ -85,6 +99,15 @@ export default function Navbar() {
           <Link href="/#reservation" className={styles.drawerBookBtn} onClick={() => setOpen(false)}>
             📅 Book a Table
           </Link>
+          {user ? (
+            <button className={styles.drawerLogout} onClick={() => { logout(); setOpen(false); }}>
+              👋 Sign Out ({user.name.split(' ')[0]})
+            </button>
+          ) : (
+            <Link href="/login" className={styles.drawerLoginBtn} onClick={() => setOpen(false)}>
+              🔑 Sign In / Create Account
+            </Link>
+          )}
         </div>
       )}
     </header>

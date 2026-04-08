@@ -241,11 +241,105 @@
 }
 .drawerBookBtn:hover { background: var(--amber-dark); }
 
+/* ── Auth Buttons ── */
+.loginBtn {
+  padding: 0.5rem 1.1rem;
+  background: transparent;
+  color: rgba(255,253,249,0.85);
+  font-family: var(--font-ui);
+  font-size: 0.78rem;
+  font-weight: 600;
+  border-radius: var(--radius-sm);
+  border: 1.5px solid rgba(255,255,255,0.3);
+  transition: all 0.25s;
+  white-space: nowrap;
+  text-decoration: none;
+}
+.loginBtn:hover { background: rgba(255,255,255,0.12); color: white; border-color: rgba(255,255,255,0.5); }
+.scrolled .loginBtn { color: var(--brown); border-color: rgba(44,21,6,0.25); }
+.scrolled .loginBtn:hover { background: rgba(44,21,6,0.06); border-color: var(--brown); }
+
+.userMenu {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  background: rgba(255,255,255,0.1);
+  border: 1px solid rgba(255,255,255,0.2);
+  border-radius: 999px;
+  padding: 0.35rem 0.75rem 0.35rem 0.6rem;
+}
+.scrolled .userMenu { background: rgba(232,148,26,0.08); border-color: rgba(232,148,26,0.25); }
+
+.userGreet {
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+  font-family: var(--font-ui);
+  font-size: 0.78rem;
+  font-weight: 600;
+  color: rgba(255,253,249,0.9);
+  white-space: nowrap;
+}
+.scrolled .userGreet { color: var(--brown); }
+
+.logoutBtn {
+  display: flex;
+  align-items: center;
+  color: rgba(255,253,249,0.55);
+  padding: 2px;
+  transition: color 0.2s;
+}
+.logoutBtn:hover { color: rgba(255,80,80,0.9); }
+.scrolled .logoutBtn { color: var(--muted); }
+.scrolled .logoutBtn:hover { color: #dc2626; }
+
+/* Mobile drawer auth */
+.drawerLoginBtn {
+  margin-top: 0.75rem;
+  background: rgba(232,148,26,0.08);
+  color: var(--amber);
+  border: 1.5px solid rgba(232,148,26,0.25);
+  font-family: var(--font-ui);
+  font-size: 0.9rem;
+  font-weight: 700;
+  text-align: center;
+  padding: 0.875rem;
+  border-radius: var(--radius-sm);
+  width: 100%;
+  min-height: 48px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s;
+  text-decoration: none;
+}
+.drawerLoginBtn:hover { background: rgba(232,148,26,0.15); }
+
+.drawerLogout {
+  margin-top: 0.75rem;
+  background: rgba(220,38,38,0.06);
+  color: #dc2626;
+  border: 1.5px solid rgba(220,38,38,0.15);
+  font-family: var(--font-ui);
+  font-size: 0.9rem;
+  font-weight: 600;
+  text-align: center;
+  padding: 0.875rem;
+  border-radius: var(--radius-sm);
+  width: 100%;
+  min-height: 48px;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+.drawerLogout:hover { background: rgba(220,38,38,0.1); }
+
 /* ── Responsive ── */
 @media (max-width: 900px) {
   .nav { display: none; }
   .iconBtn { display: none; }
   .bookBtn { display: none; }
+  .loginBtn { display: none; }
+  .userMenu { display: none; }
   .mobileMenu { display: flex; }
   .cartBtn { display: flex; }
 }

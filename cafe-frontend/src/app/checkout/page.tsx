@@ -5,6 +5,7 @@ import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { ArrowLeft, CreditCard, Smartphone, Banknote, Wallet, CheckCircle, ShieldCheck, Lock } from 'lucide-react';
 import { useCart } from '@/context/CartContext';
+import { useAuth } from '@/context/AuthContext';
 import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
 import styles from './checkout.module.css';
@@ -15,7 +16,15 @@ type PayMethod = 'upi' | 'card' | 'cod' | 'wallet';
 
 export default function CheckoutPage() {
   const { items, totalPrice, totalItems, clearCart } = useCart();
+  const { user, loading: authLoading } = useAuth();
   const router = useRouter();
+
+  // Redirect to login if not authenticated
+  useEffect(() => {
+    if (!authLoading && !user) {
+      router.push('/login');
+    }
+  }, [user, authLoading, router]);
 
   const [step, setStep] = useState<'details' | 'payment' | 'done'>('details');
   const [payMethod, setPayMethod] = useState<PayMethod>('upi');
@@ -50,9 +59,17 @@ export default function CheckoutPage() {
   const grandTotal = totalPrice + gst + delivery;
 
   const [form, setForm] = useState({
-    name: '', phone: '', email: '', address: '', city: 'New Delhi', pincode: '',
+    name: user?.name || '', phone: user?.phone || '', email: user?.email || '',
+    address: '', city: 'New Delhi', pincode: '',
     upiId: '', cardNo: '', cardName: '', expiry: '', cvv: '', walletPh: ''
   });
+
+  // Auto-fill when user loads
+  useEffect(() => {
+    if (user) {
+      setForm(f => ({ ...f, name: user.name, phone: user.phone, email: user.email }));
+    }
+  }, [user]);
 
   const handleInput = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
     setForm(f => ({ ...f, [e.target.name]: e.target.value }));
