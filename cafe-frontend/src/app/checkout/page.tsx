@@ -79,7 +79,8 @@ export default function CheckoutPage() {
     setLoading(true);
     try {
       const orderPayload = {
-        customerName: form.name,
+        userId:        user?.id || null,
+        customerName:  form.name,
         customerEmail: form.email,
         customerPhone: form.phone,
         address: `${form.address}, ${form.city} - ${form.pincode}`,

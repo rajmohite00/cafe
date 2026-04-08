@@ -4,9 +4,10 @@ const Order = require('../models/Order');
 // @route   POST /api/orders
 exports.createOrder = async (req, res) => {
   try {
-    const { customerName, customerEmail, customerPhone, address, paymentMethod, items, totalAmount } = req.body;
+    const { customerName, customerEmail, customerPhone, address, paymentMethod, items, totalAmount, userId } = req.body;
 
     const newOrder = new Order({
+      userId:        userId || null,
       customerName,
       customerEmail,
       customerPhone,
@@ -75,6 +76,17 @@ exports.getOrderById = async (req, res) => {
     const order = await Order.findById(req.params.id);
     if (!order) return res.status(404).json({ success: false, message: 'Order not found' });
     res.status(200).json({ success: true, data: order });
+  } catch (error) {
+    res.status(500).json({ success: false, message: 'Server Error' });
+  }
+};
+
+// @desc   Get orders for a specific user
+// @route  GET /api/orders/user/:userId
+exports.getUserOrders = async (req, res) => {
+  try {
+    const orders = await Order.find({ userId: req.params.userId }).sort({ createdAt: -1 });
+    res.status(200).json({ success: true, data: orders });
   } catch (error) {
     res.status(500).json({ success: false, message: 'Server Error' });
   }

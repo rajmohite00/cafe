@@ -72,6 +72,9 @@ export default function Navbar() {
           {/* Auth: show user or login */}
           {user ? (
             <div className={styles.userMenu}>
+              <Link href="/orders" className={styles.myOrdersBtn}>
+                📋 My Orders
+              </Link>
               <span className={styles.userGreet}><User size={14}/> {user.name.split(' ')[0]}</span>
               <button className={styles.logoutBtn} onClick={logout} title="Sign out">
                 <LogOut size={14}/>
@@ -100,9 +103,14 @@ export default function Navbar() {
             📅 Book a Table
           </Link>
           {user ? (
-            <button className={styles.drawerLogout} onClick={() => { logout(); setOpen(false); }}>
-              👋 Sign Out ({user.name.split(' ')[0]})
-            </button>
+            <>
+              <Link href="/orders" className={styles.drawerLink} onClick={() => setOpen(false)}>
+                📋 My Orders
+              </Link>
+              <button className={styles.drawerLogout} onClick={() => { logout(); setOpen(false); }}>
+                👋 Sign Out ({user.name.split(' ')[0]})
+              </button>
+            </>
           ) : (
             <Link href="/login" className={styles.drawerLoginBtn} onClick={() => setOpen(false)}>
               🔑 Sign In / Create Account
