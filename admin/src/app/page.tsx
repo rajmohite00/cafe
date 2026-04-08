@@ -20,9 +20,13 @@ type Order = {
   _id: string;
   customerName: string;
   customerEmail: string;
+  customerPhone?: string;
+  address?: string;
+  paymentMethod?: string;
   items: { name: string; quantity: number; price: number }[];
   totalAmount: number;
   status: string;
+  adminMessage?: string;
   createdAt: string;
 };
 type Activity = {
@@ -657,15 +661,24 @@ export default function AdminPage() {
   // ── Orders ──
   const OrdersView = () => {
     const updateOrderStatus = async (id: string, newStatus: string) => {
+      let message = '';
+      if (newStatus === 'Cancelled') {
+        const input = prompt('Please enter a reason for cancellation (optional):');
+        if (input === null) return; // user cancelled the prompt
+        message = input;
+      } else if (newStatus === 'Completed') {
+        message = 'Your order has been confirmed and completed!';
+      }
+
       try {
         const res = await fetch(`http://localhost:5000/api/orders/${id}`, {
           method: 'PUT',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ status: newStatus })
+          body: JSON.stringify({ status: newStatus, adminMessage: message })
         });
         const data = await res.json();
         if (data.success) {
-          setOrders(orders.map(o => o._id === id ? { ...o, status: newStatus } : o));
+          setOrders(orders.map(o => o._id === id ? { ...o, status: newStatus, adminMessage: message } : o));
         }
       } catch (err) {
         console.error('Failed to update order status:', err);
@@ -682,20 +695,25 @@ export default function AdminPage() {
         </div>
         <div className={styles.tableWrap}>
           <table className={styles.table}>
-            <thead><tr>{['Customer','Items','Amount','Date','Status','Actions'].map(h => <th key={h} className={styles.th}>{h}</th>)}</tr></thead>
+            <thead><tr>{['Customer','Items','Amount','Info','Status','Actions'].map(h => <th key={h} className={styles.th}>{h}</th>)}</tr></thead>
             <tbody>
               {orders.map(o => (
                 <tr key={o._id} className={styles.tr}>
                   <td className={styles.td}>
                     <div className={styles.guestName}>{o.customerName || 'Guest'}</div>
-                    <div className={styles.guestEmail}>{o.customerEmail}</div>
+                    <div className={styles.guestEmail}>{o.customerPhone || o.customerEmail}</div>
                   </td>
                   <td className={styles.td}>
-                    {o.items.map(i => `${i.name} (x${i.quantity})`).join(', ')}
+                    <div className={styles.guestEmail} style={{ maxWidth: '200px', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+                      {o.items.map(i => `${i.name} (x${i.quantity})`).join(', ')}
+                    </div>
                   </td>
                   <td className={styles.td}>₹{o.totalAmount}</td>
-                  <td className={styles.td}>{new Date(o.createdAt).toLocaleString()}</td>
-                  <td className={styles.td}><span className={`${styles.statusBadge} ${o.status === 'Completed' ? styles.status_confirmed : styles.status_pending}`}>{o.status}</span></td>
+                  <td className={styles.td}>
+                    <div className={styles.guestEmail}>{o.paymentMethod || 'Paid'}</div>
+                    <div className={styles.guestEmail}>{new Date(o.createdAt).toLocaleTimeString()}</div>
+                  </td>
+                  <td className={styles.td}><span className={`${styles.statusBadge} ${o.status === 'Completed' ? styles.status_confirmed : o.status === 'Cancelled' ? styles.status_cancelled : styles.status_pending}`}>{o.status}</span></td>
                   <td className={styles.td}>
                     {o.status === 'Pending' && (
                       <div style={{ display:'flex', gap:'0.5rem' }}>

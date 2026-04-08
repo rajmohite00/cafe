@@ -18,6 +18,30 @@ export default function CheckoutPage() {
   const [step, setStep] = useState<'details' | 'payment' | 'done'>('details');
   const [payMethod, setPayMethod] = useState<PayMethod>('upi');
   const [loading, setLoading] = useState(false);
+  const [placedOrderId, setPlacedOrderId] = useState<string | null>(null);
+  const [liveStatus, setLiveStatus] = useState<string>('Pending');
+  const [liveMessage, setLiveMessage] = useState<string>('');
+
+  useEffect(() => {
+    let interval: NodeJS.Timeout;
+    if (placedOrderId && step === 'done') {
+      const checkStatus = async () => {
+        try {
+          const res = await fetch(`http://localhost:5000/api/orders/${placedOrderId}`);
+          const data = await res.json();
+          if (data.success) {
+            setLiveStatus(data.data.status);
+            setLiveMessage(data.data.adminMessage || '');
+          }
+        } catch (e) {
+          console.error("Polling error", e);
+        }
+      };
+      checkStatus();
+      interval = setInterval(checkStatus, 5000);
+    }
+    return () => clearInterval(interval);
+  }, [placedOrderId, step]);
 
   const gst = Math.round(totalPrice * 0.05);
   const delivery = totalPrice > 0 ? 40 : 0;
@@ -38,6 +62,9 @@ export default function CheckoutPage() {
       const orderPayload = {
         customerName: form.name,
         customerEmail: form.email,
+        customerPhone: form.phone,
+        address: `${form.address}, ${form.city} - ${form.pincode}`,
+        paymentMethod: payMethod,
         items: items.map(item => ({
           name: item.name,
           quantity: item.quantity,
@@ -58,10 +85,12 @@ export default function CheckoutPage() {
         throw new Error('Failed to place order');
       }
 
-      await response.json();
-      
-      clearCart();
-      setStep('done');
+      const data = await response.json();
+      if (data.success) {
+        setPlacedOrderId(data.data._id);
+        clearCart();
+        setStep('done');
+      }
     } catch (error) {
       console.error('Error placing order:', error);
       alert('There was an error placing your order. Please try again.');
@@ -103,6 +132,18 @@ export default function CheckoutPage() {
                   <span>Order ID</span>
                   <span className={styles.successVal}>RJC-{Math.floor(100000 + Math.random() * 900000)}</span>
                 </div>
+                <div className={styles.successRow}>
+                  <span>Order Status</span>
+                  <span className={`${styles.statusBadge} ${liveStatus === 'Cancelled' ? styles.status_cancelled : styles.status_pending}`} 
+                        style={{ color: liveStatus === 'Cancelled' ? '#d32f2f' : '#fbc02d', fontWeight: 'bold' }}>
+                    {liveStatus}
+                  </span>
+                </div>
+                {liveMessage && (
+                  <div className={styles.adminNote}>
+                    <strong>Note from Cafe:</strong> {liveMessage}
+                  </div>
+                )}
                 <div className={styles.successRow}>
                   <span>Payment</span>
                   <span className={styles.successVal}>

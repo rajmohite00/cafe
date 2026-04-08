@@ -1,14 +1,11 @@
 const mongoose = require('mongoose');
 
 const orderSchema = new mongoose.Schema({
-  customerName: {
-    type: String,
-    // required: true,
-  },
-  customerEmail: {
-    type: String,
-    // required: true,
-  },
+  customerName: { type: String, required: true },
+  customerEmail: { type: String },
+  customerPhone: { type: String, required: true },
+  address: { type: String, required: true },
+  paymentMethod: { type: String, required: true },
   items: [
     {
       name: { type: String, required: true },
@@ -24,6 +21,10 @@ const orderSchema = new mongoose.Schema({
     type: String,
     enum: ['Pending', 'Preparing', 'Ready', 'Completed', 'Cancelled'],
     default: 'Pending'
+  },
+  adminMessage: {
+    type: String,
+    default: ''
   },
   createdAt: {
     type: Date,
