@@ -14,6 +14,15 @@ exports.createOrder = async (req, res) => {
     });
 
     const savedOrder = await newOrder.save();
+    
+    // Log Activity
+    const Activity = require('../models/Activity');
+    await Activity.create({
+      type: 'order',
+      description: `New order placed by ${customerName} for ₹${totalAmount}`,
+      ipAddress: 'System'
+    });
+
     res.status(201).json({ success: true, data: savedOrder });
   } catch (error) {
     console.error('Error creating order:', error);

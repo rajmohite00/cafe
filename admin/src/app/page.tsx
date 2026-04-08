@@ -25,6 +25,13 @@ type Order = {
   status: string;
   createdAt: string;
 };
+type Activity = {
+  _id: string;
+  type: string;
+  description: string;
+  timestamp: string;
+  ipAddress: string;
+};
 
 // ── Seed data ──
 const seedMenu: MenuItem[] = [
@@ -54,19 +61,46 @@ const seedPosts: BlogPost[] = [
   { id:3, title:'Upcoming Easter Brunch Event', excerpt:'Join us for an exclusive Easter Sunday brunch with live music, a champagne station, and a special kids\' activity corner.', status:'draft', date:'2026-04-01' },
 ];
 
-const totalRevenue = seedReservations.filter(r => r.status !== 'cancelled').reduce((a,r) => a + r.guests * 1200, 0);
+
 
 // ── Component ──
 export default function AdminPage() {
   const [tab,          setTab]          = useState<Tab>('dashboard');
   const [orders,       setOrders]       = useState<Order[]>([]);
-  const [menuItems,    setMenuItems]    = useState<MenuItem[]>(seedMenu);
-  const [reservations, setReservations] = useState<Reservation[]>(seedReservations);
-  const [contacts,     setContacts]     = useState<Contact[]>(seedContacts);
-  const [posts,        setPosts]        = useState<BlogPost[]>(seedPosts);
+  const [menuItems,    setMenuItems]    = useState<MenuItem[]>([]);
+  const [reservations, setReservations] = useState<Reservation[]>([]);
+  const [contacts,     setContacts]     = useState<Contact[]>([]);
+  const [posts,        setPosts]        = useState<BlogPost[]>([]);
   const [editItem,     setEditItem]     = useState<MenuItem|null>(null);
   const [editPost,     setEditPost]     = useState<BlogPost|null>(null);
   const [designColor,  setDesignColor]  = useState('#C9A84C');
+  const [activities,   setActivities]   = useState<Activity[]>([]);
+
+  const totalRevenue = reservations.filter(r => r.status !== 'cancelled').reduce((a,r) => a + r.guests * 1200, 0);
+
+  useEffect(() => {
+    // Initial fetch for everything else
+    const fetchAllData = async () => {
+      try {
+        const [menuRes, resRes, contactRes, postRes] = await Promise.all([
+          fetch('http://localhost:5000/api/data/menu'),
+          fetch('http://localhost:5000/api/data/reservations'),
+          fetch('http://localhost:5000/api/data/contacts'),
+          fetch('http://localhost:5000/api/data/posts')
+        ]);
+        const [menu, res, contacts, posts] = await Promise.all([
+          menuRes.json(), resRes.json(), contactRes.json(), postRes.json()
+        ]);
+        if (menu.success) setMenuItems(menu.data.map((d: any) => ({ ...d, id: d._id })));
+        if (res.success) setReservations(res.data.map((d: any) => ({ ...d, id: d._id })));
+        if (contacts.success) setContacts(contacts.data.map((d: any) => ({ ...d, id: d._id })));
+        if (posts.success) setPosts(posts.data.map((d: any) => ({ ...d, id: d._id })));
+      } catch (err) {
+        console.error('Failed to fetch data', err);
+      }
+    };
+    fetchAllData();
+  }, []);
 
   useEffect(() => {
     const fetchOrders = async () => {
@@ -79,23 +113,55 @@ export default function AdminPage() {
       } catch (err) {
         console.error('Failed to fetch orders:', err);
       }
+
+      try {
+        const resAct = await fetch('http://localhost:5000/api/activities');
+        const dataAct = await resAct.json();
+        if (dataAct.success) {
+          setActivities(dataAct.data);
+        }
+      } catch (err) {
+        console.error('Failed to fetch activities:', err);
+      }
     };
     fetchOrders();
-    const interval = setInterval(fetchOrders, 10000);
+    const interval = setInterval(fetchOrders, 3000); // reduced to 3s for better real-time feel
     return () => clearInterval(interval);
   }, []);
 
+
   // ── Helpers ──
-  const updateResStatus = (id: string, status: Reservation['status']) =>
+  const updateResStatus = async (id: string, status: Reservation['status']) => {
+    await fetch(`http://localhost:5000/api/data/reservations/${id}`, { method: 'PUT', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ status }) });
     setReservations(rs => rs.map(r => r.id === id ? { ...r, status } : r));
-  const markRead = (id: string) =>
+  };
+  const markRead = async (id: string) => {
+    await fetch(`http://localhost:5000/api/data/contacts/${id}`, { method: 'PUT', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ status: 'read' }) });
     setContacts(cs => cs.map(c => c.id === id ? { ...c, status: 'read' } : c));
-  const deleteMenuItem = (id: number) => setMenuItems(ms => ms.filter(m => m.id !== id));
-  const toggleVisible = (id: number) => setMenuItems(ms => ms.map(m => m.id === id ? { ...m, visible: !m.visible } : m));
-  const addMenuItem = () => {
-    const n: MenuItem = { id: Date.now(), name:'New Dish', category:'Signature', price:0, tag:'', emoji:'🍽', visible:true };
-    setMenuItems(ms => [...ms, n]);
-    setEditItem(n);
+  };
+  const deleteMenuItem = async (id: number) => {
+    await fetch(`http://localhost:5000/api/data/menu/${id}`, { method: 'DELETE' });
+    setMenuItems(ms => ms.filter(m => m.id !== id));
+  };
+  const toggleVisible = async (id: number) => {
+    const item = menuItems.find(m => m.id === id);
+    if (!item) return;
+    await fetch(`http://localhost:5000/api/data/menu/${id}`, { method: 'PUT', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ visible: !item.visible }) });
+    setMenuItems(ms => ms.map(m => m.id === id ? { ...m, visible: !m.visible } : m));
+  };
+  const addMenuItem = async () => {
+    const newItem = { name:'New Dish', category:'Signature', price:0, tag:'', emoji:'🍽', visible:true };
+    const res = await fetch('http://localhost:5000/api/data/menu', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(newItem)
+    });
+    const data = await res.json();
+    if (data.success) {
+      const saved = { ...data.data, id: data.data._id };
+      setMenuItems(ms => [...ms, saved]);
+      setEditItem(saved);
+    }
   };
 
   const navItems: { key: Tab; icon: React.ElementType; label: string; badge?: number }[] = [
@@ -182,6 +248,37 @@ export default function AdminPage() {
         ))}
       </div>
 
+      {/* Real-time Activities */}
+      <h2 className={styles.sectionTitle}>Live Website Activity</h2>
+      <div className={styles.tableWrap} style={{ marginBottom: '2rem' }}>
+        <table className={styles.table}>
+          <thead>
+            <tr>
+              <th className={styles.th}>Time</th>
+              <th className={styles.th}>Type</th>
+              <th className={styles.th}>Description</th>
+              <th className={styles.th}>Visitor IP</th>
+            </tr>
+          </thead>
+          <tbody>
+            {activities.length > 0 ? activities.slice(0, 5).map(act => (
+              <tr key={act._id} className={styles.tr}>
+                <td className={styles.td}>{new Date(act.timestamp).toLocaleTimeString()}</td>
+                <td className={styles.td}>
+                  <span className={`${styles.statusBadge} ${styles['status_pending']}`} style={{ textTransform: 'capitalize' }}>
+                    {act.type}
+                  </span>
+                </td>
+                <td className={styles.td}>{act.description}</td>
+                <td className={styles.td}><span className={styles.guestEmail}>{act.ipAddress}</span></td>
+              </tr>
+            )) : (
+              <tr><td colSpan={4} className={styles.td} style={{ textAlign:'center' }}>No recent activity...</td></tr>
+            )}
+          </tbody>
+        </table>
+      </div>
+
       {/* Recent reservations */}
       <h2 className={styles.sectionTitle}>Recent Reservations</h2>
       <div className={styles.tableWrap}>
@@ -258,9 +355,17 @@ export default function AdminPage() {
             ))}
           </div>
           <div style={{ display:'flex', gap:'0.75rem', marginTop:'1rem' }}>
-            <button className={styles.primaryBtn} onClick={() => {
-              setMenuItems(ms => ms.some(m => m.id === editItem.id) ? ms.map(m => m.id === editItem.id ? editItem : m) : [...ms, editItem]);
-              setEditItem(null);
+            <button className={styles.primaryBtn} onClick={async () => {
+              const res = await fetch(`http://localhost:5000/api/data/menu/${editItem.id}`, {
+                method: 'PUT',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(editItem)
+              });
+              const data = await res.json();
+              if (data.success) {
+                setMenuItems(ms => ms.map(m => m.id === editItem.id ? editItem : m));
+                setEditItem(null);
+              }
             }}>Save Changes</button>
             <button className={styles.ghostBtn} onClick={() => setEditItem(null)}>Cancel</button>
           </div>
@@ -404,7 +509,20 @@ export default function AdminPage() {
     <div className={styles.content}>
       <div className={styles.pageHeader}>
         <div><h1 className={styles.pageTitle}>Blog & Events</h1><p className={styles.pageSubtitle}>{posts.filter(p=>p.status==='published').length} published · {posts.filter(p=>p.status==='draft').length} drafts</p></div>
-        <button className={styles.primaryBtn} onClick={() => { const np: BlogPost = { id:Date.now(), title:'New Post', excerpt:'', status:'draft', date:new Date().toISOString().split('T')[0] }; setPosts(ps => [...ps, np]); setEditPost(np); }}><Plus size={16}/> New Post</button>
+        <button className={styles.primaryBtn} onClick={async () => { 
+          const np = { title:'New Post', excerpt:'', status:'draft', date:new Date().toISOString().split('T')[0] }; 
+          const res = await fetch('http://localhost:5000/api/data/posts', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(np)
+          });
+          const data = await res.json();
+          if (data.success) {
+            const saved = { ...data.data, id: data.data._id };
+            setPosts(ps => [...ps, saved]); 
+            setEditPost(saved); 
+          }
+        }}><Plus size={16}/> New Post</button>
       </div>
 
       {editPost && (
@@ -432,7 +550,18 @@ export default function AdminPage() {
             </div>
           </div>
           <div style={{ display:'flex', gap:'0.75rem', marginTop:'1rem' }}>
-            <button className={styles.primaryBtn} onClick={() => { setPosts(ps => ps.some(p=>p.id===editPost.id) ? ps.map(p=>p.id===editPost.id?editPost:p) : [...ps,editPost]); setEditPost(null); }}>Save Post</button>
+            <button className={styles.primaryBtn} onClick={async () => { 
+              const res = await fetch(`http://localhost:5000/api/data/posts/${editPost.id}`, {
+                method: 'PUT',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(editPost)
+              });
+              const data = await res.json();
+              if (data.success) {
+                setPosts(ps => ps.map(p=>p.id===editPost.id?editPost:p)); 
+                setEditPost(null); 
+              }
+            }}>Save Post</button>
             <button className={styles.ghostBtn} onClick={() => setEditPost(null)}>Cancel</button>
           </div>
         </div>
@@ -449,7 +578,10 @@ export default function AdminPage() {
             </div>
             <div className={styles.menuCardActions}>
               <button className={styles.iconBtn} onClick={() => setEditPost(p)}><Edit size={14}/></button>
-              <button className={`${styles.iconBtn} ${styles.iconBtnDanger}`} onClick={() => setPosts(ps => ps.filter(x => x.id !== p.id))}><Trash2 size={14}/></button>
+              <button className={`${styles.iconBtn} ${styles.iconBtnDanger}`} onClick={async () => {
+                await fetch(`http://localhost:5000/api/data/posts/${p.id}`, { method: 'DELETE' });
+                setPosts(ps => ps.filter(x => x.id !== p.id));
+              }}><Trash2 size={14}/></button>
             </div>
           </div>
         ))}

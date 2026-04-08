@@ -2,6 +2,7 @@ import type { Metadata, Viewport } from 'next';
 import './globals.css';
 import { CartProvider } from '@/context/CartContext';
 import RevealObserver from '@/components/RevealObserver';
+import ActivityTracker from '@/components/ActivityTracker';
 
 export const metadata: Metadata = {
   title: "Raj's Cafe — The Perfect Blend of Aroma & Ambiance",
@@ -26,6 +27,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <CartProvider>
           {children}
           <RevealObserver />
+          <ActivityTracker />
         </CartProvider>
       </body>
     </html>
