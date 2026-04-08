@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { ArrowLeft, CreditCard, Smartphone, Banknote, Wallet, CheckCircle, ShieldCheck, Lock } from 'lucide-react';
