@@ -72,7 +72,7 @@ export default function QuizPage() {
 
   return (
     <>
-      <Navbar />
+      <Navbar light />
       <main className={styles.main}>
         <div className={styles.container}>
 

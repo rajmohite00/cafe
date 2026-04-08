@@ -18,7 +18,7 @@ export default function CartPage() {
   if (items.length === 0) {
     return (
       <>
-        <Navbar />
+        <Navbar light />
         <main className={styles.main}>
           <div className={`container ${styles.empty}`}>
             <ShoppingBag size={72} strokeWidth={1} color="var(--amber)" />
@@ -34,7 +34,7 @@ export default function CartPage() {
 
   return (
     <>
-      <Navbar />
+      <Navbar light />
       <main className={styles.main}>
         <div className="container">
           {/* Header */}

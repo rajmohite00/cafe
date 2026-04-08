@@ -76,6 +76,11 @@ export default function CheckoutPage() {
   };
 
   const handlePlaceOrder = async () => {
+    // Validate required delivery fields
+    if (!form.address.trim() || !form.pincode.trim() || !form.city.trim()) {
+      alert('Please fill in your complete delivery address (address, city & pincode) before placing the order.');
+      return;
+    }
     setLoading(true);
     try {
       const orderPayload = {
@@ -122,7 +127,7 @@ export default function CheckoutPage() {
   if (items.length === 0 && step !== 'done') {
     return (
       <>
-        <Navbar />
+        <Navbar light />
         <main className={styles.main}>
           <div className={`container ${styles.empty}`}>
             <h2>No items to checkout</h2>
@@ -137,7 +142,7 @@ export default function CheckoutPage() {
   if (step === 'done') {
     return (
       <>
-        <Navbar />
+        <Navbar light />
         <main className={styles.main}>
           <div className={`container ${styles.successWrap}`}>
             <div className={styles.successCard}>
@@ -186,7 +191,7 @@ export default function CheckoutPage() {
 
   return (
     <>
-      <Navbar />
+      <Navbar light />
       <main className={styles.main}>
         <div className="container">
           {/* Header */}

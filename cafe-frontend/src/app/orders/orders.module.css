@@ -392,6 +392,33 @@
   color: var(--brown-mid);
 }
 
+/* Download Bill button */
+.downloadBtn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-top: 1.25rem;
+  padding: 0.7rem 1.4rem;
+  background: linear-gradient(135deg, #2C1506, #3d2208);
+  color: #F5EDD8;
+  font-family: var(--font-ui);
+  font-size: 0.82rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  border: none;
+  border-radius: 10px;
+  cursor: pointer;
+  transition: all 0.2s;
+  box-shadow: 0 3px 12px rgba(44,21,6,0.2);
+}
+.downloadBtn:hover {
+  background: linear-gradient(135deg, #E8941A, #F5A832);
+  color: white;
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(232,148,26,0.35);
+}
+.downloadBtn:active { transform: translateY(0); }
+
 /* ── States ── */
 .loadingScreen {
   min-height: 100svh;

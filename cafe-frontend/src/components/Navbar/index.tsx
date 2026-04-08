@@ -18,7 +18,7 @@ const navLinks = [
   { label: 'Gift',          href: '/gift'          },
 ];
 
-export default function Navbar() {
+export default function Navbar({ light = false }: { light?: boolean }) {
   const [scrolled, setScrolled] = useState(false);
   const [open, setOpen]         = useState(false);
   const { totalItems }          = useCart();
@@ -30,8 +30,11 @@ export default function Navbar() {
     return () => window.removeEventListener('scroll', onScroll);
   }, []);
 
+  // On light-background pages, always appear solid (like scrolled state)
+  const isLight = light || scrolled;
+
   return (
-    <header className={`${styles.header} ${scrolled ? styles.scrolled : ''}`}>
+    <header className={`${styles.header} ${isLight ? styles.scrolled : ''}`}>
       <div className={`container ${styles.inner}`}>
 
         {/* Logo */}

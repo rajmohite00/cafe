@@ -5,7 +5,7 @@ import FAQ from '@/components/FAQ';
 export default function FAQPage() {
   return (
     <>
-      <Navbar />
+      <Navbar light />
       <main style={{ paddingTop: '100px', minHeight: '80vh' }}>
         <FAQ />
       </main>

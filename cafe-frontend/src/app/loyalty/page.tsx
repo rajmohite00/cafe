@@ -33,7 +33,7 @@ export default function LoyaltyPage() {
 
   return (
     <>
-      <Navbar />
+      <Navbar light />
       <main className={styles.main}>
 
         {/* ── HERO ── */}

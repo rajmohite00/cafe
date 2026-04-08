@@ -41,6 +41,129 @@ function formatDate(iso: string) {
   });
 }
 
+function downloadBill(order: Order, userName: string) {
+  const subtotal   = order.items.reduce((s, i) => s + i.price * i.quantity, 0);
+  const gst        = Math.round(subtotal * 0.05);
+  const delivery   = 40;
+  const pm         = { upi: 'UPI / QR Code', card: 'Card', cod: 'Cash on Delivery', wallet: 'Wallet' };
+  const pmLabel    = pm[order.paymentMethod as keyof typeof pm] || order.paymentMethod || 'N/A';
+
+  const itemRows   = order.items.map(i => `
+    <tr>
+      <td style="padding:10px 12px;border-bottom:1px solid #f0e8d8;color:#3d2208;font-size:14px;">${i.name}</td>
+      <td style="padding:10px 12px;border-bottom:1px solid #f0e8d8;text-align:center;color:#6b4c2a;font-size:14px;">${i.quantity}</td>
+      <td style="padding:10px 12px;border-bottom:1px solid #f0e8d8;text-align:right;color:#3d2208;font-size:14px;">₹${i.price}</td>
+      <td style="padding:10px 12px;border-bottom:1px solid #f0e8d8;text-align:right;font-weight:700;color:#3d2208;font-size:14px;">₹${i.price * i.quantity}</td>
+    </tr>`).join('');
+
+  const billHtml = `<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <title>Bill – Raj's Cafe #${order._id.slice(-6).toUpperCase()}</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Lato:wght@400;700&display=swap');
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: 'Lato', sans-serif; background: #fff; color: #3d2208; }
+    .bill { max-width: 600px; margin: 0 auto; padding: 40px 40px 24px; }
+    .header { text-align: center; border-bottom: 2px solid #E8941A; padding-bottom: 24px; margin-bottom: 24px; }
+    .logo { font-family: 'Playfair Display', Georgia, serif; font-size: 32px; color: #2C1506; margin-bottom: 4px; }
+    .tagline { font-size: 11px; letter-spacing: 0.2em; text-transform: uppercase; color: #E8941A; font-weight: 700; }
+    .address { font-size: 12px; color: #8A7560; margin-top: 6px; }
+    .meta { display: flex; justify-content: space-between; margin-bottom: 20px; background: #FFF8F0; border-radius: 8px; padding: 14px 16px; }
+    .meta-col { display: flex; flex-direction: column; gap: 4px; }
+    .meta-label { font-size: 10px; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: #8A7560; }
+    .meta-val { font-size: 13px; color: #2C1506; font-weight: 700; }
+    .status-badge { display: inline-block; padding: 3px 10px; border-radius: 999px; font-size: 11px; font-weight: 700; background: #e8f5e9; color: #1b5e20; }
+    table { width: 100%; border-collapse: collapse; margin-bottom: 16px; }
+    thead tr { background: #2C1506; }
+    thead th { padding: 10px 12px; color: #F5EDD8; font-size: 11px; letter-spacing: 0.1em; text-transform: uppercase; text-align: left; font-weight: 700; }
+    thead th:last-child, thead th:nth-child(3), thead th:nth-child(2) { text-align: right; }
+    thead th:nth-child(2) { text-align: center; }
+    .totals { margin-left: auto; width: 260px; }
+    .total-row { display: flex; justify-content: space-between; font-size: 13px; padding: 6px 0; color: #6b4c2a; border-bottom: 1px solid #f5edd8; }
+    .total-row.grand { font-size: 18px; font-weight: 800; color: #2C1506; border-top: 2px solid #E8941A; border-bottom: none; padding-top: 10px; margin-top: 4px; }
+    .grand span:last-child { color: #E8941A; }
+    .footer { text-align: center; margin-top: 30px; padding-top: 20px; border-top: 1px solid #f0e8d8; }
+    .footer p { font-size: 12px; color: #8A7560; line-height: 1.8; }
+    .thank { font-family: 'Playfair Display', Georgia, serif; font-size: 18px; color: #2C1506; margin-bottom: 6px; font-style: italic; }
+    .watermark { font-size: 10px; color: #bbb; margin-top: 12px; }
+    @media print {
+      body { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+      .bill { padding: 20px; }
+    }
+  </style>
+</head>
+<body>
+<div class="bill">
+  <div class="header">
+    <div class="logo">☕ Raj's Cafe</div>
+    <div class="tagline">The Perfect Blend of Aroma &amp; Ambiance</div>
+    <div class="address">123 Connaught Place, New Delhi – 110001 | +91 98765 43210 | rajscafe.in</div>
+  </div>
+
+  <div class="meta">
+    <div class="meta-col">
+      <span class="meta-label">Order ID</span>
+      <span class="meta-val">#${order._id.slice(-6).toUpperCase()}</span>
+    </div>
+    <div class="meta-col">
+      <span class="meta-label">Customer</span>
+      <span class="meta-val">${userName}</span>
+    </div>
+    <div class="meta-col">
+      <span class="meta-label">Date &amp; Time</span>
+      <span class="meta-val">${formatDate(order.createdAt)}</span>
+    </div>
+    <div class="meta-col">
+      <span class="meta-label">Payment</span>
+      <span class="meta-val">${pmLabel}</span>
+    </div>
+    <div class="meta-col">
+      <span class="meta-label">Status</span>
+      <span class="status-badge">${order.status}</span>
+    </div>
+  </div>
+
+  ${order.address ? `<p style="font-size:12px;color:#8A7560;margin-bottom:16px;">📍 <strong>Delivery Address:</strong> ${order.address}</p>` : ''}
+
+  <table>
+    <thead>
+      <tr>
+        <th>Item Description</th>
+        <th style="text-align:center;">Qty</th>
+        <th style="text-align:right;">Unit Price</th>
+        <th style="text-align:right;">Total</th>
+      </tr>
+    </thead>
+    <tbody>${itemRows}</tbody>
+  </table>
+
+  <div class="totals">
+    <div class="total-row"><span>Subtotal</span><span>₹${subtotal}</span></div>
+    <div class="total-row"><span>GST (5%)</span><span>₹${gst}</span></div>
+    <div class="total-row"><span>Delivery</span><span>₹${delivery}</span></div>
+    <div class="total-row grand"><span>Grand Total</span><span>₹${order.totalAmount}</span></div>
+  </div>
+
+  <div class="footer">
+    <p class="thank">Thank you for dining with us! 🙏</p>
+    <p>We hope you enjoyed your meal. Visit us again soon.<br/>
+    For feedback or queries: <strong>hello@rajscafe.in</strong> | GST No: 07ABCDE1234F1Z5</p>
+    <p class="watermark">This is a computer-generated receipt. No signature required.</p>
+  </div>
+</div>
+<script>window.onload = () => { window.print(); }</script>
+</body>
+</html>`;
+
+  const win = window.open('', '_blank', 'width=650,height=900');
+  if (win) {
+    win.document.write(billHtml);
+    win.document.close();
+  }
+}
+
 export default function OrdersPage() {
   const { user, loading: authLoading } = useAuth();
   const router = useRouter();
@@ -94,7 +217,7 @@ export default function OrdersPage() {
 
   return (
     <>
-      <Navbar />
+      <Navbar light />
       <main className={styles.main}>
         <div className="container">
 
@@ -267,6 +390,16 @@ export default function OrdersPage() {
                               </div>
                             )}
                           </div>
+
+                          {/* Download bill — show for all non-pending orders */}
+                          {(order.status === 'Completed' || order.status === 'Ready' || order.status === 'Preparing') && (
+                            <button
+                              className={styles.downloadBtn}
+                              onClick={() => downloadBill(order, user!.name)}
+                            >
+                              📄 Download Bill (PDF)
+                            </button>
+                          )}
                         </div>
                       )}
                     </div>

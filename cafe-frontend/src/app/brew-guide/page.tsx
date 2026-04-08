@@ -5,7 +5,7 @@ import BrewGuide from '@/components/BrewGuide';
 export default function BrewGuidePage() {
   return (
     <>
-      <Navbar />
+      <Navbar light />
       <main style={{ paddingTop: '100px', minHeight: '80vh' }}>
         <BrewGuide />
       </main>

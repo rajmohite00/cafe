@@ -80,7 +80,7 @@ export default function FullMenuPage() {
 
   return (
     <>
-      <Navbar />
+      <Navbar light />
       <main className={styles.main}>
         {/* Hero banner */}
         <div className={styles.heroBanner}>

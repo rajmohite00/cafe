@@ -44,7 +44,7 @@ export default function GiftPage() {
 
   return (
     <>
-      <Navbar />
+      <Navbar light />
       <main className={styles.main}>
 
         {/* ── HERO ── */}

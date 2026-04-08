@@ -86,7 +86,7 @@ export default function BlogPage() {
 
   return (
     <>
-      <Navbar />
+      <Navbar light />
       <main className={styles.main}>
 
         {/* Hero banner */}
