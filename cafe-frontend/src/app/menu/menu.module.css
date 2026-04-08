@@ -1,6 +1,7 @@
 .main {
   background: var(--cream);
   min-height: 100vh;
+  padding-top: 100px;
   padding-bottom: 5rem;
 }
 
