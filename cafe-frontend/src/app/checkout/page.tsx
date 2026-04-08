@@ -9,6 +9,8 @@ import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
 import styles from './checkout.module.css';
 
+const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000';
+
 type PayMethod = 'upi' | 'card' | 'cod' | 'wallet';
 
 export default function CheckoutPage() {
@@ -27,7 +29,7 @@ export default function CheckoutPage() {
     if (placedOrderId && step === 'done') {
       const checkStatus = async () => {
         try {
-          const res = await fetch(`http://localhost:5000/api/orders/${placedOrderId}`);
+          const res = await fetch(`${API_URL}/api/orders/${placedOrderId}`);
           const data = await res.json();
           if (data.success) {
             setLiveStatus(data.data.status);
@@ -73,7 +75,7 @@ export default function CheckoutPage() {
         totalAmount: grandTotal,
       };
 
-      const response = await fetch('http://localhost:5000/api/orders', {
+      const response = await fetch(`${API_URL}/api/orders`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

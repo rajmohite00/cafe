@@ -9,6 +9,8 @@ import {
 } from 'lucide-react';
 import styles from './page.module.css';
 
+const API_URL = process.env.NEXT_PUBLIC_API_URL || '${API_URL}';
+
 // ── Types ──
 type Tab = 'dashboard' | 'orders' | 'menu' | 'reservations' | 'contacts' | 'hours' | 'seo' | 'design' | 'blog';
 
@@ -87,10 +89,10 @@ export default function AdminPage() {
     const fetchAllData = async () => {
       try {
         const [menuRes, resRes, contactRes, postRes] = await Promise.all([
-          fetch('http://localhost:5000/api/data/menu'),
-          fetch('http://localhost:5000/api/data/reservations'),
-          fetch('http://localhost:5000/api/data/contacts'),
-          fetch('http://localhost:5000/api/data/posts')
+          fetch('${API_URL}/api/data/menu'),
+          fetch('${API_URL}/api/data/reservations'),
+          fetch('${API_URL}/api/data/contacts'),
+          fetch('${API_URL}/api/data/posts')
         ]);
         const [menu, res, contacts, posts] = await Promise.all([
           menuRes.json(), resRes.json(), contactRes.json(), postRes.json()
@@ -109,7 +111,7 @@ export default function AdminPage() {
   useEffect(() => {
     const fetchOrders = async () => {
       try {
-        const res = await fetch('http://localhost:5000/api/orders');
+        const res = await fetch('${API_URL}/api/orders');
         const data = await res.json();
         if (data.success) {
           setOrders(data.data);
@@ -119,7 +121,7 @@ export default function AdminPage() {
       }
 
       try {
-        const resAct = await fetch('http://localhost:5000/api/activities');
+        const resAct = await fetch('${API_URL}/api/activities');
         const dataAct = await resAct.json();
         if (dataAct.success) {
           setActivities(dataAct.data);
@@ -136,26 +138,26 @@ export default function AdminPage() {
 
   // ── Helpers ──
   const updateResStatus = async (id: string, status: Reservation['status']) => {
-    await fetch(`http://localhost:5000/api/data/reservations/${id}`, { method: 'PUT', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ status }) });
+    await fetch(`${API_URL}/api/data/reservations/${id}`, { method: 'PUT', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ status }) });
     setReservations(rs => rs.map(r => r.id === id ? { ...r, status } : r));
   };
   const markRead = async (id: string) => {
-    await fetch(`http://localhost:5000/api/data/contacts/${id}`, { method: 'PUT', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ status: 'read' }) });
+    await fetch(`${API_URL}/api/data/contacts/${id}`, { method: 'PUT', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ status: 'read' }) });
     setContacts(cs => cs.map(c => c.id === id ? { ...c, status: 'read' } : c));
   };
   const deleteMenuItem = async (id: number) => {
-    await fetch(`http://localhost:5000/api/data/menu/${id}`, { method: 'DELETE' });
+    await fetch(`${API_URL}/api/data/menu/${id}`, { method: 'DELETE' });
     setMenuItems(ms => ms.filter(m => m.id !== id));
   };
   const toggleVisible = async (id: number) => {
     const item = menuItems.find(m => m.id === id);
     if (!item) return;
-    await fetch(`http://localhost:5000/api/data/menu/${id}`, { method: 'PUT', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ visible: !item.visible }) });
+    await fetch(`${API_URL}/api/data/menu/${id}`, { method: 'PUT', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ visible: !item.visible }) });
     setMenuItems(ms => ms.map(m => m.id === id ? { ...m, visible: !m.visible } : m));
   };
   const addMenuItem = async () => {
     const newItem = { name:'New Dish', category:'Signature', price:0, tag:'', emoji:'🍽', visible:true };
-    const res = await fetch('http://localhost:5000/api/data/menu', {
+    const res = await fetch('${API_URL}/api/data/menu', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(newItem)
@@ -360,7 +362,7 @@ export default function AdminPage() {
           </div>
           <div style={{ display:'flex', gap:'0.75rem', marginTop:'1rem' }}>
             <button className={styles.primaryBtn} onClick={async () => {
-              const res = await fetch(`http://localhost:5000/api/data/menu/${editItem.id}`, {
+              const res = await fetch(`${API_URL}/api/data/menu/${editItem.id}`, {
                 method: 'PUT',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify(editItem)
@@ -515,7 +517,7 @@ export default function AdminPage() {
         <div><h1 className={styles.pageTitle}>Blog & Events</h1><p className={styles.pageSubtitle}>{posts.filter(p=>p.status==='published').length} published · {posts.filter(p=>p.status==='draft').length} drafts</p></div>
         <button className={styles.primaryBtn} onClick={async () => { 
           const np = { title:'New Post', excerpt:'', status:'draft', date:new Date().toISOString().split('T')[0] }; 
-          const res = await fetch('http://localhost:5000/api/data/posts', {
+          const res = await fetch('${API_URL}/api/data/posts', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify(np)
@@ -555,7 +557,7 @@ export default function AdminPage() {
           </div>
           <div style={{ display:'flex', gap:'0.75rem', marginTop:'1rem' }}>
             <button className={styles.primaryBtn} onClick={async () => { 
-              const res = await fetch(`http://localhost:5000/api/data/posts/${editPost.id}`, {
+              const res = await fetch(`${API_URL}/api/data/posts/${editPost.id}`, {
                 method: 'PUT',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify(editPost)
@@ -583,7 +585,7 @@ export default function AdminPage() {
             <div className={styles.menuCardActions}>
               <button className={styles.iconBtn} onClick={() => setEditPost(p)}><Edit size={14}/></button>
               <button className={`${styles.iconBtn} ${styles.iconBtnDanger}`} onClick={async () => {
-                await fetch(`http://localhost:5000/api/data/posts/${p.id}`, { method: 'DELETE' });
+                await fetch(`${API_URL}/api/data/posts/${p.id}`, { method: 'DELETE' });
                 setPosts(ps => ps.filter(x => x.id !== p.id));
               }}><Trash2 size={14}/></button>
             </div>
@@ -671,7 +673,7 @@ export default function AdminPage() {
       }
 
       try {
-        const res = await fetch(`http://localhost:5000/api/orders/${id}`, {
+        const res = await fetch(`${API_URL}/api/orders/${id}`, {
           method: 'PUT',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ status: newStatus, adminMessage: message })
