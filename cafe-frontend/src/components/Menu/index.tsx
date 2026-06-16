@@ -1,13 +1,17 @@
 'use client';
 
-import { useState } from 'react';
-import Image from 'next/image';
+import { useState, useEffect } from 'react';
 import Link from 'next/link';
+import Image from 'next/image';
 import { ShoppingCart, Star, Clock, Flame, Leaf } from 'lucide-react';
 import { useCart } from '@/context/CartContext';
-import { menuItems, categories, MenuItem } from '@/data/menuData';
+import type { MenuItem } from '@/context/CartContext';
+import { menuItems as staticMenuItems, categories as staticCategories } from '@/data/menuData';
 import styles from './Menu.module.css';
 
+const API_URL = process.env.NEXT_PUBLIC_API_URL;
+
+// ── Decorative SVGs ──────────────────────────────────────────────────────
 const BeanGroup = () => (
   <svg viewBox="0 0 140 100" fill="none" xmlns="http://www.w3.org/2000/svg" className={styles.decorBean}>
     <ellipse cx="35" cy="50" rx="32" ry="22" stroke="#9E7550" strokeWidth="1.5" fill="none"/>
@@ -28,6 +32,30 @@ const CupDecor = () => (
   </svg>
 );
 
+// ── Map API menu item → CartContext MenuItem shape ───────────────────────
+function apiItemToMenuItem(item: any): MenuItem {
+  return {
+    slug:        item._id,
+    name:        item.name        || 'Dish',
+    desc:        item.tag         || item.category || '',
+    longDesc:    item.tag         || '',
+    price:       item.price       || 0,
+    img:         item.emoji       || '🍽',
+    badge:       item.tag         || '',
+    category:    item.category    || 'Menu',
+    calories:    '',
+    prepTime:    '',
+    isVeg:       true,
+    ingredients: [],
+    rating:      0,
+    reviews:     0,
+  };
+}
+
+// ── MongoDB ObjectId pattern ─────────────────────────────────────────────
+const isMongoId = (s: string) => /^[0-9a-f]{24}$/i.test(s);
+
+// ── Card Component ────────────────────────────────────────────────────────
 function MenuCard({ item }: { item: MenuItem }) {
   const { addItem } = useCart();
   const [added, setAdded] = useState(false);
@@ -40,16 +68,17 @@ function MenuCard({ item }: { item: MenuItem }) {
     setTimeout(() => setAdded(false), 1500);
   };
 
-  const isEmoji = item.img.startsWith('/') === false;
+  const isEmoji  = !item.img.startsWith('/');
+  // Admin-managed items don't have individual detail pages → link to /menu
+  const href     = isMongoId(item.slug) ? '/menu' : `/menu/${item.slug}`;
 
   return (
-    <Link href={`/menu/${item.slug}`} className={styles.card}>
-      {/* Image / emoji */}
+    <Link href={href} className={styles.card}>
       <div className={styles.cardImg}>
         {isEmoji ? (
           <span className={styles.cardEmoji}>{item.img}</span>
         ) : (
-          <Image src={item.img} alt={item.name} fill style={{ objectFit: 'cover' }} sizes="(max-width:768px) 90vw, 320px" />
+          <Image src={item.img} alt={item.name} fill style={{ objectFit:'cover' }} sizes="(max-width:768px) 90vw, 320px" />
         )}
         {item.badge && <span className={styles.cardBadge}>{item.badge}</span>}
         {item.isVeg && (
@@ -59,18 +88,19 @@ function MenuCard({ item }: { item: MenuItem }) {
         )}
       </div>
 
-      {/* Content */}
       <div className={styles.cardBody}>
         <div className={styles.cardMeta}>
           <span className={styles.cardCategory}>{item.category}</span>
-          <span className={styles.cardRating}><Star size={11} fill="currentColor" /> {item.rating}</span>
+          {item.rating > 0 && (
+            <span className={styles.cardRating}><Star size={11} fill="currentColor" /> {item.rating}</span>
+          )}
         </div>
         <h3 className={styles.cardName}>{item.name}</h3>
-        <p className={styles.cardDesc}>{item.desc}</p>
+        {item.desc && <p className={styles.cardDesc}>{item.desc}</p>}
 
         <div className={styles.cardInfo}>
-          <span className={styles.infoTag}><Clock size={11} /> {item.prepTime}</span>
-          <span className={styles.infoTag}><Flame size={11} /> {item.calories}</span>
+          {item.prepTime && <span className={styles.infoTag}><Clock size={11} /> {item.prepTime}</span>}
+          {item.calories  && <span className={styles.infoTag}><Flame size={11} /> {item.calories}</span>}
         </div>
 
         <div className={styles.cardFooter}>
@@ -88,13 +118,42 @@ function MenuCard({ item }: { item: MenuItem }) {
   );
 }
 
+// ── Main Menu Section ────────────────────────────────────────────────────
 export default function Menu() {
   const [activeCategory, setActiveCategory] = useState('All');
+  const [liveItems,      setLiveItems]      = useState<MenuItem[]>([]);
+  const [loading,        setLoading]        = useState(true);
+
+  useEffect(() => {
+    const fetchMenu = async () => {
+      try {
+        if (!API_URL) { setLoading(false); return; }
+        const res  = await fetch(`${API_URL}/api/data/menu`, { cache: 'no-store' });
+        const data = await res.json();
+        if (data.success && Array.isArray(data.data) && data.data.length > 0) {
+          // Only show visible items
+          const visible = data.data
+            .filter((d: any) => d.visible !== false)
+            .map(apiItemToMenuItem);
+          setLiveItems(visible);
+        }
+      } catch { /* fall back to static data */ }
+      setLoading(false);
+    };
+    fetchMenu();
+    // Poll every 30 s so changes in admin appear quickly
+    const id = setInterval(fetchMenu, 30_000);
+    return () => clearInterval(id);
+  }, []);
+
+  // Use live items from DB if available, otherwise fall back to static
+  const source     = liveItems.length > 0 ? liveItems : staticMenuItems;
+  const categories = ['All', ...Array.from(new Set(source.map(i => i.category)))];
 
   const filtered = (activeCategory === 'All'
-    ? menuItems
-    : menuItems.filter(i => i.category === activeCategory)
-  ).slice(0, 6); // show only 6 on homepage — full list is on /menu
+    ? source
+    : source.filter(i => i.category === activeCategory)
+  ).slice(0, 6);
 
   return (
     <>
@@ -113,7 +172,7 @@ export default function Menu() {
           <div className={styles.header}>
             <span className="section-label">Our Menu</span>
             <h2 className={`section-title ${styles.title}`}>Crafted with Love &amp; Spice</h2>
-            <p className="section-subtitle" style={{ textAlign: 'center', maxWidth: 560, marginInline: 'auto', marginTop: '0.75rem' }}>
+            <p className="section-subtitle" style={{ textAlign:'center', maxWidth:560, marginInline:'auto', marginTop:'0.75rem' }}>
               Authentic Indian flavours, locally sourced ingredients &amp; every price in ₹. Welcome to Raj&apos;s Cafe.
             </p>
           </div>
@@ -123,7 +182,7 @@ export default function Menu() {
             {categories.map(cat => (
               <button
                 key={cat}
-                className={`${styles.filterBtn} ${activeCategory === cat ? styles.filterActive : ''}`}
+                className={`${styles.filterBtn} ${activeCategory===cat ? styles.filterActive : ''}`}
                 onClick={() => setActiveCategory(cat)}
               >
                 {cat}
@@ -131,14 +190,25 @@ export default function Menu() {
             ))}
           </div>
 
-          {/* Card grid */}
-          <div className={styles.menuGrid}>
-            {filtered.map(item => (
-              <MenuCard key={item.slug} item={item} />
-            ))}
-          </div>
+          {/* Loading skeleton */}
+          {loading && (
+            <div className={styles.menuGrid} aria-busy="true">
+              {[...Array(6)].map((_, i) => (
+                <div key={i} className={styles.card} style={{ minHeight:280, opacity:0.3, background:'var(--cream-dark)', borderRadius:16 }} />
+              ))}
+            </div>
+          )}
 
-          {/* View full menu link */}
+          {/* Card grid */}
+          {!loading && (
+            <div className={styles.menuGrid}>
+              {filtered.map(item => (
+                <MenuCard key={item.slug} item={item} />
+              ))}
+            </div>
+          )}
+
+          {/* View full menu */}
           <div className={styles.ctaRow}>
             <Link href="/menu" className={styles.viewFullBtn}>
               View Full Menu →

@@ -1,15 +1,40 @@
 const express = require('express');
-const router = express.Router();
-const { MenuItem, Reservation, Contact, BlogPost } = require('../models/Dynamic');
+const router  = express.Router();
+const { MenuItem, Reservation, Contact, BlogPost, SiteSetting } = require('../models/Dynamic');
 
 const models = {
-  menu: MenuItem,
+  menu:         MenuItem,
   reservations: Reservation,
-  contacts: Contact,
-  posts: BlogPost
+  contacts:     Contact,
+  posts:        BlogPost,
 };
 
-// Generic CRUD
+// ── Singleton Settings (hours / seo / design) ──────────────────────────────
+// GET  /api/data/settings/:key  → fetch one setting doc
+router.get('/settings/:key', async (req, res) => {
+  try {
+    const setting = await SiteSetting.findOne({ key: req.params.key });
+    res.json({ success: true, data: setting });
+  } catch (error) {
+    res.status(500).json({ success: false, message: error.message });
+  }
+});
+
+// PUT  /api/data/settings/:key  → upsert (create or update) a setting doc
+router.put('/settings/:key', async (req, res) => {
+  try {
+    const setting = await SiteSetting.findOneAndUpdate(
+      { key: req.params.key },
+      { key: req.params.key, value: req.body.value },
+      { new: true, upsert: true, setDefaultsOnInsert: true }
+    );
+    res.json({ success: true, data: setting });
+  } catch (error) {
+    res.status(500).json({ success: false, message: error.message });
+  }
+});
+
+// ── Generic CRUD ───────────────────────────────────────────────────────────
 router.get('/:resource', async (req, res) => {
   try {
     const Model = models[req.params.resource];

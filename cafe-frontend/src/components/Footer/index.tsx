@@ -3,12 +3,12 @@ import styles from './Footer.module.css';
 import NewsletterForm from './NewsletterForm';
 
 const links = {
-  'Explore':      [
-    { label: 'Our Menu',     href: '/#menu'      },
-    { label: "Chef's Story", href: '/#about'     },
-    { label: 'Blog',         href: '/blog'       },
-    { label: 'Coffee Quiz',  href: '/quiz'       },
-    { label: 'Loyalty Rewards', href: '/loyalty' },
+  'Explore': [
+    { label: 'Our Menu',        href: '/#menu'        },
+    { label: "Chef's Story",    href: '/#about'       },
+    { label: 'Blog',            href: '/blog'         },
+    { label: 'Coffee Quiz',     href: '/quiz'         },
+    { label: 'Loyalty Rewards', href: '/loyalty'      },
   ],
   'Services': [
     { label: 'Book a Table',     href: '/#reservation' },
@@ -35,7 +35,35 @@ const LeafDecor = () => (
   </svg>
 );
 
-export default function Footer() {
+// ── Fetch opening hours from admin backend ────────────────────────────────
+type HourEntry = { day: string; open: string; close: string; closed: boolean };
+
+async function getOpeningHours(): Promise<HourEntry[] | null> {
+  try {
+    const API_URL = process.env.NEXT_PUBLIC_API_URL;
+    if (!API_URL) return null;
+    const res = await fetch(`${API_URL}/api/data/settings/hours`, {
+      next: { revalidate: 60 }, // refresh every 60s
+    });
+    const data = await res.json();
+    if (data.success && Array.isArray(data.data?.value)) {
+      return data.data.value as HourEntry[];
+    }
+  } catch { /* use static fallback */ }
+  return null;
+}
+
+// Converts "08:00" → "8AM"
+function fmt(t: string) {
+  const [h, m] = t.split(':').map(Number);
+  const suffix = h >= 12 ? 'PM' : 'AM';
+  const hour   = h > 12 ? h - 12 : h === 0 ? 12 : h;
+  return m > 0 ? `${hour}:${String(m).padStart(2,'0')}${suffix}` : `${hour}${suffix}`;
+}
+
+export default async function Footer() {
+  const hours = await getOpeningHours();
+
   return (
     <footer className={styles.footer}>
       {/* Top CTA strip */}
@@ -44,12 +72,10 @@ export default function Footer() {
           <div className={styles.ctaInner}>
             <div>
               <h3 className={styles.ctaTitle}>Book A Table</h3>
-              <p className={styles.ctaText}>Reserve your spot today and experience the perfect blend of aroma & ambiance.</p>
+              <p className={styles.ctaText}>Reserve your spot today and experience the perfect blend of aroma &amp; ambiance.</p>
             </div>
             <LeafDecor />
-            <a href="#reservation" className={styles.ctaBtn}>
-              Reserve Now →
-            </a>
+            <a href="#reservation" className={styles.ctaBtn}>Reserve Now →</a>
           </div>
         </div>
       </div>
@@ -68,7 +94,7 @@ export default function Footer() {
                 <span className={styles.logoText}>Raj&apos;s Cafe</span>
               </div>
               <p className={styles.tagline}>
-                The perfect blend of aroma & ambiance. Serving artisan coffee and gourmet food since 2010.
+                The perfect blend of aroma &amp; ambiance. Serving artisan coffee and gourmet food since 2010.
               </p>
               <div className={styles.socials}>
                 {socials.map(({ icon: Icon, href, label }) => (
@@ -93,12 +119,23 @@ export default function Footer() {
               </div>
             ))}
 
-            {/* Contact */}
+            {/* Contact — with dynamic hours */}
             <div className={styles.linkCol}>
               <h4 className={styles.linkTitle}>Contact</h4>
               <div className={styles.contactList}>
                 <div className={styles.contactItem}><MapPin size={14}/> 12-A Connaught Place, New Delhi</div>
-                <div className={styles.contactItem}><Clock size={14}/> Mon–Sun: 8AM–10PM</div>
+
+                {/* Dynamic opening hours from admin */}
+                {hours ? (
+                  hours.filter(h => !h.closed).slice(0, 2).map(h => (
+                    <div key={h.day} className={styles.contactItem}>
+                      <Clock size={14}/> {h.day}: {fmt(h.open)}–{fmt(h.close)}
+                    </div>
+                  ))
+                ) : (
+                  <div className={styles.contactItem}><Clock size={14}/> Mon–Sun: 8AM–10PM</div>
+                )}
+
                 <a href="tel:+911123456789" className={styles.contactItem}><Phone size={14}/> +91 11 2345 6789</a>
                 <a href="mailto:hello@rajscafe.in" className={styles.contactItem}><Mail size={14}/> hello@rajscafe.in</a>
               </div>
