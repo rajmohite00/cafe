@@ -121,7 +121,7 @@ function MenuCard({ item }: { item: MenuItem }) {
 // ── Main Menu Section ────────────────────────────────────────────────────
 export default function Menu() {
   const [activeCategory, setActiveCategory] = useState('All');
-  const [liveItems,      setLiveItems]      = useState<MenuItem[]>([]);
+  const [apiItems,       setApiItems]       = useState<MenuItem[]>([]);
   const [loading,        setLoading]        = useState(true);
 
   useEffect(() => {
@@ -130,30 +130,30 @@ export default function Menu() {
         if (!API_URL) { setLoading(false); return; }
         const res  = await fetch(`${API_URL}/api/data/menu`, { cache: 'no-store' });
         const data = await res.json();
-        if (data.success && Array.isArray(data.data) && data.data.length > 0) {
-          // Only show visible items
+        if (data.success && Array.isArray(data.data)) {
+          // Only show visible items added via admin
           const visible = data.data
             .filter((d: any) => d.visible !== false)
             .map(apiItemToMenuItem);
-          setLiveItems(visible);
+          setApiItems(visible);
         }
-      } catch { /* fall back to static data */ }
+      } catch { /* silent — static items always show */ }
       setLoading(false);
     };
     fetchMenu();
-    // Poll every 30 s so changes in admin appear quickly
+    // Poll every 30s so admin changes appear quickly
     const id = setInterval(fetchMenu, 30_000);
     return () => clearInterval(id);
   }, []);
 
-  // Use live items from DB if available, otherwise fall back to static
-  const source     = liveItems.length > 0 ? liveItems : staticMenuItems;
+  // ✅ ALWAYS show static dishes (with photos) + append any admin-added dishes
+  const source     = [...staticMenuItems, ...apiItems];
   const categories = ['All', ...Array.from(new Set(source.map(i => i.category)))];
 
   const filtered = (activeCategory === 'All'
     ? source
     : source.filter(i => i.category === activeCategory)
-  ).slice(0, 6);
+  ).slice(0, 8); // show up to 8 on homepage (all static + some admin items)
 
   return (
     <>

@@ -1,15 +1,42 @@
 'use client';
 
-import { useState, useMemo } from 'react';
+import { useState, useEffect, useMemo } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
 import { Search, ShoppingCart, Star, Clock, Flame, Leaf, ArrowLeft, Check } from 'lucide-react';
 import { useCart } from '@/context/CartContext';
-import { menuItems, categories, MenuItem } from '@/data/menuData';
+import type { MenuItem } from '@/context/CartContext';
+import { menuItems as staticMenuItems, categories as staticCategories } from '@/data/menuData';
 import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
 import styles from './menu.module.css';
 
+const API_URL = process.env.NEXT_PUBLIC_API_URL;
+
+// ── MongoDB ObjectId pattern ─────────────────────────────────────────────
+const isMongoId = (s: string) => /^[0-9a-f]{24}$/i.test(s);
+
+// ── Map API item → CartContext MenuItem shape ────────────────────────────
+function apiToMenuItem(d: any): MenuItem {
+  return {
+    slug:        d._id,
+    name:        d.name        || 'Dish',
+    desc:        d.tag         || d.category || '',
+    longDesc:    d.tag         || '',
+    price:       d.price       || 0,
+    img:         d.emoji       || '🍽',
+    badge:       d.tag         || '',
+    category:    d.category    || 'Menu',
+    calories:    '',
+    prepTime:    '',
+    isVeg:       true,
+    ingredients: [],
+    rating:      0,
+    reviews:     0,
+  };
+}
+
+// ── Card Component ────────────────────────────────────────────────────────
 function MenuCard({ item }: { item: MenuItem }) {
   const { addItem } = useCart();
   const [added, setAdded] = useState(false);
@@ -23,9 +50,11 @@ function MenuCard({ item }: { item: MenuItem }) {
   };
 
   const isEmoji = !item.img.startsWith('/');
+  // Admin items (MongoDB ID) don't have individual detail pages
+  const href    = isMongoId(item.slug) ? '#' : `/menu/${item.slug}`;
 
   return (
-    <Link href={`/menu/${item.slug}`} className={styles.card}>
+    <Link href={href} className={styles.card}>
       <div className={styles.cardImg}>
         {isEmoji ? (
           <span className={styles.cardEmoji}>{item.img}</span>
@@ -42,13 +71,15 @@ function MenuCard({ item }: { item: MenuItem }) {
       <div className={styles.cardBody}>
         <div className={styles.cardMeta}>
           <span className={styles.cardCategory}>{item.category}</span>
-          <span className={styles.cardRating}><Star size={11} fill="currentColor" /> {item.rating}</span>
+          {item.rating > 0 && (
+            <span className={styles.cardRating}><Star size={11} fill="currentColor" /> {item.rating}</span>
+          )}
         </div>
         <h3 className={styles.cardName}>{item.name}</h3>
         <p className={styles.cardDesc}>{item.desc}</p>
         <div className={styles.cardInfo}>
-          <span className={styles.infoTag}><Clock size={11} /> {item.prepTime}</span>
-          <span className={styles.infoTag}><Flame size={11} /> {item.calories}</span>
+          {item.prepTime && <span className={styles.infoTag}><Clock size={11} /> {item.prepTime}</span>}
+          {item.calories  && <span className={styles.infoTag}><Flame size={11} /> {item.calories}</span>}
         </div>
         <div className={styles.cardFooter}>
           <span className={styles.cardPrice}>₹{item.price}</span>
@@ -65,18 +96,54 @@ function MenuCard({ item }: { item: MenuItem }) {
   );
 }
 
+// ── Full Menu Page ────────────────────────────────────────────────────────
 export default function FullMenuPage() {
   const [activeCategory, setActiveCategory] = useState('All');
-  const [query, setQuery] = useState('');
+  const [query,          setQuery]          = useState('');
+  const [apiItems,       setApiItems]       = useState<MenuItem[]>([]);
+
+  // Fetch admin-added menu items
+  useEffect(() => {
+    const fetchMenu = async () => {
+      try {
+        if (!API_URL) return;
+        const res  = await fetch(`${API_URL}/api/data/menu`, { cache: 'no-store' });
+        const data = await res.json();
+        if (data.success && Array.isArray(data.data)) {
+          const visible = data.data
+            .filter((d: any) => d.visible !== false)
+            .map(apiToMenuItem);
+          setApiItems(visible);
+        }
+      } catch { /* silent fallback */ }
+    };
+    fetchMenu();
+    const id = setInterval(fetchMenu, 30_000);
+    return () => clearInterval(id);
+  }, []);
+
+  // Always show static dishes + append admin-added dishes
+  const allItems = useMemo(() => [...staticMenuItems, ...apiItems], [apiItems]);
+
+  // Build category list dynamically
+  const categories = useMemo(
+    () => ['All', ...Array.from(new Set(allItems.map(i => i.category)))],
+    [allItems]
+  );
 
   const filtered = useMemo(() => {
-    let list = activeCategory === 'All' ? menuItems : menuItems.filter(i => i.category === activeCategory);
+    let list = activeCategory === 'All'
+      ? allItems
+      : allItems.filter(i => i.category === activeCategory);
     if (query.trim()) {
       const q = query.toLowerCase();
-      list = list.filter(i => i.name.toLowerCase().includes(q) || i.desc.toLowerCase().includes(q));
+      list = list.filter(i =>
+        i.name.toLowerCase().includes(q) ||
+        i.desc.toLowerCase().includes(q)
+      );
     }
     return list;
-  }, [activeCategory, query]);
+  }, [activeCategory, query, allItems]);
 
   return (
     <>
