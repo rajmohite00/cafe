@@ -11,24 +11,56 @@
 /* ── Breadcrumb ── */
 .breadcrumb {
   background: var(--cream-dark);
-  padding: 0.75rem 0;
+  padding: 0.6rem 0;
   border-bottom: 1px solid rgba(44,21,6,0.08);
+}
+.breadcrumbContent {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 1rem;
 }
 .backLink {
   display: inline-flex;
   align-items: center;
-  gap: 6px;
+  gap: 8px;
   font-family: var(--font-ui);
   font-size: 0.82rem;
-  font-weight: 600;
-  color: var(--amber);
-  transition: gap 0.2s;
+  font-weight: 700;
+  color: var(--brown-mid);
+  text-decoration: none;
+  background: var(--white);
+  padding: 0.5rem 1.1rem;
+  border-radius: 999px;
+  border: 1px solid rgba(44,21,6,0.12);
+  box-shadow: 0 2px 8px rgba(44,21,6,0.05);
+  transition: all 0.25s var(--ease);
 }
-.backLink:hover { gap: 10px; }
-.breadSep { margin: 0 0.5rem; color: var(--muted); }
+.backLink:hover {
+  color: var(--amber);
+  border-color: rgba(232,148,26,0.3);
+  box-shadow: 0 4px 14px rgba(232,148,26,0.12);
+  transform: translateX(-4px);
+}
+.breadPath {
+  display: flex;
+  align-items: center;
+}
+.breadParent {
+  font-family: var(--font-ui);
+  font-size: 0.82rem;
+  color: var(--muted);
+}
+.breadSep {
+  margin: 0 0.5rem;
+  color: var(--muted);
+  font-size: 0.82rem;
+}
 .breadCurrent {
   font-family: var(--font-ui);
   font-size: 0.82rem;
+  font-weight: 600;
   color: var(--brown-mid);
 }
 

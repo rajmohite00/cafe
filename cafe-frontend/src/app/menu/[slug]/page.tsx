@@ -49,12 +49,15 @@ export default function MenuItemPage({ params }: { params: Promise<{ slug: strin
       <main className={styles.main}>
         {/* Breadcrumb */}
         <div className={styles.breadcrumb}>
-          <div className="container">
-            <Link href="/#menu" className={styles.backLink}>
-              <ArrowLeft size={16} /> Back to Menu
+          <div className={`container ${styles.breadcrumbContent}`}>
+            <Link href="/menu" className={styles.backLink}>
+              <ArrowLeft size={14} /> Back to Menu
             </Link>
-            <span className={styles.breadSep}>/</span>
-            <span className={styles.breadCurrent}>{item.name}</span>
+            <div className={styles.breadPath}>
+              <span className={styles.breadParent}>Menu</span>
+              <span className={styles.breadSep}>/</span>
+              <span className={styles.breadCurrent}>{item.name}</span>
+            </div>
           </div>
         </div>
 

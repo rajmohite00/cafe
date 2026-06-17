@@ -37,15 +37,25 @@
 .backLink {
   display: inline-flex;
   align-items: center;
-  gap: 6px;
+  gap: 8px;
   font-family: var(--font-ui);
   font-size: 0.82rem;
-  font-weight: 600;
-  color: var(--amber);
+  font-weight: 700;
+  color: var(--brown-mid);
   text-decoration: none;
-  transition: gap 0.2s;
+  background: var(--white);
+  padding: 0.5rem 1.1rem;
+  border-radius: 999px;
+  border: 1px solid rgba(44,21,6,0.12);
+  box-shadow: 0 2px 8px rgba(44,21,6,0.05);
+  transition: all 0.25s var(--ease);
 }
-.backLink:hover { gap: 10px; }
+.backLink:hover {
+  color: var(--amber);
+  border-color: rgba(232,148,26,0.3);
+  box-shadow: 0 4px 14px rgba(232,148,26,0.12);
+  transform: translateX(-4px);
+}
 .title {
   font-family: var(--font-serif);
   font-size: clamp(1.8rem, 4vw, 2.8rem);
