@@ -21,7 +21,7 @@ export default function MenuItemPage({ params }: { params: Promise<{ slug: strin
   if (!item) {
     return (
       <>
-        <Navbar />
+        <Navbar light />
         <main style={{ minHeight: '60vh', display: 'flex', alignItems: 'center', justifyContent: 'center', flexDirection: 'column', gap: '1rem', background: 'var(--cream)' }}>
           <h1 style={{ fontFamily: 'var(--font-serif)', color: 'var(--brown)' }}>Item not found</h1>
           <Link href="/menu" className="btn-primary">Back to Menu</Link>
@@ -45,7 +45,7 @@ export default function MenuItemPage({ params }: { params: Promise<{ slug: strin
 
   return (
     <>
-      <Navbar />
+      <Navbar light />
       <main className={styles.main}>
         {/* Breadcrumb */}
         <div className={styles.breadcrumb}>

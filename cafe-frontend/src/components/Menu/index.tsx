@@ -149,13 +149,15 @@ export default function Menu() {
   }, []);
 
   // ✅ ALWAYS show static dishes (with photos) + append any admin-added dishes
-  const source     = [...staticMenuItems, ...apiItems];
+  // Mango Lassi & Aloo Paratha are full-menu-only items (shown on /menu page)
+  const FULL_MENU_ONLY = new Set(['mango-lassi', 'aloo-paratha']);
+  const source     = [...staticMenuItems.filter(i => !FULL_MENU_ONLY.has(i.slug)), ...apiItems];
   const categories = ['All', ...Array.from(new Set(source.map(i => i.category)))];
 
   const filtered = (activeCategory === 'All'
     ? source
     : source.filter(i => i.category === activeCategory)
-  ).slice(0, 8); // show up to 8 on homepage (all static + some admin items)
+  ).slice(0, 8); // show up to 8 on homepage
 
   return (
     <>
