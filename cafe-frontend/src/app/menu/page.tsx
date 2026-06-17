@@ -112,8 +112,9 @@ export default function FullMenuPage() {
         const res  = await fetch(`${API_URL}/api/data/menu`, { cache: 'no-store' });
         const data = await res.json();
         if (data.success && Array.isArray(data.data)) {
+          // Filter out unconfigured placeholders
           const visible = data.data
-            .filter((d: any) => d.visible !== false)
+            .filter((d: any) => d.visible !== false && d.price > 0 && d.name && d.name.toLowerCase() !== 'new dish')
             .map(apiToMenuItem);
           setApiItems(visible);
         }

@@ -129,9 +129,9 @@ export default function MenuItemPage({ params }: { params: Promise<{ slug: strin
 
                 <div className={styles.qtyRow}>
                   <div className={styles.qtyControl}>
-                    <button onClick={() => setQty(q => Math.max(1, q - 1))} className={styles.qtyBtn}><Minus size={14} /></button>
+                    <button onClick={() => setQty(q => Math.max(1, q - 1))} className={styles.qtyBtn} aria-label="Decrease quantity"><Minus size={14} /></button>
                     <span className={styles.qtyVal}>{qty}</span>
-                    <button onClick={() => setQty(q => q + 1)} className={styles.qtyBtn}><Plus size={14} /></button>
+                    <button onClick={() => setQty(q => q + 1)} className={styles.qtyBtn} aria-label="Increase quantity"><Plus size={14} /></button>
                   </div>
 
                   <button className={`${styles.addCartBtn} ${added ? styles.addCartBtnDone : ''}`} onClick={handleAddToCart}>
