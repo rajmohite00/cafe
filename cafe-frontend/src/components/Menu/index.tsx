@@ -157,7 +157,7 @@ export default function Menu() {
   const filtered = (activeCategory === 'All'
     ? source
     : source.filter(i => i.category === activeCategory)
-  ).slice(0, 8); // show up to 8 on homepage
+  ).slice(0, 6); // show up to 6 on homepage
 
   return (
     <>
