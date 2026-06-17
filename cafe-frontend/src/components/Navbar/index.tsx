@@ -23,8 +23,10 @@ export default function Navbar({ light = false }: { light?: boolean }) {
   const [open, setOpen]         = useState(false);
   const { totalItems }          = useCart();
   const { user, logout }        = useAuth();
+  const [mounted, setMounted]   = useState(false);
 
   useEffect(() => {
+    setMounted(true);
     const onScroll = () => setScrolled(window.scrollY > 30);
     window.addEventListener('scroll', onScroll, { passive: true });
     return () => window.removeEventListener('scroll', onScroll);
@@ -63,9 +65,9 @@ export default function Navbar({ light = false }: { light?: boolean }) {
           <button className={styles.iconBtn} aria-label="Search"><Search size={18} strokeWidth={1.8}/></button>
 
           {/* Cart icon with badge */}
-          <Link href="/cart" className={styles.cartBtn} aria-label={`Cart (${totalItems} items)`}>
+          <Link href="/cart" className={styles.cartBtn} aria-label={mounted ? `Cart (${totalItems} items)` : 'Cart'}>
             <ShoppingBag size={18} strokeWidth={1.8}/>
-            {totalItems > 0 && (
+            {mounted && totalItems > 0 && (
               <span className={styles.cartBadge}>{totalItems > 9 ? '9+' : totalItems}</span>
             )}
           </Link>
@@ -73,18 +75,20 @@ export default function Navbar({ light = false }: { light?: boolean }) {
           <Link href="/#reservation" className={styles.bookBtn}>Book a Table</Link>
 
           {/* Auth: show user or login */}
-          {user ? (
-            <div className={styles.userMenu}>
-              <Link href="/orders" className={styles.myOrdersBtn}>
-                📋 My Orders
-              </Link>
-              <span className={styles.userGreet}><User size={14}/> {user.name.split(' ')[0]}</span>
-              <button className={styles.logoutBtn} onClick={logout} title="Sign out">
-                <LogOut size={14}/>
-              </button>
-            </div>
-          ) : (
-            <Link href="/login" className={styles.loginBtn}>Sign In</Link>
+          {mounted && (
+            user ? (
+              <div className={styles.userMenu}>
+                <Link href="/orders" className={styles.myOrdersBtn}>
+                  📋 My Orders
+                </Link>
+                <span className={styles.userGreet}><User size={14}/> {user.name.split(' ')[0]}</span>
+                <button className={styles.logoutBtn} onClick={logout} title="Sign out">
+                  <LogOut size={14}/>
+                </button>
+              </div>
+            ) : (
+              <Link href="/login" className={styles.loginBtn}>Sign In</Link>
+            )
           )}
 
           <button className={styles.mobileMenu} aria-label="Menu" onClick={() => setOpen(!open)}>
@@ -100,12 +104,12 @@ export default function Navbar({ light = false }: { light?: boolean }) {
             <Link key={l.href} href={l.href} className={styles.drawerLink} onClick={() => setOpen(false)}>{l.label}</Link>
           ))}
           <Link href="/cart" className={styles.drawerLink} onClick={() => setOpen(false)}>
-            🛒 Cart {totalItems > 0 && `(${totalItems})`}
+            🛒 Cart {mounted && totalItems > 0 && `(${totalItems})`}
           </Link>
           <Link href="/#reservation" className={styles.drawerBookBtn} onClick={() => setOpen(false)}>
             📅 Book a Table
           </Link>
-          {user ? (
+          {mounted && user ? (
             <>
               <Link href="/orders" className={styles.drawerLink} onClick={() => setOpen(false)}>
                 📋 My Orders
@@ -115,9 +119,11 @@ export default function Navbar({ light = false }: { light?: boolean }) {
               </button>
             </>
           ) : (
-            <Link href="/login" className={styles.drawerLoginBtn} onClick={() => setOpen(false)}>
-              🔑 Sign In / Create Account
-            </Link>
+            mounted && (
+              <Link href="/login" className={styles.drawerLoginBtn} onClick={() => setOpen(false)}>
+                🔑 Sign In / Create Account
+              </Link>
+            )
           )}
         </div>
       )}
