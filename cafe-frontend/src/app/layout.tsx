@@ -2,6 +2,7 @@ import type { Metadata, Viewport } from 'next';
 import './globals.css';
 import { CartProvider } from '@/context/CartContext';
 import { AuthProvider } from '@/context/AuthContext';
+import ScrollToTop from '@/components/ScrollToTop';
 import RevealObserver from '@/components/RevealObserver';
 import ActivityTracker from '@/components/ActivityTracker';
 import DesignSync from '@/components/DesignSync';
@@ -56,6 +57,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       <body>
         <AuthProvider>
           <CartProvider>
+            <ScrollToTop />
             {children}
             <RevealObserver />
             <ActivityTracker />

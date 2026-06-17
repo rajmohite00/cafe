@@ -1,5 +1,6 @@
 'use client';
 
+import { useState, useEffect } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
 import { Trash2, Plus, Minus, ShoppingBag, ArrowLeft, ArrowRight } from 'lucide-react';
@@ -10,12 +11,17 @@ import styles from './cart.module.css';
 
 export default function CartPage() {
   const { items, totalItems, totalPrice, removeItem, updateQty, clearCart } = useCart();
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
 
   const gst = Math.round(totalPrice * 0.05);        // 5% GST
   const delivery = totalPrice > 0 ? 40 : 0;         // ₹40 delivery
   const grandTotal = totalPrice + gst + delivery;
 
-  if (items.length === 0) {
+  if (!mounted || items.length === 0) {
     return (
       <>
         <Navbar light />
