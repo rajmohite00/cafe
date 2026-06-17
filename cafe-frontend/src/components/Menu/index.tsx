@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
 import { ShoppingCart, Star, Clock, Flame, Leaf } from 'lucide-react';
+import { useRouter } from 'next/navigation';
 import { useCart } from '@/context/CartContext';
 import type { MenuItem } from '@/context/CartContext';
 import { menuItems as staticMenuItems, categories as staticCategories } from '@/data/menuData';
@@ -59,6 +60,7 @@ const isMongoId = (s: string) => /^[0-9a-f]{24}$/i.test(s);
 function MenuCard({ item }: { item: MenuItem }) {
   const { addItem } = useCart();
   const [added, setAdded] = useState(false);
+  const router = useRouter();
 
   const handleAdd = (e: React.MouseEvent) => {
     e.preventDefault();
@@ -73,7 +75,7 @@ function MenuCard({ item }: { item: MenuItem }) {
   const href     = isMongoId(item.slug) ? '/menu' : `/menu/${item.slug}`;
 
   return (
-    <Link href={href} className={styles.card}>
+    <div onClick={() => router.push(href)} className={styles.card} style={{ cursor: 'pointer' }}>
       <div className={styles.cardImg}>
         {isEmoji ? (
           <span className={styles.cardEmoji}>{item.img}</span>
@@ -114,7 +116,7 @@ function MenuCard({ item }: { item: MenuItem }) {
           </button>
         </div>
       </div>
-    </Link>
+    </div>
   );
 }
 

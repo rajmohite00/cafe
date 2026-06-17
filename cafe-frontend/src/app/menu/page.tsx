@@ -4,6 +4,7 @@ import { useState, useEffect, useMemo } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
 import { Search, ShoppingCart, Star, Clock, Flame, Leaf, ArrowLeft, Check } from 'lucide-react';
+import { useRouter } from 'next/navigation';
 import { useCart } from '@/context/CartContext';
 import type { MenuItem } from '@/context/CartContext';
 import { menuItems as staticMenuItems, categories as staticCategories } from '@/data/menuData';
@@ -40,6 +41,7 @@ function apiToMenuItem(d: any): MenuItem {
 function MenuCard({ item }: { item: MenuItem }) {
   const { addItem } = useCart();
   const [added, setAdded] = useState(false);
+  const router = useRouter();
 
   const handleAdd = (e: React.MouseEvent) => {
     e.preventDefault();
@@ -54,7 +56,7 @@ function MenuCard({ item }: { item: MenuItem }) {
   const href    = isMongoId(item.slug) ? '#' : `/menu/${item.slug}`;
 
   return (
-    <Link href={href} className={styles.card}>
+    <div onClick={() => router.push(href)} className={styles.card} style={{ cursor: 'pointer' }}>
       <div className={styles.cardImg}>
         {isEmoji ? (
           <span className={styles.cardEmoji}>{item.img}</span>
@@ -92,7 +94,7 @@ function MenuCard({ item }: { item: MenuItem }) {
           </button>
         </div>
       </div>
-    </Link>
+    </div>
   );
 }
 
