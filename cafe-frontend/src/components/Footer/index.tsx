@@ -1,3 +1,6 @@
+'use client';
+
+import { useState, useEffect } from 'react';
 import { MapPin, Clock, Phone, Mail, Share2, MessageCircle, Rss, Globe, Heart } from 'lucide-react';
 import styles from './Footer.module.css';
 import NewsletterForm from './NewsletterForm';
@@ -38,21 +41,6 @@ const LeafDecor = () => (
 // ── Fetch opening hours from admin backend ────────────────────────────────
 type HourEntry = { day: string; open: string; close: string; closed: boolean };
 
-async function getOpeningHours(): Promise<HourEntry[] | null> {
-  try {
-    const API_URL = process.env.NEXT_PUBLIC_API_URL;
-    if (!API_URL) return null;
-    const res = await fetch(`${API_URL}/api/data/settings/hours`, {
-      next: { revalidate: 60 }, // refresh every 60s
-    });
-    const data = await res.json();
-    if (data.success && Array.isArray(data.data?.value)) {
-      return data.data.value as HourEntry[];
-    }
-  } catch { /* use static fallback */ }
-  return null;
-}
-
 // Converts "08:00" → "8AM"
 function fmt(t: string) {
   const [h, m] = t.split(':').map(Number);
@@ -61,8 +49,21 @@ function fmt(t: string) {
   return m > 0 ? `${hour}:${String(m).padStart(2,'0')}${suffix}` : `${hour}${suffix}`;
 }
 
-export default async function Footer() {
-  const hours = await getOpeningHours();
+export default function Footer() {
+  const [hours, setHours] = useState<HourEntry[] | null>(null);
+
+  useEffect(() => {
+    const API_URL = process.env.NEXT_PUBLIC_API_URL;
+    if (!API_URL) return;
+    fetch(`${API_URL}/api/data/settings/hours`)
+      .then(res => res.json())
+      .then(data => {
+        if (data.success && Array.isArray(data.data?.value)) {
+          setHours(data.data.value);
+        }
+      })
+      .catch(() => {});
+  }, []);
 
   return (
     <footer className={styles.footer}>
