@@ -192,7 +192,7 @@ export default function AdminPage() {
     };
     
     fetchOrders();
-    const id = setInterval(fetchOrders, 3000);
+    const id = setInterval(fetchOrders, 10_000);
     return () => clearInterval(id);
   }, []);
 
@@ -506,11 +506,17 @@ export default function AdminPage() {
           </div>
           <div style={{ display:'flex', gap:'0.75rem', marginTop:'1rem', flexWrap:'wrap' }}>
             <button className={styles.primaryBtn} onClick={async () => {
-              const res = await fetch(`${API_URL}/api/data/menu/${editItem.id}`, {
-                method: 'PUT', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(editItem)
-              });
-              const data = await res.json();
-              if (data.success) { setMenuItems(ms => ms.map(m => m.id===editItem.id ? editItem : m)); setEditItem(null); showToast('✓ Dish saved & live on website!'); }
+              try {
+                await apiCall(`${API_URL}/api/data/menu/${editItem.id}`, {
+                  method: 'PUT',
+                  body: JSON.stringify(editItem),
+                });
+                setMenuItems(ms => ms.map(m => m.id === editItem.id ? editItem : m));
+                setEditItem(null);
+                showToast('✓ Dish saved & live on website!');
+              } catch (err: any) {
+                showToast(`✗ Save failed: ${err.message}`);
+              }
             }}><Save size={14}/> Save Changes</button>
             <button className={styles.ghostBtn} onClick={() => setEditItem(null)}>Cancel</button>
           </div>
