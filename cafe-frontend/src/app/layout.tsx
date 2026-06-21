@@ -6,6 +6,7 @@ import ScrollToTop from '@/components/ScrollToTop';
 import RevealObserver from '@/components/RevealObserver';
 import ActivityTracker from '@/components/ActivityTracker';
 import DesignSync from '@/components/DesignSync';
+import ErrorBoundary from '@/components/ErrorBoundary';
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL;
 
@@ -55,15 +56,17 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   return (
     <html lang="en" suppressHydrationWarning>
       <body>
-        <AuthProvider>
-          <CartProvider>
-            <ScrollToTop />
-            {children}
-            <RevealObserver />
-            <ActivityTracker />
-            <DesignSync />
-          </CartProvider>
-        </AuthProvider>
+        <ErrorBoundary>
+          <AuthProvider>
+            <CartProvider>
+              <ScrollToTop />
+              {children}
+              <RevealObserver />
+              <ActivityTracker />
+              <DesignSync />
+            </CartProvider>
+          </AuthProvider>
+        </ErrorBoundary>
       </body>
     </html>
   );

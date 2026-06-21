@@ -59,10 +59,45 @@ export default function AdminPage() {
   const [seo,          setSeo]          = useState<SeoSettings>(DEFAULT_SEO);
   const [toast,        setToast]        = useState('');
   const [saving,       setSaving]       = useState(false);
+  const [loading,      setLoading]      = useState(true);
+  const [connectionError, setConnectionError] = useState('');
 
   const showToast = (msg: string) => {
     setToast(msg);
     setTimeout(() => setToast(''), 3000);
+  };
+
+  const showError = (msg: string) => {
+    setConnectionError(msg);
+    setTimeout(() => setConnectionError(''), 5000);
+  };
+
+  // Helper function for API calls with error handling
+  const apiCall = async (url: string, options?: RequestInit) => {
+    try {
+      const response = await fetch(url, {
+        ...options,
+        headers: {
+          'Content-Type': 'application/json',
+          ...options?.headers,
+        },
+      });
+
+      if (!response.ok) {
+        throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+      }
+
+      const data = await response.json();
+      
+      if (!data.success) {
+        throw new Error(data.message || 'API call failed');
+      }
+
+      return data;
+    } catch (error) {
+      console.error(`API call to ${url} failed:`, error);
+      throw error;
+    }
   };
 
   // ── Computed stats ──
@@ -75,37 +110,60 @@ export default function AdminPage() {
   // ── Initial data load ──
   useEffect(() => {
     const fetchAllData = async () => {
+      setLoading(true);
+      setConnectionError('');
+      
       try {
-        const [menuRes, resRes, contactRes, postRes] = await Promise.all([
-          fetch(`${API_URL}/api/data/menu`),
-          fetch(`${API_URL}/api/data/reservations`),
-          fetch(`${API_URL}/api/data/contacts`),
-          fetch(`${API_URL}/api/data/posts`),
+        const [menu, res, cont, post] = await Promise.all([
+          apiCall(`${API_URL}/api/data/menu`),
+          apiCall(`${API_URL}/api/data/reservations`),
+          apiCall(`${API_URL}/api/data/contacts`),
+          apiCall(`${API_URL}/api/data/posts`),
         ]);
-        const [menu, res, cont, post] = await Promise.all([menuRes.json(), resRes.json(), contactRes.json(), postRes.json()]);
-        if (menu.success)  setMenuItems(menu.data.map((d: any) => ({ ...d, id: d._id })));
-        if (res.success)   setReservations(res.data.map((d: any) => ({ ...d, id: d._id })));
-        if (cont.success)  setContacts(cont.data.map((d: any) => ({ ...d, id: d._id })));
-        if (post.success)  setPosts(post.data.map((d: any) => ({ ...d, id: d._id })));
-      } catch (err) { console.error('Data fetch failed', err); }
+
+        if (menu.success && Array.isArray(menu.data)) {
+          setMenuItems(menu.data.map((d: any) => ({ ...d, id: d._id })));
+        }
+        if (res.success && Array.isArray(res.data)) {
+          setReservations(res.data.map((d: any) => ({ ...d, id: d._id })));
+        }
+        if (cont.success && Array.isArray(cont.data)) {
+          setContacts(cont.data.map((d: any) => ({ ...d, id: d._id })));
+        }
+        if (post.success && Array.isArray(post.data)) {
+          setPosts(post.data.map((d: any) => ({ ...d, id: d._id })));
+        }
+      } catch (err: any) {
+        console.error('Data fetch failed', err);
+        showError(`Connection failed: ${err.message}`);
+      } finally {
+        setLoading(false);
+      }
     };
 
     const fetchSettings = async () => {
       try {
-        const [hRes, sRes, dRes] = await Promise.all([
-          fetch(`${API_URL}/api/data/settings/hours`),
-          fetch(`${API_URL}/api/data/settings/seo`),
-          fetch(`${API_URL}/api/data/settings/design`),
+        const [hd, sd, dd] = await Promise.all([
+          apiCall(`${API_URL}/api/data/settings/hours`),
+          apiCall(`${API_URL}/api/data/settings/seo`),
+          apiCall(`${API_URL}/api/data/settings/design`),
         ]);
-        const [hd, sd, dd] = await Promise.all([hRes.json(), sRes.json(), dRes.json()]);
-        if (hd.success && hd.data?.value)       setHours(hd.data.value);
-        if (sd.success && sd.data?.value)        setSeo({ ...DEFAULT_SEO, ...sd.data.value });
+
+        if (hd.success && hd.data?.value) {
+          setHours(hd.data.value);
+        }
+        if (sd.success && sd.data?.value) {
+          setSeo({ ...DEFAULT_SEO, ...sd.data.value });
+        }
         if (dd.success && dd.data?.value?.color) {
           const c = dd.data.value.color;
           setDesignColor(c);
           document.documentElement.style.setProperty('--gold', c);
         }
-      } catch (err) { console.error('Settings fetch failed', err); }
+      } catch (err: any) {
+        console.error('Settings fetch failed', err);
+        // Settings failure is less critical, just log it
+      }
     };
 
     fetchAllData();
@@ -116,16 +174,23 @@ export default function AdminPage() {
   useEffect(() => {
     const fetchOrders = async () => {
       try {
-        const res = await fetch(`${API_URL}/api/orders`);
-        const data = await res.json();
-        if (data.success) setOrders(data.data);
-      } catch { /* silent */ }
-      try {
-        const res = await fetch(`${API_URL}/api/activities`);
-        const data = await res.json();
-        if (data.success) setActivities(data.data);
-      } catch { /* silent */ }
+        const [orderData, activityData] = await Promise.all([
+          apiCall(`${API_URL}/api/orders`),
+          apiCall(`${API_URL}/api/activities`),
+        ]);
+        
+        if (orderData.success && Array.isArray(orderData.data)) {
+          setOrders(orderData.data);
+        }
+        if (activityData.success && Array.isArray(activityData.data)) {
+          setActivities(activityData.data);
+        }
+      } catch (err) {
+        // Silent fail for polling - don't spam user with errors
+        console.error('Polling failed:', err);
+      }
     };
+    
     fetchOrders();
     const id = setInterval(fetchOrders, 3000);
     return () => clearInterval(id);
@@ -133,71 +198,123 @@ export default function AdminPage() {
 
   // ── CRUD Helpers ──
   const updateResStatus = async (id: string, status: Reservation['status']) => {
-    await fetch(`${API_URL}/api/data/reservations/${id}`, { method: 'PUT', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ status }) });
-    setReservations(rs => rs.map(r => r.id === id ? { ...r, status } : r));
-    showToast(`✓ Reservation ${status}`);
+    try {
+      await apiCall(`${API_URL}/api/data/reservations/${id}`, {
+        method: 'PUT',
+        body: JSON.stringify({ status })
+      });
+      setReservations(rs => rs.map(r => r.id === id ? { ...r, status } : r));
+      showToast(`✓ Reservation ${status}`);
+    } catch (err: any) {
+      showToast(`✗ Failed to update reservation: ${err.message}`);
+    }
   };
 
   const markRead = async (id: string) => {
-    await fetch(`${API_URL}/api/data/contacts/${id}`, { method: 'PUT', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ status: 'read' }) });
-    setContacts(cs => cs.map(c => c.id === id ? { ...c, status: 'read' } : c));
+    try {
+      await apiCall(`${API_URL}/api/data/contacts/${id}`, {
+        method: 'PUT',
+        body: JSON.stringify({ status: 'read' })
+      });
+      setContacts(cs => cs.map(c => c.id === id ? { ...c, status: 'read' } : c));
+      showToast('✓ Message marked as read');
+    } catch (err: any) {
+      showToast(`✗ Failed to mark as read: ${err.message}`);
+    }
   };
 
   const deleteMenuItem = async (id: string) => {
     if (!confirm('Delete this dish from the menu?')) return;
-    await fetch(`${API_URL}/api/data/menu/${id}`, { method: 'DELETE' });
-    setMenuItems(ms => ms.filter(m => m.id !== id));
-    if (editItem?.id === id) setEditItem(null);
-    showToast('🗑 Dish removed from menu');
+    
+    try {
+      await apiCall(`${API_URL}/api/data/menu/${id}`, { method: 'DELETE' });
+      setMenuItems(ms => ms.filter(m => m.id !== id));
+      if (editItem?.id === id) setEditItem(null);
+      showToast('🗑 Dish removed from menu');
+    } catch (err: any) {
+      showToast(`✗ Failed to delete item: ${err.message}`);
+    }
   };
 
   const toggleVisible = async (id: string) => {
     const item = menuItems.find(m => m.id === id);
     if (!item) return;
+    
     const newVis = !item.visible;
-    await fetch(`${API_URL}/api/data/menu/${id}`, { method: 'PUT', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ visible: newVis }) });
-    setMenuItems(ms => ms.map(m => m.id === id ? { ...m, visible: newVis } : m));
-    showToast(newVis ? '✓ Dish is now visible on website' : '⊘ Dish marked as unavailable');
+    try {
+      await apiCall(`${API_URL}/api/data/menu/${id}`, {
+        method: 'PUT',
+        body: JSON.stringify({ visible: newVis })
+      });
+      setMenuItems(ms => ms.map(m => m.id === id ? { ...m, visible: newVis } : m));
+      showToast(newVis ? '✓ Dish is now visible on website' : '⊘ Dish marked as unavailable');
+    } catch (err: any) {
+      showToast(`✗ Failed to update visibility: ${err.message}`);
+    }
   };
 
   const addMenuItem = async () => {
     const newItem = { name: 'New Dish', category: 'Signature', price: 0, tag: '', emoji: '🍽', visible: true };
-    const res = await fetch(`${API_URL}/api/data/menu`, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(newItem) });
-    const data = await res.json();
-    if (data.success) {
+    
+    try {
+      const data = await apiCall(`${API_URL}/api/data/menu`, {
+        method: 'POST',
+        body: JSON.stringify(newItem)
+      });
+      
       const saved = { ...data.data, id: data.data._id };
       setMenuItems(ms => [...ms, saved]);
       setEditItem(saved);
       showToast('+ New dish created — edit below');
+    } catch (err: any) {
+      showToast(`✗ Failed to create dish: ${err.message}`);
     }
   };
 
   const saveHours = async () => {
     setSaving(true);
     try {
-      await fetch(`${API_URL}/api/data/settings/hours`, { method: 'PUT', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ value: hours }) });
+      await apiCall(`${API_URL}/api/data/settings/hours`, {
+        method: 'PUT',
+        body: JSON.stringify({ value: hours })
+      });
       showToast('✓ Opening hours saved & live on website!');
-    } catch { showToast('✗ Save failed — check connection'); }
-    setSaving(false);
+    } catch (err: any) {
+      showToast(`✗ Save failed: ${err.message}`);
+    } finally {
+      setSaving(false);
+    }
   };
 
   const saveSeo = async () => {
     setSaving(true);
     try {
-      await fetch(`${API_URL}/api/data/settings/seo`, { method: 'PUT', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ value: seo }) });
+      await apiCall(`${API_URL}/api/data/settings/seo`, {
+        method: 'PUT',
+        body: JSON.stringify({ value: seo })
+      });
       showToast('✓ SEO settings saved & live!');
-    } catch { showToast('✗ Save failed — check connection'); }
-    setSaving(false);
+    } catch (err: any) {
+      showToast(`✗ Save failed: ${err.message}`);
+    } finally {
+      setSaving(false);
+    }
   };
 
   const saveDesign = async () => {
     setSaving(true);
     try {
-      await fetch(`${API_URL}/api/data/settings/design`, { method: 'PUT', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ value: { color: designColor } }) });
+      await apiCall(`${API_URL}/api/data/settings/design`, {
+        method: 'PUT',
+        body: JSON.stringify({ value: { color: designColor } })
+      });
       document.documentElement.style.setProperty('--gold', designColor);
       showToast('✓ Design color saved & live on website!');
-    } catch { showToast('✗ Save failed — check connection'); }
-    setSaving(false);
+    } catch (err: any) {
+      showToast(`✗ Save failed: ${err.message}`);
+    } finally {
+      setSaving(false);
+    }
   };
 
   // ── Nav items ──
@@ -764,6 +881,88 @@ export default function AdminPage() {
     design:       <DesignView />,
     seo:          <SEOView />,
   };
+
+  // Loading state
+  if (loading) {
+    return (
+      <div className={styles.layout}>
+        <Sidebar />
+        <div className={styles.mainArea}>
+          <div className={styles.content}>
+            <div style={{
+              display: 'flex',
+              flexDirection: 'column',
+              alignItems: 'center',
+              justifyContent: 'center',
+              height: '60vh',
+              gap: '1rem'
+            }}>
+              <div style={{
+                width: '48px',
+                height: '48px',
+                border: '3px solid var(--border)',
+                borderTop: '3px solid var(--gold)',
+                borderRadius: '50%',
+                animation: 'spin 1s linear infinite'
+              }} />
+              <p style={{ color: 'var(--muted)', textAlign: 'center' }}>
+                Loading admin dashboard...
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  // Connection error state
+  if (connectionError) {
+    return (
+      <div className={styles.layout}>
+        <Sidebar />
+        <div className={styles.mainArea}>
+          <div className={styles.content}>
+            <div style={{
+              display: 'flex',
+              flexDirection: 'column',
+              alignItems: 'center',
+              justifyContent: 'center',
+              height: '60vh',
+              gap: '1.5rem',
+              textAlign: 'center'
+            }}>
+              <div style={{
+                width: '64px',
+                height: '64px',
+                background: 'rgba(248,113,113,0.1)',
+                borderRadius: '50%',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                border: '2px solid var(--red)'
+              }}>
+                <X size={32} color="var(--red)" />
+              </div>
+              <div>
+                <h2 style={{ color: 'var(--cream)', marginBottom: '0.5rem' }}>
+                  Connection Error
+                </h2>
+                <p style={{ color: 'var(--muted)', marginBottom: '1rem', maxWidth: '400px' }}>
+                  {connectionError}
+                </p>
+                <button 
+                  className={styles.primaryBtn}
+                  onClick={() => window.location.reload()}
+                >
+                  Retry Connection
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className={styles.layout}>
