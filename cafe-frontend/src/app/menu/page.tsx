@@ -11,8 +11,12 @@ import { menuItems as staticMenuItems, categories as staticCategories } from '@/
 import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
 import styles from './menu.module.css';
+const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000';
 
-const API_URL = process.env.NEXT_PUBLIC_API_URL;
+
+
+
+
 
 // ── MongoDB ObjectId pattern ─────────────────────────────────────────────
 const isMongoId = (s: string) => /^[0-9a-f]{24}$/i.test(s);

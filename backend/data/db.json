@@ -1,0 +1,143 @@
+{
+  "users": [
+    {
+      "_id": "65de8ca497ba41728a8ddf81",
+      "createdAt": "2026-06-21T09:15:04.973Z",
+      "updatedAt": "2026-06-21T09:15:05.241Z",
+      "name": "Test User",
+      "email": "test@example.com",
+      "phone": "9876543210",
+      "password": "$2b$12$.IeWJxqp7yTADf3BoMppK.T4F.PZ65Gtuw.bL.bue5yAIVRfZjeeK"
+    }
+  ],
+  "orders": [
+    {
+      "_id": "62c48ba4a1abf9b15e3de8a7",
+      "createdAt": "2026-06-21T09:15:12.134Z",
+      "updatedAt": "2026-06-21T09:15:12.134Z",
+      "userId": null,
+      "customerName": "Test User",
+      "customerEmail": "test@example.com",
+      "customerPhone": "9876543210",
+      "address": "123 Test St, New Delhi",
+      "paymentMethod": "upi",
+      "items": [
+        {
+          "name": "Special Tandoori Chai",
+          "quantity": 2,
+          "price": 75
+        }
+      ],
+      "totalAmount": 190
+    }
+  ],
+  "activities": [
+    {
+      "_id": "aa5f6c299820ac1b4fbd4712",
+      "createdAt": "2026-06-21T09:15:12.135Z",
+      "updatedAt": "2026-06-21T09:15:12.136Z",
+      "type": "order",
+      "description": "New order placed by Test User for ₹190",
+      "ipAddress": "System"
+    }
+  ],
+  "menu": [
+    {
+      "_id": "65c1bc25c27803a123456781",
+      "name": "Special Tandoori Chai",
+      "tag": "Bestseller",
+      "category": "Beverages",
+      "price": 75,
+      "emoji": "☕",
+      "visible": true,
+      "createdAt": "2026-06-21T09:12:09.524Z",
+      "updatedAt": "2026-06-21T09:12:09.525Z"
+    },
+    {
+      "_id": "65c1bc25c27803a123456782",
+      "name": "Gourmet Avocado Toast",
+      "tag": "Chef's Pick",
+      "category": "Mains",
+      "price": 220,
+      "emoji": "🥑",
+      "visible": true,
+      "createdAt": "2026-06-21T09:12:09.525Z",
+      "updatedAt": "2026-06-21T09:12:09.525Z"
+    }
+  ],
+  "reservations": [],
+  "contacts": [],
+  "posts": [
+    {
+      "_id": "65c1bc25c27803a123456791",
+      "title": "Brewing the Perfect Cup at Home",
+      "excerpt": "Learn the secrets of temperature, grind size, and water ratios for coffee masterclass.",
+      "status": "published",
+      "createdAt": "2026-06-21T09:12:09.525Z",
+      "updatedAt": "2026-06-21T09:12:09.525Z"
+    }
+  ],
+  "settings": [
+    {
+      "key": "seo",
+      "value": {
+        "title": "Raj's Cafe — Live Aroma & Ambiance",
+        "description": "Experience artisan coffee and authentic gourmet delights at Raj's Cafe, New Delhi.",
+        "keywords": "coffee, cafe, new delhi, gourmet"
+      }
+    },
+    {
+      "key": "design",
+      "value": {
+        "color": "#c27803"
+      }
+    },
+    {
+      "key": "hours",
+      "value": [
+        {
+          "day": "Monday",
+          "open": "08:00",
+          "close": "22:00",
+          "closed": false
+        },
+        {
+          "day": "Tuesday",
+          "open": "08:00",
+          "close": "22:00",
+          "closed": false
+        },
+        {
+          "day": "Wednesday",
+          "open": "08:00",
+          "close": "22:00",
+          "closed": false
+        },
+        {
+          "day": "Thursday",
+          "open": "08:00",
+          "close": "22:00",
+          "closed": false
+        },
+        {
+          "day": "Friday",
+          "open": "08:00",
+          "close": "23:00",
+          "closed": false
+        },
+        {
+          "day": "Saturday",
+          "open": "08:00",
+          "close": "23:00",
+          "closed": false
+        },
+        {
+          "day": "Sunday",
+          "open": "09:00",
+          "close": "22:00",
+          "closed": false
+        }
+      ]
+    }
+  ]
+}

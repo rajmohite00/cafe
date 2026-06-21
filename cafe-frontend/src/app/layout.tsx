@@ -8,7 +8,7 @@ import ActivityTracker from '@/components/ActivityTracker';
 import DesignSync from '@/components/DesignSync';
 import ErrorBoundary from '@/components/ErrorBoundary';
 
-const API_URL = process.env.NEXT_PUBLIC_API_URL;
+const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000';
 
 const defaultMetadata: Metadata = {
   title:       "Raj's Cafe — The Perfect Blend of Aroma & Ambiance",

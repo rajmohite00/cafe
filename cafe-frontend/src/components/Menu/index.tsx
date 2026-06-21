@@ -10,7 +10,7 @@ import type { MenuItem } from '@/context/CartContext';
 import { menuItems as staticMenuItems, categories as staticCategories } from '@/data/menuData';
 import styles from './Menu.module.css';
 
-const API_URL = process.env.NEXT_PUBLIC_API_URL;
+const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000';
 
 // ── Decorative SVGs ──────────────────────────────────────────────────────
 const BeanGroup = () => (
@@ -124,7 +124,7 @@ function MenuCard({ item }: { item: MenuItem }) {
 export default function Menu() {
   const [activeCategory, setActiveCategory] = useState('All');
   const [apiItems,       setApiItems]       = useState<MenuItem[]>([]);
-  const [loading,        setLoading]        = useState(true);
+  const [loading,        setLoading]        = useState(false);
 
   useEffect(() => {
     const fetchMenu = async () => {

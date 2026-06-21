@@ -1,4 +1,5 @@
 const mongoose = require('mongoose');
+const { getModelProxy } = require('../utils/dbFallback');
 
 const activitySchema = new mongoose.Schema({
   type: {
@@ -19,4 +20,6 @@ const activitySchema = new mongoose.Schema({
   }
 });
 
-module.exports = mongoose.model('Activity', activitySchema);
+const activityModel = mongoose.model('Activity', activitySchema);
+module.exports = getModelProxy('activities', activityModel);
+

@@ -1,5 +1,6 @@
 const mongoose = require('mongoose');
 const bcrypt   = require('bcryptjs');
+const { getModelProxy } = require('../utils/dbFallback');
 
 const userSchema = new mongoose.Schema({
   name:      { type: String, required: true, trim: true },
@@ -20,4 +21,6 @@ userSchema.methods.comparePassword = async function (candidate) {
   return bcrypt.compare(candidate, this.password);
 };
 
-module.exports = mongoose.model('User', userSchema);
+const userModel = mongoose.model('User', userSchema);
+module.exports = getModelProxy('users', userModel);
+

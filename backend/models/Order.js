@@ -1,4 +1,5 @@
 const mongoose = require('mongoose');
+const { getModelProxy } = require('../utils/dbFallback');
 
 const orderSchema = new mongoose.Schema({
   userId:       { type: mongoose.Schema.Types.ObjectId, ref: 'User', default: null },
@@ -33,4 +34,6 @@ const orderSchema = new mongoose.Schema({
   }
 });
 
-module.exports = mongoose.model('Order', orderSchema);
+const orderModel = mongoose.model('Order', orderSchema);
+module.exports = getModelProxy('orders', orderModel);
+

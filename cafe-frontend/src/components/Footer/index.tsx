@@ -53,8 +53,7 @@ export default function Footer() {
   const [hours, setHours] = useState<HourEntry[] | null>(null);
 
   useEffect(() => {
-    const API_URL = process.env.NEXT_PUBLIC_API_URL;
-    if (!API_URL) return;
+    const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000';
     fetch(`${API_URL}/api/data/settings/hours`)
       .then(res => res.json())
       .then(data => {

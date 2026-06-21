@@ -91,8 +91,7 @@ const defaultImages = [
 // ── Fetch published posts from admin backend ──────────────────────────────
 async function getApiPosts() {
   try {
-    const API_URL = process.env.NEXT_PUBLIC_API_URL;
-    if (!API_URL) return [];
+    const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000';
     const res  = await fetch(`${API_URL}/api/data/posts`, {
       next: { revalidate: 30 }, // refresh every 30s
     });

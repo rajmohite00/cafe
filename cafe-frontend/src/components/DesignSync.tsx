@@ -11,8 +11,7 @@ export default function DesignSync() {
   useEffect(() => {
     const sync = async () => {
       try {
-        const API_URL = process.env.NEXT_PUBLIC_API_URL;
-        if (!API_URL) return;
+        const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000';
         const res = await fetch(`${API_URL}/api/data/settings/design`, { cache: 'no-store' });
         const data = await res.json();
         if (data.success && data.data?.value?.color) {
