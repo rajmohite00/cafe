@@ -19,8 +19,8 @@ const PORT = process.env.PORT || 5000;
 const allowedOrigins = [
   'http://localhost:3000',
   'http://localhost:3001',
-  'https://cafe-delta-lime.vercel.app',
-  'https://admin-bay-xi.vercel.app'
+  'https://rajs-cafe.vercel.app',
+  'https://rajs-cafe-admin.vercel.app'
 ];
 
 const corsOptions = {
