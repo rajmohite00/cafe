@@ -107,6 +107,17 @@ export default function AdminPage() {
   const totalIncome = orders.filter(o => o.status !== 'Cancelled').reduce((a, o) => a + o.totalAmount, 0);
   const todayIncome = orders.filter(o => o.status !== 'Cancelled' && new Date(o.createdAt).toDateString() === today).reduce((a, o) => a + o.totalAmount, 0);
 
+  // ── localStorage cache helpers ──
+  const saveCache = (key: string, value: unknown) => {
+    try { localStorage.setItem(`admin_cache_${key}`, JSON.stringify(value)); } catch {}
+  };
+  const loadCache = <T,>(key: string): T | null => {
+    try {
+      const raw = localStorage.getItem(`admin_cache_${key}`);
+      return raw ? JSON.parse(raw) as T : null;
+    } catch { return null; }
+  };
+
   // ── Initial data load ──
   useEffect(() => {
     // Immediately show cached data so nothing is ever blank
