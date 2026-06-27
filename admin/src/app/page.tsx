@@ -822,6 +822,27 @@ export default function AdminPage() {
   );
 
   // ── Orders ──
+  const NoteInput = ({ order, onSend }: { order: any; onSend: (note: string) => void }) => {
+    const [note, setNote] = useState(order.adminMessage || '');
+    return (
+      <div style={{ display:'flex', gap:'0.35rem', marginTop:'0.2rem' }}>
+        <input
+          className={styles.editInput}
+          style={{ fontSize:'0.72rem', padding:'0.3rem 0.5rem', flex:1, minWidth:0 }}
+          placeholder="Note to customer…"
+          value={note}
+          onChange={e => setNote(e.target.value)}
+        />
+        <button
+          className={styles.btnConfirm}
+          style={{ fontSize:'0.72rem', padding:'0.3rem 0.5rem', whiteSpace:'nowrap' }}
+          onClick={() => onSend(note)}
+          disabled={!note.trim()}
+        >Send</button>
+      </div>
+    );
+  };
+
   const OrdersView = () => {
     const updateOrderStatus = async (id: string, newStatus: string) => {
       let message = '';
@@ -829,13 +850,11 @@ export default function AdminPage() {
         const input = prompt('Reason for cancellation (optional):');
         if (input === null) return;
         message = input;
-      } else if (newStatus === 'Completed') {
-        message = 'Your order has been confirmed and completed!';
       }
       try {
         const res = await fetch(`${API_URL}/api/orders/${id}`, { method:'PUT', headers:{'Content-Type':'application/json'}, body:JSON.stringify({ status:newStatus, adminMessage:message }) });
         const data = await res.json();
-        if (data.success) { setOrders(orders.map(o => o._id===id ? { ...o, status:newStatus, adminMessage:message } : o)); showToast(`✓ Order ${newStatus}`); }
+        if (data.success) { setOrders(orders.map(o => o._id===id ? { ...o, status:newStatus, adminMessage:message || o.adminMessage } : o)); showToast(`✓ Order ${newStatus}`); }
       } catch { console.error('Failed to update order'); }
     };
 
@@ -844,7 +863,7 @@ export default function AdminPage() {
         <div className={styles.pageHeader}>
           <div>
             <h1 className={styles.pageTitle}>Orders</h1>
-            <p className={styles.pageSubtitle}>{pendingOrders.length} pending orders · updates every 3s</p>
+            <p className={styles.pageSubtitle}>{orders.filter(o => o.status==='Pending').length} pending orders</p>
           </div>
         </div>
         <div className={styles.tableWrap}>
@@ -857,14 +876,38 @@ export default function AdminPage() {
                   <td className={styles.td}><div className={styles.guestEmail} style={{ maxWidth:'200px', overflow:'hidden', textOverflow:'ellipsis', whiteSpace:'nowrap' }}>{o.items.map(i => `${i.name} (x${i.quantity})`).join(', ')}</div></td>
                   <td className={styles.td}>₹{o.totalAmount}</td>
                   <td className={styles.td}><div className={styles.guestEmail}>{o.paymentMethod||'Paid'}</div><div className={styles.guestEmail}>{new Date(o.createdAt).toLocaleTimeString()}</div></td>
-                  <td className={styles.td}><span className={`${styles.statusBadge} ${o.status==='Completed'?styles.status_confirmed:o.status==='Cancelled'?styles.status_cancelled:styles.status_pending}`}>{o.status}</span></td>
                   <td className={styles.td}>
-                    {o.status === 'Pending' && (
-                      <div style={{ display:'flex', gap:'0.5rem', flexWrap:'wrap' }}>
-                        <button className={styles.btnConfirm} onClick={() => updateOrderStatus(o._id,'Completed')}><Check size={13}/> Complete</button>
-                        <button className={styles.btnCancel}  onClick={() => updateOrderStatus(o._id,'Cancelled')}><X size={13}/></button>
-                      </div>
-                    )}
+                    <span className={`${styles.statusBadge} ${
+                      o.status==='Completed'  ? styles.status_confirmed :
+                      o.status==='Cancelled'  ? styles.status_cancelled :
+                      o.status==='Preparing'  ? styles.status_confirmed :
+                      o.status==='Ready'      ? styles.status_confirmed :
+                      styles.status_pending
+                    }`}>{o.status}</span>
+                  </td>
+                  <td className={styles.td}>
+                    <div style={{ display:'flex', flexDirection:'column', gap:'0.5rem' }}>
+                      {o.status === 'Pending' && (
+                        <div style={{ display:'flex', gap:'0.4rem', flexWrap:'wrap' }}>
+                          <button className={styles.btnConfirm} onClick={() => updateOrderStatus(o._id,'Preparing')}><Check size={13}/> Accept</button>
+                          <button className={styles.btnCancel}  onClick={() => updateOrderStatus(o._id,'Cancelled')}><X size={13}/></button>
+                        </div>
+                      )}
+                      {o.status === 'Preparing' && (
+                        <div style={{ display:'flex', gap:'0.4rem', flexWrap:'wrap' }}>
+                          <button className={styles.btnConfirm} onClick={() => updateOrderStatus(o._id,'Completed')}><Check size={13}/> Complete</button>
+                          <button className={styles.btnCancel}  onClick={() => updateOrderStatus(o._id,'Cancelled')}><X size={13}/></button>
+                        </div>
+                      )}
+                      {(o.status === 'Pending' || o.status === 'Preparing') && (
+                        <NoteInput order={o} onSend={(note) => {
+                          fetch(`${API_URL}/api/orders/${o._id}`, { method:'PUT', headers:{'Content-Type':'application/json'}, body:JSON.stringify({ status: o.status, adminMessage: note }) })
+                            .then(r => r.json())
+                            .then(d => { if (d.success) { setOrders(orders.map(x => x._id===o._id ? { ...x, adminMessage: note } : x)); showToast('✓ Note sent to customer'); }});
+                        }} />
+                      )}
+                      {o.adminMessage && o.status !== 'Cancelled' && <span className={styles.guestEmail} style={{ fontStyle:'italic' }}>📝 {o.adminMessage}</span>}
+                    </div>
                   </td>
                 </tr>
               ))}
