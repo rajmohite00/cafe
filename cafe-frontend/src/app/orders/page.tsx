@@ -383,26 +383,69 @@ export default function OrdersPage() {
     if (!authLoading && !user) router.push('/login');
   }, [user, authLoading, router]);
 
+  // Cache key per user so different users don't mix history
+  const cacheKey = user ? `cafe_orders_${user.id}` : null;
+
   const fetchOrders = useCallback(async () => {
     if (!user) return;
     try {
       const res  = await fetch(`${API_URL}/api/orders/user/${user.id}`);
       const data = await res.json();
-      if (data.success) {
-        setOrders(data.data);
+      if (data.success && Array.isArray(data.data)) {
+        const fresh = data.data as Order[];
+
+        // Merge fresh with cached: fresh data wins for same _id (status updates),
+        // but keep cached-only orders so history never disappears on backend resets
+        const cachedRaw = localStorage.getItem(cacheKey!);
+        const cached: Order[] = cachedRaw ? JSON.parse(cachedRaw) : [];
+        
+        const mergedMap = new Map<string, Order>();
+        // Put cached first (older), then fresh overrides
+        cached.forEach(o => mergedMap.set(o._id, o));
+        fresh.forEach(o => mergedMap.set(o._id, o));
+
+        const merged = Array.from(mergedMap.values())
+          .sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
+
+        // Save back to cache
+        localStorage.setItem(cacheKey!, JSON.stringify(merged));
+        setOrders(merged);
         setLastUpdated(new Date());
       }
-    } catch (e) { console.error(e); }
+    } catch (e) {
+      console.error(e);
+      // On network error, show cached data so history is never blank
+      if (cacheKey) {
+        const cachedRaw = localStorage.getItem(cacheKey);
+        if (cachedRaw) {
+          const cached: Order[] = JSON.parse(cachedRaw);
+          setOrders(cached);
+        }
+      }
+    }
     finally { setLoading(false); }
-  }, [user]);
+  }, [user, cacheKey]);
 
   useEffect(() => {
-    if (!user) return;
+    if (!user || !cacheKey) return;
+
+    // Immediately show cached orders so page isn't blank on load
+    const cachedRaw = localStorage.getItem(cacheKey);
+    if (cachedRaw) {
+      try {
+        const cached: Order[] = JSON.parse(cachedRaw);
+        if (cached.length > 0) {
+          setOrders(cached);
+          setLoading(false);
+        }
+      } catch { /* ignore parse errors */ }
+    }
+
     fetchOrders();
-    // Real-time polling every 5s
-    const interval = setInterval(fetchOrders, 5000);
+    // Poll every 10s for status updates
+    const interval = setInterval(fetchOrders, 10_000);
     return () => clearInterval(interval);
-  }, [fetchOrders, user]);
+  }, [fetchOrders, user, cacheKey]);
 
   // ── Computed stats ──
   const totalSpent     = orders.filter(o => o.status !== 'Cancelled').reduce((a, o) => a + o.totalAmount, 0);
