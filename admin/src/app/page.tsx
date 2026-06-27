@@ -5,14 +5,14 @@ import {
   LayoutDashboard, UtensilsCrossed, CalendarCheck, MessageSquare,
   Clock, Settings, Image as ImageIcon, Palette, FileText,
   TrendingUp, Plus, Trash2, Edit, Eye, EyeOff, Check, X,
-  ChevronRight, LogOut, Bell, ShoppingCart, Save
+  ChevronRight, LogOut, Bell, ShoppingCart, Save, Users
 } from 'lucide-react';
 import styles from './page.module.css';
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000';
 
 // ── Types ──────────────────────────────────────────────────────────────────
-type Tab = 'dashboard' | 'orders' | 'menu' | 'reservations' | 'contacts' | 'hours' | 'seo' | 'design' | 'blog';
+type Tab = 'dashboard' | 'orders' | 'menu' | 'reservations' | 'contacts' | 'hours' | 'seo' | 'design' | 'blog' | 'users';
 
 type MenuItem = { id: string; name: string; category: string; price: number; tag: string; emoji: string; visible: boolean; };
 type Reservation = { id: string; name: string; date: string; time: string; guests: number; email: string; phone: string; status: 'pending' | 'confirmed' | 'cancelled'; occasion?: string; };
