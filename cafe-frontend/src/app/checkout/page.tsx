@@ -113,6 +113,28 @@ export default function CheckoutPage() {
       const data = await response.json();
       if (data.success) {
         setPlacedOrderId(data.data._id);
+
+        // ── Immediately cache the new order in localStorage ──
+        // This ensures order history is always visible even after Vercel cold starts
+        if (user?.id) {
+          const cacheKey = `cafe_orders_${user.id}`;
+          const existing = localStorage.getItem(cacheKey);
+          const cached = existing ? JSON.parse(existing) : [];
+          const newOrder = {
+            ...data.data,
+            // Ensure all fields are present for display
+            status: data.data.status || 'Pending',
+            adminMessage: data.data.adminMessage || '',
+            paymentMethod: orderPayload.paymentMethod,
+            address: orderPayload.address,
+            items: orderPayload.items,
+            totalAmount: orderPayload.totalAmount,
+            createdAt: data.data.createdAt || new Date().toISOString(),
+          };
+          // Prepend new order at top
+          localStorage.setItem(cacheKey, JSON.stringify([newOrder, ...cached]));
+        }
+
         clearCart();
         setStep('done');
       }

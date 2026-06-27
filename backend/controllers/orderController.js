@@ -85,7 +85,18 @@ exports.getOrderById = async (req, res) => {
 // @route  GET /api/orders/user/:userId
 exports.getUserOrders = async (req, res) => {
   try {
-    const orders = await Order.find({ userId: req.params.userId }).sort({ createdAt: -1 });
+    const { userId } = req.params;
+    // Try by userId first
+    let orders = await Order.find({ userId }).sort({ createdAt: -1 });
+
+    // If no results (cold start wiped /tmp, or type mismatch), try by string comparison
+    if (!orders || orders.length === 0) {
+      const allOrders = await Order.find({}).sort({ createdAt: -1 });
+      orders = allOrders.filter(o =>
+        String(o.userId) === String(userId)
+      );
+    }
+
     res.status(200).json({ success: true, data: orders });
   } catch (error) {
     res.status(500).json({ success: false, message: 'Server Error' });

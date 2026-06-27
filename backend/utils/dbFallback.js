@@ -205,8 +205,8 @@ function createFallbackModel(collectionName) {
   function matches(item, query) {
     if (!query) return true;
     for (const key in query) {
-      // Support nested fields or direct properties
-      if (query[key] !== item[key]) return false;
+      // Use string coercion to handle ObjectId vs string mismatches
+      if (String(query[key]) !== String(item[key])) return false;
     }
     return true;
   }
