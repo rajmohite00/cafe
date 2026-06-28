@@ -1,0 +1,147 @@
+project:
+  name: cafe-frontend
+  type: frontend
+  framework: Next.js 16.2.1
+  language: TypeScript
+  runtime: Node.js
+  ui_library: React 19.2.4
+  styling: Vanilla CSS (globals.css)
+  package_manager: npm
+  port: 3000
+
+tech_stack:
+  - Next.js 16.2.1 (App Router)
+  - React 19.2.4
+  - TypeScript 5
+  - lucide-react (icons)
+  - ESLint with eslint-config-next
+
+features:
+  - name: Home Page
+    path: /
+    description: Landing page with Hero, About, Menu preview, Loyalty/Newsletter, Reservation form, Location map, and Footer
+    components:
+      - Navbar
+      - Hero
+      - About
+      - Menu (preview)
+      - LoyaltyNewsletter
+      - Reservation
+      - Location
+      - Footer
+
+  - name: Menu
+    path: /menu
+    description: Full menu page with category browsing and item details
+    components:
+      - Menu component with category filtering
+      - Dynamic menu item pages at /menu/[slug]
+
+  - name: Cart
+    path: /cart
+    description: Shopping cart with add/remove/update quantities
+    context: CartContext (CartProvider)
+
+  - name: Checkout
+    path: /checkout
+    description: Checkout page for placing orders
+
+  - name: Orders
+    path: /orders
+    description: Order history/tracking page (requires authentication)
+
+  - name: Login
+    path: /login
+    description: User login page with email and password
+
+  - name: Signup
+    path: /signup
+    description: User registration with name, email, phone, and password
+
+  - name: Blog
+    path: /blog
+    description: Blog page with articles
+
+  - name: Brew Guide
+    path: /brew-guide
+    description: Coffee brewing guides and tutorials
+
+  - name: Gift
+    path: /gift
+    description: Gift cards page
+
+  - name: FAQ
+    path: /faq
+    description: Frequently asked questions
+
+  - name: Loyalty
+    path: /loyalty
+    description: Loyalty program page
+
+  - name: Quiz
+    path: /quiz
+    description: Coffee quiz/recommendation quiz
+
+  - name: Testimonials
+    path: /testimonials
+    description: Customer testimonials page
+
+  - name: Reservation API
+    path: /api/reservation
+    description: Server-side API route for handling reservation submissions
+
+  - name: Contact API
+    path: /api/contact
+    description: Server-side API route for handling contact form submissions
+
+authentication:
+  type: JWT token-based
+  storage: localStorage (cafe_token, cafe_user)
+  provider: Custom backend API
+  api_base: NEXT_PUBLIC_API_URL (default https://cafe-backend-azure.vercel.app)
+  endpoints:
+    login: POST /api/auth/login
+    register: POST /api/auth/register
+  context: AuthContext (AuthProvider)
+  flow:
+    - User enters email and password on /login
+    - Frontend POSTs to backend /api/auth/login
+    - Backend returns JWT token and user object
+    - Token and user stored in localStorage
+    - AuthProvider reads from localStorage on mount
+
+state_management:
+  - AuthContext: User authentication state (user, token, login, register, logout)
+  - CartContext: Shopping cart state (items, add, remove, update quantities)
+
+components:
+  shared:
+    - Navbar: Navigation bar with links to pages
+    - Footer: Site footer
+    - ErrorBoundary: React error boundary wrapper
+    - LoadingSpinner: Loading indicator
+    - ScrollToTop: Scroll-to-top utility
+    - RevealObserver: Intersection observer for reveal animations
+    - ActivityTracker: User activity tracking
+    - DesignSync: Design synchronization component
+  pages:
+    - Hero: Landing hero section
+    - About: About section
+    - Menu: Menu preview/full menu
+    - LoyaltyNewsletter: Loyalty program and newsletter signup
+    - Reservation: Reservation form
+    - Location: Cafe location/map
+    - CoffeeIntro: Coffee introduction section
+    - BrewGuide: Brewing guide content
+    - FAQ: FAQ accordion
+    - Testimonials: Customer reviews
+    - AuthGate: Authentication gate component
+
+api_endpoints:
+  backend_base: https://cafe-backend-azure.vercel.app
+  routes:
+    - GET /api/data/settings/seo (SEO metadata)
+    - POST /api/auth/login (user login)
+    - POST /api/auth/register (user registration)
+    - POST /api/reservation (reservation submission - Next.js API route)
+    - POST /api/contact (contact form - Next.js API route)

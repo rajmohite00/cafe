@@ -1,0 +1,17 @@
+{
+  "status": "commited",
+  "type": "frontend",
+  "scope": "codebase",
+  "localEndpoint": "http://localhost:3000",
+  "executionArgs": {
+    "projectName": "cafe-frontend",
+    "projectPath": "c:\\Users\\Admin\\Desktop\\githubwork\\cafe\\cafe-frontend",
+    "testIds": [],
+    "additionalInstruction": "",
+    "serverMode": "production",
+    "envs": {
+      "API_KEY": "sk-user-hyGU2x8jMVTAX_snE_p2v3H-Y4y8X63-eQCwZ-XMBT8Ku2Pzwc_ps5wL_-N7KDqkjity8bo5880QB9Ici9evqyRcT8WWOseIdCXm-j7nTFGT2VlAEhpB6SMuwKSwx5CY_hU"
+    }
+  },
+  "serverPort": 58679
+}

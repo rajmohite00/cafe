@@ -1,0 +1,713 @@
+[
+  {
+    "id": "TC001",
+    "title": "Place an order from cart checkout",
+    "description": "A shopper can move from a populated cart to checkout and complete an order, resulting in an order confirmation.",
+    "category": "Checkout & Orders",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Navigate to /menu"
+      },
+      {
+        "type": "action",
+        "description": "Open a menu item detail page"
+      },
+      {
+        "type": "action",
+        "description": "Add the item to the cart"
+      },
+      {
+        "type": "action",
+        "description": "Go to the cart"
+      },
+      {
+        "type": "action",
+        "description": "Proceed to checkout"
+      },
+      {
+        "type": "action",
+        "description": "Complete the order submission"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify an order confirmation is displayed"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify the placed order is reflected in the completion state"
+      }
+    ],
+    "priority": "High"
+  },
+  {
+    "id": "TC002",
+    "title": "Browse the home page content",
+    "description": "This verifies that a guest can open the cafe home page and see the main landing content that introduces the site.",
+    "category": "Home Page",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Navigate to /"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify the main home page content is displayed"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify featured menu content is displayed"
+      }
+    ],
+    "priority": "High"
+  },
+  {
+    "id": "TC003",
+    "title": "Log in and access protected order history",
+    "description": "This verifies that a returning customer can log in successfully and open the protected orders page.",
+    "category": "Authentication",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Navigate to /login"
+      },
+      {
+        "type": "action",
+        "description": "Fill in the email field with {{LOGIN_USER}}"
+      },
+      {
+        "type": "action",
+        "description": "Fill in the password field with {{LOGIN_PASSWORD}}"
+      },
+      {
+        "type": "action",
+        "description": "Submit the login form"
+      },
+      {
+        "type": "action",
+        "description": "Click the link to view order history"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify the protected orders page is displayed"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify order history content is displayed"
+      }
+    ],
+    "priority": "High"
+  },
+  {
+    "id": "TC004",
+    "title": "Add a menu item to the cart from its detail page",
+    "description": "A shopper can open a specific menu item and add it to the cart, and the cart reflects the added item.",
+    "category": "Shopping Cart",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Navigate to /menu"
+      },
+      {
+        "type": "action",
+        "description": "Open a menu item detail page"
+      },
+      {
+        "type": "action",
+        "description": "Add the item to the cart"
+      },
+      {
+        "type": "action",
+        "description": "Go to the cart"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify the selected item is present in the cart"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify the item quantity is reflected in the cart"
+      }
+    ],
+    "priority": "High"
+  },
+  {
+    "id": "TC005",
+    "title": "Submit a reservation request successfully",
+    "description": "A visitor can complete the reservation form on the home page and receive a confirmation state after submitting valid details.",
+    "category": "Reservation System",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Navigate to /"
+      },
+      {
+        "type": "action",
+        "description": "Scroll to the reservation form section"
+      },
+      {
+        "type": "action",
+        "description": "Fill in the name field with Alex Rivera"
+      },
+      {
+        "type": "action",
+        "description": "Fill in the email field with alex@example.com"
+      },
+      {
+        "type": "action",
+        "description": "Select a valid reservation date"
+      },
+      {
+        "type": "action",
+        "description": "Select a valid reservation time"
+      },
+      {
+        "type": "action",
+        "description": "Fill in the party size field with 4"
+      },
+      {
+        "type": "action",
+        "description": "Submit the reservation form"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify a reservation success confirmation is visible"
+      }
+    ],
+    "priority": "High"
+  },
+  {
+    "id": "TC006",
+    "title": "Register a new account and stay signed in",
+    "description": "This verifies that a new customer can sign up successfully and the authenticated session remains available in the app.",
+    "category": "Authentication",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Navigate to /login"
+      },
+      {
+        "type": "action",
+        "description": "Fill in the name field with Jordan Lee"
+      },
+      {
+        "type": "action",
+        "description": "Fill in the email field with jordan.lee@example.com"
+      },
+      {
+        "type": "action",
+        "description": "Fill in the phone field with 5559876543"
+      },
+      {
+        "type": "action",
+        "description": "Fill in the password field with ValidPass123!"
+      },
+      {
+        "type": "action",
+        "description": "Submit the registration form"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify the user is authenticated in the app"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify the signed-in user state remains available after registration"
+      }
+    ],
+    "priority": "High"
+  },
+  {
+    "id": "TC007",
+    "title": "Access order history after logging in",
+    "description": "An authenticated customer can log in and view their protected order history page with order data visible.",
+    "category": "Checkout & Orders",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Navigate to /login"
+      },
+      {
+        "type": "action",
+        "description": "Fill in the username field with {{LOGIN_USER}}"
+      },
+      {
+        "type": "action",
+        "description": "Fill in the password field with {{LOGIN_PASSWORD}}"
+      },
+      {
+        "type": "action",
+        "description": "Submit the login form"
+      },
+      {
+        "type": "action",
+        "description": "Navigate to /orders"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify order history content is displayed"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify order status information is displayed"
+      }
+    ],
+    "priority": "High"
+  },
+  {
+    "id": "TC008",
+    "title": "Update cart quantities and remove items",
+    "description": "A shopper can change item quantities in the cart, and setting a quantity to zero removes the item and updates the cart state.",
+    "category": "Shopping Cart",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Navigate to /menu"
+      },
+      {
+        "type": "action",
+        "description": "Open a menu item detail page"
+      },
+      {
+        "type": "action",
+        "description": "Add the item to the cart"
+      },
+      {
+        "type": "action",
+        "description": "Go to the cart"
+      },
+      {
+        "type": "action",
+        "description": "Increase the item quantity"
+      },
+      {
+        "type": "action",
+        "description": "Set the item quantity to zero"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify the cart is empty or the item is no longer present"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify the empty or reduced cart state is displayed"
+      }
+    ],
+    "priority": "High"
+  },
+  {
+    "id": "TC009",
+    "title": "Submit a contact request successfully",
+    "description": "A visitor can complete the contact form with valid details and receive a confirmation state after submission.",
+    "category": "Contact Form",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Navigate to /"
+      },
+      {
+        "type": "action",
+        "description": "Scroll to the contact form section"
+      },
+      {
+        "type": "action",
+        "description": "Fill in the name field with Alex Rivera"
+      },
+      {
+        "type": "action",
+        "description": "Fill in the email field with alex@example.com"
+      },
+      {
+        "type": "action",
+        "description": "Fill in the message field with a brief inquiry about catering"
+      },
+      {
+        "type": "action",
+        "description": "Submit the contact form"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify a contact success confirmation is visible"
+      }
+    ],
+    "priority": "High"
+  },
+  {
+    "id": "TC010",
+    "title": "Browse the menu and open an item detail page",
+    "description": "This verifies that a guest can browse the menu, use category filtering, and open a specific item detail page.",
+    "category": "Menu System",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Navigate to /menu"
+      },
+      {
+        "type": "action",
+        "description": "Select a category filter"
+      },
+      {
+        "type": "action",
+        "description": "Click a menu item card"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify the item detail page is displayed"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify item detail content is displayed"
+      }
+    ],
+    "priority": "High"
+  },
+  {
+    "id": "TC011",
+    "title": "Block checkout when the cart is empty",
+    "description": "A shopper with no items in the cart cannot proceed to checkout and sees an appropriate empty-cart blocking state.",
+    "category": "Shopping Cart",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Navigate to /cart"
+      },
+      {
+        "type": "action",
+        "description": "Attempt to proceed to checkout"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify checkout is blocked"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify an empty cart state or checkout restriction message is displayed"
+      }
+    ],
+    "priority": "High"
+  },
+  {
+    "id": "TC012",
+    "title": "Show reservation validation feedback for missing details",
+    "description": "A visitor who submits the reservation form with required fields left blank sees validation feedback and no confirmation state.",
+    "category": "Reservation System",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Navigate to /"
+      },
+      {
+        "type": "action",
+        "description": "Scroll to the reservation form section"
+      },
+      {
+        "type": "action",
+        "description": "Submit the reservation form"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify a reservation validation error is visible"
+      }
+    ],
+    "priority": "High"
+  },
+  {
+    "id": "TC013",
+    "title": "Show reservation validation feedback for incomplete submission",
+    "description": "This verifies that the reservation form blocks submission and shows validation feedback when required details are missing or invalid.",
+    "category": "Home Page",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Navigate to /"
+      },
+      {
+        "type": "action",
+        "description": "Scroll to the reservation form"
+      },
+      {
+        "type": "action",
+        "description": "Submit the reservation form"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify reservation validation feedback is visible"
+      }
+    ],
+    "priority": "High"
+  },
+  {
+    "id": "TC014",
+    "title": "See protected orders access blocked when logged out",
+    "description": "A visitor without a session cannot view protected order history and is redirected or shown an unauthorized state instead of orders.",
+    "category": "Checkout & Orders",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Navigate to /orders"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify access is blocked"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify order history is not displayed"
+      }
+    ],
+    "priority": "High"
+  },
+  {
+    "id": "TC015",
+    "title": "Show contact validation feedback for missing details",
+    "description": "A visitor who submits the contact form without required information sees validation feedback and no success confirmation.",
+    "category": "Contact Form",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Navigate to /"
+      },
+      {
+        "type": "action",
+        "description": "Scroll to the contact form section"
+      },
+      {
+        "type": "action",
+        "description": "Submit the contact form"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify a contact validation error is visible"
+      }
+    ],
+    "priority": "High"
+  },
+  {
+    "id": "TC016",
+    "title": "Browse articles and open a blog story",
+    "description": "A visitor can view the blog listing and open an article to read its content.",
+    "category": "Content Pages",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Navigate to /blog"
+      },
+      {
+        "type": "action",
+        "description": "Open a blog article"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify the selected article content is displayed"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify supporting article details are visible"
+      }
+    ],
+    "priority": "Medium"
+  },
+  {
+    "id": "TC017",
+    "title": "Complete the coffee quiz and see a result",
+    "description": "A visitor can answer the quiz questions and receive a coffee recommendation result after submitting.",
+    "category": "Content Pages",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Navigate to /quiz"
+      },
+      {
+        "type": "action",
+        "description": "Answer the quiz questions"
+      },
+      {
+        "type": "action",
+        "description": "Submit the quiz"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify a recommendation result is displayed"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify the quiz outcome content is visible"
+      }
+    ],
+    "priority": "Medium"
+  },
+  {
+    "id": "TC018",
+    "title": "Expand a FAQ answer",
+    "description": "A visitor can open the FAQ page and reveal the answer for a question.",
+    "category": "Content Pages",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Navigate to /faq"
+      },
+      {
+        "type": "action",
+        "description": "Expand a FAQ question"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify the answer content is displayed"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify the FAQ item remains expanded"
+      }
+    ],
+    "priority": "Medium"
+  },
+  {
+    "id": "TC019",
+    "title": "Read the brewing guide content",
+    "description": "A visitor can open the brewing guide and view the instructional sections needed to follow the guide.",
+    "category": "Content Pages",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Navigate to /brew-guide"
+      },
+      {
+        "type": "action",
+        "description": "Scroll through the guide"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify brewing instructions are displayed"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify multiple guide sections are visible"
+      }
+    ],
+    "priority": "Medium"
+  },
+  {
+    "id": "TC020",
+    "title": "View testimonials and gift card information",
+    "description": "A visitor can browse testimonials and gift card content to see customer feedback and purchase information.",
+    "category": "Content Pages",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Navigate to /testimonials"
+      },
+      {
+        "type": "action",
+        "description": "Browse the testimonials content"
+      },
+      {
+        "type": "action",
+        "description": "Navigate to /gift"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify testimonial content is displayed"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify gift card options and purchase information are displayed"
+      }
+    ],
+    "priority": "Medium"
+  },
+  {
+    "id": "TC021",
+    "title": "Show a not-found state for an unavailable menu item",
+    "description": "This verifies that the menu item detail experience handles an unavailable item with a not-found or error state.",
+    "category": "Menu System",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Navigate to /menu"
+      },
+      {
+        "type": "action",
+        "description": "Click a menu item that is unavailable"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify a not-found or error state is displayed"
+      }
+    ],
+    "priority": "Medium"
+  },
+  {
+    "id": "TC022",
+    "title": "Show login error for invalid credentials",
+    "description": "This verifies that the login form shows a failure message when a customer enters incorrect credentials.",
+    "category": "Authentication",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Navigate to /login"
+      },
+      {
+        "type": "action",
+        "description": "Fill in the email field with invalid@example.com"
+      },
+      {
+        "type": "action",
+        "description": "Fill in the password field with wrong-password"
+      },
+      {
+        "type": "action",
+        "description": "Submit the login form"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify a login failure message is visible"
+      }
+    ],
+    "priority": "Low"
+  },
+  {
+    "id": "TC023",
+    "title": "Handle duplicate email during registration",
+    "description": "This verifies that the signup form shows validation feedback when a visitor tries to register with an email that is already in use.",
+    "category": "Authentication",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Navigate to /login"
+      },
+      {
+        "type": "action",
+        "description": "Fill in the name field with Jordan Lee"
+      },
+      {
+        "type": "action",
+        "description": "Fill in the email field with jordan.lee@example.com"
+      },
+      {
+        "type": "action",
+        "description": "Fill in the phone field with 5559876543"
+      },
+      {
+        "type": "action",
+        "description": "Fill in the password field with ValidPass123!"
+      },
+      {
+        "type": "action",
+        "description": "Submit the registration form"
+      },
+      {
+        "type": "action",
+        "description": "Fill in the email field with jordan.lee@example.com"
+      },
+      {
+        "type": "action",
+        "description": "Submit the registration form"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify a registration validation message is visible"
+      }
+    ],
+    "priority": "Low"
+  }
+]
