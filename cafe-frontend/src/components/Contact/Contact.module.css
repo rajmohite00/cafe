@@ -1,42 +1,53 @@
 .section {
   position: relative;
-  background: var(--bg-surface, #0f0f11);
+  background:
+    radial-gradient(ellipse 55% 45% at 5% 50%, rgba(232,148,26,0.06), transparent 60%),
+    radial-gradient(ellipse 40% 55% at 95% 80%, rgba(158,117,80,0.04), transparent 60%),
+    linear-gradient(180deg, var(--cream-dark) 0%, var(--cream) 100%);
+  border-top: 1px solid rgba(44,21,6,0.06);
 }
 
 .header {
   text-align: center;
-  max-width: 600px;
-  margin: 0 auto 2.5rem;
+  max-width: 650px;
+  margin: 0 auto 3rem;
 }
 
 .subtitle {
-  color: var(--muted, #94a3b8);
+  color: var(--muted);
+  font-family: var(--font-body);
   font-size: 1.05rem;
-  line-height: 1.6;
+  line-height: 1.7;
 }
 
 .formCardWrap {
-  max-width: 680px;
+  max-width: 720px;
   margin: 0 auto;
 }
 
 .formCard {
-  padding: 2.5rem;
-  border-radius: 1.25rem;
+  padding: 3rem;
+  background: rgba(255, 253, 249, 0.85) !important;
+  border: 1px solid rgba(232, 148, 26, 0.16) !important;
+  box-shadow: 0 10px 48px rgba(44, 21, 6, 0.08), 0 2px 10px rgba(44, 21, 6, 0.04) !important;
+  border-radius: var(--radius-lg) !important;
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
 }
 
 .formGrid {
   display: grid;
   grid-template-columns: 1fr 1fr;
-  gap: 1.25rem;
+  gap: 1.5rem;
 }
 
 @media (max-width: 640px) {
   .formGrid {
     grid-template-columns: 1fr;
+    gap: 1.25rem;
   }
   .formCard {
-    padding: 1.5rem;
+    padding: 2.5rem 1.5rem;
   }
 }
 
@@ -44,34 +55,39 @@
   display: flex;
   align-items: center;
   gap: 0.75rem;
-  background: rgba(239, 68, 68, 0.12);
-  border: 1px solid rgba(239, 68, 68, 0.3);
-  color: #f87171;
+  background: rgba(239, 68, 68, 0.08);
+  border: 1px solid rgba(239, 68, 68, 0.2);
+  color: #ef4444;
   padding: 0.875rem 1.25rem;
-  border-radius: 0.75rem;
+  border-radius: 8px;
   margin-bottom: 1.5rem;
   font-size: 0.9rem;
+  font-family: var(--font-ui);
+  font-weight: 600;
 }
 
 .successState {
   text-align: center;
-  padding: 2rem 1rem;
+  padding: 2.5rem 1rem;
 }
 
 .successIcon {
-  color: #10b981;
-  margin-bottom: 1rem;
+  color: var(--amber);
+  margin-bottom: 1.25rem;
 }
 
 .successTitle {
-  font-size: 1.5rem;
-  font-weight: 600;
+  font-family: var(--font-serif);
+  font-size: 1.75rem;
+  font-weight: 400;
   margin-bottom: 0.75rem;
-  color: var(--text-main, #f8fafc);
+  color: var(--brown);
 }
 
 .successText {
-  color: var(--muted, #94a3b8);
-  margin-bottom: 1.75rem;
-  line-height: 1.6;
+  color: var(--muted);
+  font-family: var(--font-body);
+  margin-bottom: 2rem;
+  line-height: 1.7;
+  font-size: 1rem;
 }
