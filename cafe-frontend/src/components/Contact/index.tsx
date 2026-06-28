@@ -50,8 +50,8 @@ export default function Contact() {
     <section id="contact" className={`section-pad ${styles.section}`}>
       <div className="container">
         <div className={styles.header}>
-          <span className="section-label">Get in Touch</span>
-          <h2 className="section-title">Send Us a <em>Message</em></h2>
+          <span className="section-label" style={{ color: 'var(--amber-light)' }}>Get in Touch</span>
+          <h2 className="section-title" style={{ color: 'var(--cream)' }}>Send Us a <em>Message</em></h2>
           <div className="gold-divider" style={{ margin: '1rem auto' }} />
           <p className={styles.subtitle}>
             Have a question, feedback, or inquiry about private events? Send us a note and we&apos;ll get back to you promptly.
@@ -89,8 +89,8 @@ export default function Contact() {
 
                 <div className={styles.formGrid}>
                   <div className="form-group">
-                    <label className="form-label" htmlFor="contact-name">
-                      Name <span style={{ color: 'var(--amber)' }}>*</span>
+                    <label className="form-label" style={{ color: 'rgba(240,230,208,0.8)' }} htmlFor="contact-name">
+                      Name <span style={{ color: 'var(--amber-light)' }}>*</span>
                     </label>
                     <input
                       id="contact-name"
@@ -103,8 +103,8 @@ export default function Contact() {
                   </div>
 
                   <div className="form-group">
-                    <label className="form-label" htmlFor="contact-email">
-                      Email <span style={{ color: 'var(--amber)' }}>*</span>
+                    <label className="form-label" style={{ color: 'rgba(240,230,208,0.8)' }} htmlFor="contact-email">
+                      Email <span style={{ color: 'var(--amber-light)' }}>*</span>
                     </label>
                     <input
                       id="contact-email"
@@ -118,7 +118,7 @@ export default function Contact() {
                 </div>
 
                 <div className="form-group">
-                  <label className="form-label" htmlFor="contact-subject">
+                  <label className="form-label" style={{ color: 'rgba(240,230,208,0.8)' }} htmlFor="contact-subject">
                     Subject
                   </label>
                   <input
@@ -132,8 +132,8 @@ export default function Contact() {
                 </div>
 
                 <div className="form-group">
-                  <label className="form-label" htmlFor="contact-message">
-                    Message <span style={{ color: 'var(--amber)' }}>*</span>
+                  <label className="form-label" style={{ color: 'rgba(240,230,208,0.8)' }} htmlFor="contact-message">
+                    Message <span style={{ color: 'var(--amber-light)' }}>*</span>
                   </label>
                   <textarea
                     id="contact-message"
