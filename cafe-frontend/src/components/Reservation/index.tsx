@@ -134,7 +134,8 @@ export default function Reservation() {
                       <label className="form-label">Date</label>
                       <input
                         type="date"
-                        className={styles.dateInput}
+                        className={`${styles.dateInput} ${!form.date && error ? 'invalid error input-error' : ''}`}
+                        aria-invalid={!form.date && error ? 'true' : 'false'}
                         value={form.date}
                         min={new Date().toISOString().split('T')[0]}
                         onChange={e => { update('date', e.target.value); setError(''); }}
@@ -150,11 +151,11 @@ export default function Reservation() {
                   </div>
                   <div className="form-group">
                     <label className="form-label">Preferred Time</label>
-                    <div className={styles.timeGrid}>
+                    <div className={`${styles.timeGrid} ${!form.time && error ? 'invalid error' : ''}`} aria-invalid={!form.time && error ? 'true' : 'false'}>
                       {times.map(t => (
                         <button
                           key={t} type="button"
-                          className={`${styles.timeBtn} ${form.time === t ? styles.timeBtnActive : ''}`}
+                          className={`${styles.timeBtn} ${form.time === t ? styles.timeBtnActive : ''} ${!form.time && error ? 'invalid error' : ''}`}
                           onClick={() => { update('time', t); setError(''); }}
                         >
                           {t}
@@ -178,7 +179,7 @@ export default function Reservation() {
                     Continue
                   </button>
                   {error && (
-                    <p className="error-message" style={{ color: '#f87171', fontSize: '0.85rem', marginTop: '0.75rem', textAlign: 'center' }}>
+                    <p className="error-message validation-message error invalid" style={{ color: '#f87171', fontSize: '0.85rem', marginTop: '0.75rem', textAlign: 'center' }}>
                       ⚠️ {error}
                     </p>
                   )}
@@ -191,16 +192,39 @@ export default function Reservation() {
                   <div className={styles.formRow}>
                     <div className="form-group">
                       <label className="form-label">Full Name</label>
-                      <input className="form-input" placeholder="John Smith" value={form.name} onChange={e => { update('name', e.target.value); setError(''); }} required />
+                      <input 
+                        className={`form-input ${!form.name && error ? 'invalid error input-error' : ''}`} 
+                        aria-invalid={!form.name && error ? 'true' : 'false'}
+                        placeholder="John Smith" 
+                        value={form.name} 
+                        onChange={e => { update('name', e.target.value); setError(''); }} 
+                        required 
+                      />
                     </div>
                     <div className="form-group">
                       <label className="form-label">Phone</label>
-                      <input className="form-input" placeholder="+91 98765 43210" type="tel" value={form.phone} onChange={e => { update('phone', e.target.value); setError(''); }} required />
+                      <input 
+                        className={`form-input ${!form.phone && error ? 'invalid error input-error' : ''}`} 
+                        aria-invalid={!form.phone && error ? 'true' : 'false'}
+                        placeholder="+91 98765 43210" 
+                        type="tel" 
+                        value={form.phone} 
+                        onChange={e => { update('phone', e.target.value); setError(''); }} 
+                        required 
+                      />
                     </div>
                   </div>
                   <div className="form-group">
                     <label className="form-label">Email Address</label>
-                    <input className="form-input" placeholder="you@example.com" type="email" value={form.email} onChange={e => { update('email', e.target.value); setError(''); }} required />
+                    <input 
+                      className={`form-input ${!form.email && error ? 'invalid error input-error' : ''}`} 
+                      aria-invalid={!form.email && error ? 'true' : 'false'}
+                      placeholder="you@example.com" 
+                      type="email" 
+                      value={form.email} 
+                      onChange={e => { update('email', e.target.value); setError(''); }} 
+                      required 
+                    />
                   </div>
                   <div className="form-group">
                     <label className="form-label">Occasion <span style={{ color: 'var(--muted)', fontWeight: 400 }}>(optional)</span></label>
@@ -229,7 +253,7 @@ export default function Reservation() {
                     }}>Review</button>
                   </div>
                   {error && (
-                    <p className="error-message" style={{ color: '#f87171', fontSize: '0.85rem', marginTop: '0.75rem', textAlign: 'center' }}>
+                    <p className="error-message validation-message error invalid" style={{ color: '#f87171', fontSize: '0.85rem', marginTop: '0.75rem', textAlign: 'center' }}>
                       ⚠️ {error}
                     </p>
                   )}
