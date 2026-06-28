@@ -17,6 +17,7 @@ export interface MenuItem {
   ingredients: string[];
   rating: number;
   reviews: number;
+  isAvailable?: boolean;
 }
 
 export interface CartItem extends MenuItem {

@@ -137,7 +137,7 @@ export default function Reservation() {
                         className={styles.dateInput}
                         value={form.date}
                         min={new Date().toISOString().split('T')[0]}
-                        onChange={e => update('date', e.target.value)}
+                        onChange={e => { update('date', e.target.value); setError(''); }}
                         required
                       />
                     </div>
@@ -155,7 +155,7 @@ export default function Reservation() {
                         <button
                           key={t} type="button"
                           className={`${styles.timeBtn} ${form.time === t ? styles.timeBtnActive : ''}`}
-                          onClick={() => update('time', t)}
+                          onClick={() => { update('time', t); setError(''); }}
                         >
                           {t}
                         </button>
@@ -166,11 +166,22 @@ export default function Reservation() {
                     type="button"
                     className="btn-primary"
                     style={{ width: '100%', justifyContent: 'center', marginTop: '0.5rem' }}
-                    disabled={!form.date || !form.time}
-                    onClick={() => setStep(2)}
+                    onClick={() => {
+                      if (!form.date || !form.time) {
+                        setError('Please select a date and preferred time.');
+                      } else {
+                        setError('');
+                        setStep(2);
+                      }
+                    }}
                   >
                     Continue
                   </button>
+                  {error && (
+                    <p className="error-message" style={{ color: '#f87171', fontSize: '0.85rem', marginTop: '0.75rem', textAlign: 'center' }}>
+                      ⚠️ {error}
+                    </p>
+                  )}
                 </div>
               )}
 
@@ -180,16 +191,16 @@ export default function Reservation() {
                   <div className={styles.formRow}>
                     <div className="form-group">
                       <label className="form-label">Full Name</label>
-                      <input className="form-input" placeholder="John Smith" value={form.name} onChange={e => update('name', e.target.value)} required />
+                      <input className="form-input" placeholder="John Smith" value={form.name} onChange={e => { update('name', e.target.value); setError(''); }} required />
                     </div>
                     <div className="form-group">
                       <label className="form-label">Phone</label>
-                      <input className="form-input" placeholder="+91 98765 43210" type="tel" value={form.phone} onChange={e => update('phone', e.target.value)} required />
+                      <input className="form-input" placeholder="+91 98765 43210" type="tel" value={form.phone} onChange={e => { update('phone', e.target.value); setError(''); }} required />
                     </div>
                   </div>
                   <div className="form-group">
                     <label className="form-label">Email Address</label>
-                    <input className="form-input" placeholder="you@example.com" type="email" value={form.email} onChange={e => update('email', e.target.value)} required />
+                    <input className="form-input" placeholder="you@example.com" type="email" value={form.email} onChange={e => { update('email', e.target.value); setError(''); }} required />
                   </div>
                   <div className="form-group">
                     <label className="form-label">Occasion <span style={{ color: 'var(--muted)', fontWeight: 400 }}>(optional)</span></label>
@@ -207,9 +218,21 @@ export default function Reservation() {
                     <textarea className="form-textarea" placeholder="Dietary requirements, seating preferences…" value={form.requests} onChange={e => update('requests', e.target.value)} />
                   </div>
                   <div className={styles.stepBtns}>
-                    <button type="button" className="btn-outline" onClick={() => setStep(1)}>Back</button>
-                    <button type="button" className="btn-primary" disabled={!form.name || !form.email || !form.phone} onClick={() => setStep(3)}>Review</button>
+                    <button type="button" className="btn-outline" onClick={() => { setError(''); setStep(1); }}>Back</button>
+                    <button type="button" className="btn-primary" onClick={() => {
+                      if (!form.name || !form.email || !form.phone) {
+                        setError('Please enter your name, email, and phone number.');
+                      } else {
+                        setError('');
+                        setStep(3);
+                      }
+                    }}>Review</button>
                   </div>
+                  {error && (
+                    <p className="error-message" style={{ color: '#f87171', fontSize: '0.85rem', marginTop: '0.75rem', textAlign: 'center' }}>
+                      ⚠️ {error}
+                    </p>
+                  )}
                 </div>
               )}
 
@@ -240,13 +263,13 @@ export default function Reservation() {
                     </div>
                   )}
                   <div className={styles.stepBtns}>
-                    <button type="button" className="btn-outline" onClick={() => setStep(2)} disabled={loading}>Edit</button>
+                    <button type="button" className="btn-outline" onClick={() => { setError(''); setStep(2); }} disabled={loading}>Edit</button>
                     <button type="submit" className="btn-primary" disabled={loading}>
                       {loading ? '⏳ Booking...' : 'Confirm — Book Now'}
                     </button>
                   </div>
                   {error && (
-                    <p style={{ color: '#f87171', fontSize: '0.85rem', marginTop: '0.75rem', textAlign: 'center' }}>
+                    <p className="error-message" style={{ color: '#f87171', fontSize: '0.85rem', marginTop: '0.75rem', textAlign: 'center' }}>
                       ⚠️ {error}
                     </p>
                   )}

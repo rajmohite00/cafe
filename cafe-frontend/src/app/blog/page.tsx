@@ -175,7 +175,7 @@ export default async function BlogPage() {
                   <span className={styles.postRead}>☕ {featured.readTime}</span>
                 </div>
                 <Link
-                  href={/^[0-9a-f]{24}$/i.test(featured.slug) ? '/blog' : `/blog/${featured.slug}`}
+                  href={`/blog/${featured.slug}`}
                   className={`btn-primary ${styles.readBtn}`}
                 >
                   Read Article →
@@ -188,7 +188,7 @@ export default async function BlogPage() {
           <div className={styles.grid}>
             {rest.map(post => (
               <Link
-                href={/^[0-9a-f]{24}$/i.test(post.slug) ? '/blog' : `/blog/${post.slug}`}
+                href={`/blog/${post.slug}`}
                 key={`${post.slug}-${post.title}`}
                 className={styles.card}
               >

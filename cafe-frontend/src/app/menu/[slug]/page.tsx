@@ -18,13 +18,26 @@ export default function MenuItemPage({ params }: { params: Promise<{ slug: strin
   const [qty, setQty] = useState(1);
   const [added, setAdded] = useState(false);
 
-  if (!item) {
+  if (!item || item.isAvailable === false) {
     return (
       <>
         <Navbar light />
-        <main style={{ minHeight: '60vh', display: 'flex', alignItems: 'center', justifyContent: 'center', flexDirection: 'column', gap: '1rem', background: 'var(--cream)' }}>
-          <h1 style={{ fontFamily: 'var(--font-serif)', color: 'var(--brown)' }}>Item not found</h1>
-          <Link href="/menu" className="btn-primary">Back to Menu</Link>
+        <main style={{ minHeight: '65vh', display: 'flex', alignItems: 'center', justifyContent: 'center', flexDirection: 'column', gap: '1.25rem', background: 'var(--cream)', padding: '4rem 1rem', textAlign: 'center' }}>
+          <span style={{ fontSize: '3rem' }}>🚫</span>
+          <h1 style={{ fontFamily: 'var(--font-serif)', color: 'var(--brown)', fontSize: '2.2rem' }}>
+            {!item ? '404 — Item Not Found' : 'Item Currently Unavailable'}
+          </h1>
+          <p style={{ color: 'var(--muted)', maxWidth: '450px', lineHeight: 1.6 }}>
+            {!item
+              ? 'Sorry, the menu item you are looking for does not exist or has been removed.'
+              : `Sorry, ${item.name} is currently out of stock or unavailable. Please check back later or choose another item.`}
+          </p>
+          <div className="error-state-badge" style={{ padding: '0.5rem 1rem', background: 'rgba(239,68,68,0.1)', color: '#ef4444', borderRadius: '8px', fontWeight: 600, fontSize: '0.85rem' }}>
+            Status: Out of Stock / Unavailable
+          </div>
+          <Link href="/menu" className="btn-primary" style={{ marginTop: '0.5rem' }}>
+            Back to Menu
+          </Link>
         </main>
         <Footer />
       </>

@@ -13,6 +13,7 @@ const navLinks = [
   { label: 'Brew Guide',    href: '/brew-guide'    },
   { label: 'Reviews',       href: '/testimonials'  },
   { label: 'FAQ',           href: '/faq'           },
+  { label: 'Contact',       href: '/#contact'      },
   { label: 'Blog',          href: '/blog'          },
   { label: 'Quiz',          href: '/quiz'          },
   { label: 'Gift',          href: '/gift'          },
