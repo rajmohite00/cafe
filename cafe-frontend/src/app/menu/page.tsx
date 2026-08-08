@@ -47,20 +47,26 @@ function MenuCard({ item }: { item: MenuItem }) {
   const [added, setAdded] = useState(false);
   const router = useRouter();
 
+  const isUnavailable = item.isAvailable === false;
+
   const handleAdd = (e: React.MouseEvent) => {
     e.preventDefault();
     e.stopPropagation();
+    if (isUnavailable) return;
     addItem(item);
     setAdded(true);
     setTimeout(() => setAdded(false), 1500);
   };
 
   const isEmoji = !item.img.startsWith('/');
-  // Admin items (MongoDB ID) don't have individual detail pages
-  const href    = isMongoId(item.slug) ? '#' : `/menu/${item.slug}`;
+  // Admin items (MongoDB ID) don't have individual detail pages — prevent navigation
+  const handleCardClick = () => {
+    if (isMongoId(item.slug)) return;
+    router.push(`/menu/${item.slug}`);
+  };
 
   return (
-    <div onClick={() => router.push(href)} className={styles.card} style={{ cursor: 'pointer' }}>
+    <div onClick={handleCardClick} className={styles.card} style={{ cursor: isMongoId(item.slug) ? 'default' : 'pointer', opacity: isUnavailable ? 0.6 : 1 }}>
       <div className={styles.cardImg}>
         {isEmoji ? (
           <span className={styles.cardEmoji}>{item.img}</span>
@@ -92,9 +98,11 @@ function MenuCard({ item }: { item: MenuItem }) {
           <button
             className={`${styles.addBtn} ${added ? styles.addBtnAdded : ''}`}
             onClick={handleAdd}
-            aria-label={`Add ${item.name} to cart`}
+            disabled={isUnavailable}
+            aria-label={isUnavailable ? `${item.name} is out of stock` : `Add ${item.name} to cart`}
+            style={isUnavailable ? { opacity: 0.5, cursor: 'not-allowed' } : {}}
           >
-            {added ? <><Check size={13} /> Added!</> : <><ShoppingCart size={13} /> Add</>}
+            {isUnavailable ? '🚫 Out of Stock' : added ? <><Check size={13} /> Added!</> : <><ShoppingCart size={13} /> Add</>}
           </button>
         </div>
       </div>

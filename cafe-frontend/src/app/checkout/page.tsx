@@ -188,13 +188,25 @@ export default function CheckoutPage() {
               <div className={styles.successDetails}>
                 <div className={styles.successRow}>
                   <span>Order ID</span>
-                  <span className={styles.successVal}>RJC-{Math.floor(100000 + Math.random() * 900000)}</span>
+                  <span className={styles.successVal}>
+                    RJC-{placedOrderId ? placedOrderId.slice(-8).toUpperCase() : '------'}
+                  </span>
                 </div>
                 <div className={styles.successRow}>
                   <span>Order Status</span>
-                  <span className={`${styles.statusBadge} ${liveStatus === 'Cancelled' ? styles.status_cancelled : styles.status_pending}`} 
-                        style={{ color: liveStatus === 'Cancelled' ? '#d32f2f' : '#fbc02d', fontWeight: 'bold' }}>
-                    {liveStatus}
+                  <span className={styles.successVal} style={{
+                    color: liveStatus === 'Cancelled' ? '#f87171'
+                         : liveStatus === 'Completed' ? '#4ade80'
+                         : liveStatus === 'Preparing' ? '#60a5fa'
+                         : liveStatus === 'Ready'     ? '#a78bfa'
+                         : '#fbbf24',
+                    fontWeight: 700,
+                  }}>
+                    {liveStatus === 'Pending'   ? '⏳ Pending'   :
+                     liveStatus === 'Preparing' ? '👨‍🍳 Preparing' :
+                     liveStatus === 'Ready'     ? '🔔 Ready for Pickup' :
+                     liveStatus === 'Completed' ? '✅ Completed' :
+                     liveStatus === 'Cancelled' ? '❌ Cancelled' : liveStatus}
                   </span>
                 </div>
                 {liveMessage && (
@@ -213,7 +225,10 @@ export default function CheckoutPage() {
                   <span className={`${styles.successVal} ${styles.successAmt}`}>₹{grandTotal}</span>
                 </div>
               </div>
-              <Link href="/" className="btn-primary">Back to Home</Link>
+              <div style={{ display: 'flex', gap: '1rem', flexWrap: 'wrap', justifyContent: 'center', marginTop: '0.5rem' }}>
+                <Link href="/orders" className="btn-primary">📋 Track My Order</Link>
+                <Link href="/" className="btn-outline">Back to Home</Link>
+              </div>
             </div>
           </div>
         </main>

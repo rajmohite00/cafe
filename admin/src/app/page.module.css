@@ -443,6 +443,13 @@
 .status_confirmed { background: rgba(74,222,128,0.1);  color: var(--green); border: 1px solid rgba(74,222,128,0.25); }
 .status_cancelled { background: rgba(248,113,113,0.08); color: var(--red);  border: 1px solid rgba(248,113,113,0.2); }
 
+/* Order-specific status variants (capital-first from backend enum) */
+.status_Pending   { background: rgba(251,191,36,0.1);  color: var(--amber); border: 1px solid rgba(251,191,36,0.25); }
+.status_Preparing { background: rgba(96,165,250,0.1);  color: var(--blue);  border: 1px solid rgba(96,165,250,0.25); }
+.status_Ready     { background: rgba(167,139,250,0.1); color: #a78bfa;      border: 1px solid rgba(167,139,250,0.25); }
+.status_Completed { background: rgba(74,222,128,0.1);  color: var(--green); border: 1px solid rgba(74,222,128,0.25); }
+.status_Cancelled { background: rgba(248,113,113,0.08); color: var(--red);  border: 1px solid rgba(248,113,113,0.2); }
+
 /* Action buttons */
 .btnConfirm {
   display: inline-flex; align-items: center; gap: 0.35rem;
