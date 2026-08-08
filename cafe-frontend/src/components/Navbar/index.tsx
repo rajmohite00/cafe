@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
-import { Search, ShoppingBag, Menu, X, User, LogOut } from 'lucide-react';
+import { ShoppingBag, Menu, X, User, LogOut } from 'lucide-react';
 import { useCart } from '@/context/CartContext';
 import { useAuth } from '@/context/AuthContext';
 import styles from './Navbar.module.css';
@@ -15,8 +15,7 @@ const navLinks = [
   { label: 'FAQ',           href: '/faq'           },
   { label: 'Contact',       href: '/#contact'      },
   { label: 'Blog',          href: '/blog'          },
-  { label: 'Quiz',          href: '/quiz'          },
-  { label: 'Gift',          href: '/gift'          },
+  { label: 'Loyalty',       href: '/loyalty'       },
 ];
 
 export default function Navbar({ light = false }: { light?: boolean }) {
@@ -63,8 +62,6 @@ export default function Navbar({ light = false }: { light?: boolean }) {
 
         {/* Actions */}
         <div className={styles.actions}>
-          <button className={styles.iconBtn} aria-label="Search"><Search size={18} strokeWidth={1.8}/></button>
-
           {/* Cart icon with badge */}
           <Link href="/cart" className={styles.cartBtn} aria-label={mounted ? `Cart (${totalItems} items)` : 'Cart'}>
             <ShoppingBag size={18} strokeWidth={1.8}/>
