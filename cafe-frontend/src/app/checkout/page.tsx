@@ -81,14 +81,25 @@ export default function CheckoutPage() {
       alert('Please fill in your complete delivery address (address, city & pincode) before placing the order.');
       return;
     }
+
+    // Ensure customerName is never empty — use user.name as fallback if form not yet auto-filled
+    const customerName = form.name.trim() || user?.name || 'Guest';
+    const customerEmail = form.email.trim() || user?.email || '';
+    const customerPhone = form.phone.trim() || user?.phone || '';
+
+    if (!customerName) {
+      alert('Please fill in your full name in the delivery details.');
+      return;
+    }
+
     setLoading(true);
     try {
       const orderPayload = {
         userId:        user?.id || null,
-        customerName:  form.name,
-        customerEmail: form.email,
-        customerPhone: form.phone,
-        address: `${form.address}, ${form.city} - ${form.pincode}`,
+        customerName,
+        customerEmail,
+        customerPhone,
+        address: `${form.address.trim()}, ${form.city.trim()} - ${form.pincode.trim()}`,
         paymentMethod: payMethod,
         items: items.map(item => ({
           name: item.name,
@@ -100,47 +111,47 @@ export default function CheckoutPage() {
 
       const response = await fetch(`${API_URL}/api/orders`, {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
+        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(orderPayload),
       });
 
-      if (!response.ok) {
-        throw new Error('Failed to place order');
+      let data;
+      try {
+        data = await response.json();
+      } catch {
+        throw new Error(`Server error (${response.status}). Please try again.`);
       }
 
-      const data = await response.json();
-      if (data.success) {
-        setPlacedOrderId(data.data._id);
-
-        // ── Immediately cache the new order in localStorage ──
-        // This ensures order history is always visible even after Vercel cold starts
-        if (user?.id) {
-          const cacheKey = `cafe_orders_${user.id}`;
-          const existing = localStorage.getItem(cacheKey);
-          const cached = existing ? JSON.parse(existing) : [];
-          const newOrder = {
-            ...data.data,
-            // Ensure all fields are present for display
-            status: data.data.status || 'Pending',
-            adminMessage: data.data.adminMessage || '',
-            paymentMethod: orderPayload.paymentMethod,
-            address: orderPayload.address,
-            items: orderPayload.items,
-            totalAmount: orderPayload.totalAmount,
-            createdAt: data.data.createdAt || new Date().toISOString(),
-          };
-          // Prepend new order at top
-          localStorage.setItem(cacheKey, JSON.stringify([newOrder, ...cached]));
-        }
-
-        clearCart();
-        setStep('done');
+      if (!response.ok || !data.success) {
+        throw new Error(data?.message || `Failed to place order (${response.status})`);
       }
-    } catch (error) {
+
+      // Order placed successfully
+      setPlacedOrderId(data.data._id);
+
+      // Cache the new order in localStorage for order history
+      if (user?.id) {
+        const cacheKey = `cafe_orders_${user.id}`;
+        const existing = localStorage.getItem(cacheKey);
+        const cached = existing ? JSON.parse(existing) : [];
+        const newOrder = {
+          ...data.data,
+          status: data.data.status || 'Pending',
+          adminMessage: data.data.adminMessage || '',
+          paymentMethod: orderPayload.paymentMethod,
+          address: orderPayload.address,
+          items: orderPayload.items,
+          totalAmount: orderPayload.totalAmount,
+          createdAt: data.data.createdAt || new Date().toISOString(),
+        };
+        localStorage.setItem(cacheKey, JSON.stringify([newOrder, ...cached]));
+      }
+
+      clearCart();
+      setStep('done');
+    } catch (error: any) {
       console.error('Error placing order:', error);
-      alert('There was an error placing your order. Please try again.');
+      alert(error.message || 'There was an error placing your order. Please try again.');
     } finally {
       setLoading(false);
     }

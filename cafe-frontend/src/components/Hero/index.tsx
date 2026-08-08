@@ -181,11 +181,6 @@ export default function Hero() {
       {/* ── Text content ── */}
       <div ref={textRef} className={styles.content}>
 
-        <div className={styles.badge}>
-          <span className={styles.dot} />
-          <span>Award-Winning Café Since 2010</span>
-        </div>
-
         <h1 className={styles.headline}>
           The Perfect<br />
           <em className={styles.accent}>Aroma</em>
