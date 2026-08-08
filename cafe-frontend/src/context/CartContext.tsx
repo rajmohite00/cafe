@@ -35,10 +35,12 @@ type CartAction =
   | { type: 'CLEAR_CART' };
 
 function cartReducer(state: CartState, action: CartAction): CartState {
+  const MAX_QTY = 20;
   switch (action.type) {
     case 'ADD_ITEM': {
       const existing = state.items.find(i => i.slug === action.item.slug);
       if (existing) {
+        if (existing.quantity >= MAX_QTY) return state; // cap at 20
         return {
           items: state.items.map(i =>
             i.slug === action.item.slug ? { ...i, quantity: i.quantity + 1 } : i
@@ -55,7 +57,7 @@ function cartReducer(state: CartState, action: CartAction): CartState {
       }
       return {
         items: state.items.map(i =>
-          i.slug === action.slug ? { ...i, quantity: action.quantity } : i
+          i.slug === action.slug ? { ...i, quantity: Math.min(action.quantity, MAX_QTY) } : i
         ),
       };
     case 'CLEAR_CART':
