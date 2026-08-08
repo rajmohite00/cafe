@@ -15,7 +15,7 @@ const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000';
 type PayMethod = 'upi' | 'card' | 'cod' | 'wallet';
 
 export default function CheckoutPage() {
-  const { items, totalPrice, totalItems, clearCart } = useCart();
+  const { items, totalPrice, clearCart } = useCart();
   const { user, loading: authLoading } = useAuth();
   const router = useRouter();
 
