@@ -364,11 +364,16 @@ function downloadBill(order: Order, userName: string) {
 </body>
 </html>`;
 
-  const win = window.open('', '_blank', 'width=800,height=900');
-  if (win) {
-    win.document.write(billHtml);
-    win.document.close();
-  }
+  // Use blob + anchor — no popup blocker issue
+  const blob = new Blob([billHtml], { type: 'text/html' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = `RajsCafe-Invoice-${order._id.slice(-6).toUpperCase()}.html`;
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+  setTimeout(() => URL.revokeObjectURL(url), 2000);
 }
 
 export default function OrdersPage() {

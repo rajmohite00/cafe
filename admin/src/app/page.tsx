@@ -84,7 +84,12 @@ export default function AdminPage() {
       });
 
       if (!response.ok) {
-        throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+        let errDetail = response.statusText;
+        try {
+          const errBody = await response.json();
+          if (errBody && errBody.message) errDetail = errBody.message;
+        } catch {}
+        throw new Error(`HTTP ${response.status}${errDetail ? `: ${errDetail}` : ''}`);
       }
 
       const data = await response.json();
@@ -143,22 +148,22 @@ export default function AdminPage() {
         ]);
 
         if (menu.success && Array.isArray(menu.data)) {
-          const mapped = menu.data.map((d: any) => ({ ...d, id: d._id }));
+          const mapped = menu.data.map((d: any) => ({ ...d, id: d._id || d.id }));
           setMenuItems(mapped);
           saveCache('menu', mapped);
         }
         if (res.success && Array.isArray(res.data)) {
-          const mapped = res.data.map((d: any) => ({ ...d, id: d._id }));
+          const mapped = res.data.map((d: any) => ({ ...d, id: d._id || d.id }));
           setReservations(mapped);
           saveCache('reservations', mapped);
         }
         if (cont.success && Array.isArray(cont.data)) {
-          const mapped = cont.data.map((d: any) => ({ ...d, id: d._id }));
+          const mapped = cont.data.map((d: any) => ({ ...d, id: d._id || d.id }));
           setContacts(mapped);
           saveCache('contacts', mapped);
         }
         if (post.success && Array.isArray(post.data)) {
-          const mapped = post.data.map((d: any) => ({ ...d, id: d._id }));
+          const mapped = post.data.map((d: any) => ({ ...d, id: d._id || d.id }));
           setPosts(mapped);
           saveCache('posts', mapped);
         }

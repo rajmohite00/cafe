@@ -308,18 +308,19 @@ function createFallbackModel(collectionName) {
 
 function getModelProxy(collectionName, mongooseModel) {
   const fallbackModel = createFallbackModel(collectionName);
-  const useFallback = !process.env.MONGODB_URI;
+  
+  const isFallback = () => !process.env.MONGODB_URI || mongoose.connection.readyState !== 1;
   
   return new Proxy(mongooseModel, {
     construct(target, args, newTarget) {
-      if (useFallback) {
+      if (isFallback()) {
         return Reflect.construct(fallbackModel, args, fallbackModel);
       } else {
         return Reflect.construct(target, args, newTarget);
       }
     },
     get(target, prop, receiver) {
-      if (useFallback) {
+      if (isFallback()) {
         return Reflect.get(fallbackModel, prop, fallbackModel);
       } else {
         return Reflect.get(target, prop, receiver);
